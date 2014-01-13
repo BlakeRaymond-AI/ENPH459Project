@@ -1,0 +1,10 @@
+{
+    "Analyser.Detector.Type": 0,
+    "Analyser.Filament.Command": 1,
+    "General.Cycle.BeginChannel": 0,
+    "General.Cycle.CycleMode": 1,
+    "General.Cycle.EndChannel": 4,
+    "General.Cycle.MeasureMode": 0,
+    "General.Cycle.NumberOfCycles": 0,
+    "General.DataPump.Mode": 0
+}
