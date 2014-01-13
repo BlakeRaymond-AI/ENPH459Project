@@ -56,6 +56,7 @@ for fname in settings_files:
             table.setItem(i, 1, QTableWidgetItem(json.dumps(settings[key])))
 
 wnd.resize(800, 600)
+wnd.setWindowTitle("QDG Lab Shot Preparation Tool")
 wnd.show()
 centre_point = QDesktopWidget().availableGeometry().center()
 wnd.frameGeometry().moveCenter(centre_point)
