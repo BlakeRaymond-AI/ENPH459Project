@@ -4,7 +4,7 @@ import sys
 import json
 import os
 
-from PyQt4.QtGui import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QWidget, QSizePolicy, QVBoxLayout, QDesktopWidget
+from PyQt4.QtGui import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QWidget, QSizePolicy, QVBoxLayout, QDesktopWidget, QFont
 
 from mainwindow import Ui_MainWindow
 
@@ -21,6 +21,7 @@ def configure_table(table):
     table.horizontalHeader().setResizeMode(1)
     table.horizontalHeader().setVisible(False)
     table.verticalHeader().setVisible(False)
+    table.setFont(QFont("Courier New"))
 
 
 settings_dir = os.getcwd() + '\\settings\\'
