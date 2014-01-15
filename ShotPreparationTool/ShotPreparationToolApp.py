@@ -18,11 +18,12 @@ class ShotPreparationToolApp(object):
         self.ui_form = Ui_MainWindow()
         self.ui_form.setupUi(self.main_window)
 
-        self.ui_form.saveButton.pressed.connect(self.save)
-        self.ui_form.discardButton.pressed.connect(self.reload)
-        self.ui_form.importButton.pressed.connect(self.load_tabs)
+        self.ui_form.saveButton.pressed.connect(self.save_with_prompt)
+        self.ui_form.discardButton.pressed.connect(self.reload_with_prompt)
+        self.ui_form.importButton.pressed.connect(self.load_tabs_with_prompt)
         self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.__browse_settings_dir_dialog)
 
+        self.app.setStyle("Plastique")
         self.main_window.resize(800, 600)
         self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")
         self.main_window.show()
@@ -47,6 +48,9 @@ class ShotPreparationToolApp(object):
             layout = QtGui.QVBoxLayout(page)
             table = QtGui.QTableWidget(page)
 
+            table.horizontalHeader().setResizeMode(1) #fit to width
+            table.horizontalHeader().setVisible(False)
+            table.verticalHeader().setVisible(False)
             table.setFont(QtGui.QFont("Courier New"))
 
             layout.addWidget(table)
@@ -55,12 +59,23 @@ class ShotPreparationToolApp(object):
 
         self.reload()
 
+    def load_tabs_with_prompt(self):
+        if hasattr(self, 'pages') and self.pages is not None:
+            if not self.__prompt_reimport() == QtGui.QMessageBox.Discard:
+                return
+
+        self.load_tabs()
+
     def reload(self):
         for table, filename in self.tables:
             settings_dict = self.__load_settings_dict(filename)
             table.setRowCount(len(settings_dict))
             table.setColumnCount(2)
             self.__reload_table_data(table, settings_dict)
+
+    def reload_with_prompt(self):
+        if self.__prompt_discard_changes() == QtGui.QMessageBox.Discard:
+            self.reload()
 
     def __reload_table_data(self, table, settings):
         for row_index, key in enumerate(settings.keys()):
@@ -82,6 +97,10 @@ class ShotPreparationToolApp(object):
         for table, filename in self.tables:
             settings = self.__get_settings_from_table(table)
             self.__save_to_settings_file(settings, filename)
+
+    def save_with_prompt(self):
+        if self.__prompt_save_changes() == QtGui.QMessageBox.SaveAll:
+            self.save()
 
     def __get_settings_from_table(self, table):
         settings = dict()
@@ -115,6 +134,23 @@ class ShotPreparationToolApp(object):
 
     def __update_settings_dir_edit(self, directory):
         self.ui_form.settingsDirectoryEdit.setText(directory)
+
+    def __prompt_save_changes(self):
+        message_box = QtGui.QMessageBox(self.main_window)
+        return message_box.question(self.main_window, 'Save changes', 'Are you sure you want to save all changes?',
+                                    QtGui.QMessageBox.Cancel | QtGui.QMessageBox.SaveAll, QtGui.QMessageBox.SaveAll)
+
+    def __prompt_discard_changes(self):
+        message_box = QtGui.QMessageBox(self.main_window)
+        return message_box.question(self.main_window, 'Discard changes',
+                                    'Are you sure you want to discard all changes?',
+                                    QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
+
+    def __prompt_reimport(self):
+        message_box = QtGui.QMessageBox(self.main_window)
+        return message_box.question(self.main_window, 'Discard changes',
+                                    'Are you sure you want to reimport?  Doing so will discard all changes.',
+                                    QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
 
 
 if __name__ == '__main__':
