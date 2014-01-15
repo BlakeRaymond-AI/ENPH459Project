@@ -23,7 +23,6 @@ class ShotPreparationToolApp(object):
         self.ui_form.importButton.pressed.connect(self.load_tabs_with_prompt)
         self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.__browse_settings_dir_dialog)
 
-        self.app.setStyle("Plastique")
         self.main_window.resize(800, 600)
         self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")
         self.main_window.show()
