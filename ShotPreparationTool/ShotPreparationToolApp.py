@@ -12,17 +12,16 @@ from mainwindow import Ui_MainWindow
 
 
 class ShotPreparationToolApp(object):
-    def __init__(self, settings_dir):
+    def __init__(self):
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         self.ui_form = Ui_MainWindow()
         self.ui_form.setupUi(self.main_window)
-        self.settings_dir = os.path.abspath(settings_dir)
-        self.settings_files = filter(lambda filename: filename.endswith('.json'), os.listdir(self.settings_dir))
-        self.__load_tabs()
 
         self.ui_form.saveButton.pressed.connect(self.save)
         self.ui_form.discardButton.pressed.connect(self.reload)
+        self.ui_form.importButton.pressed.connect(self.load_tabs)
+        self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.__browse_settings_dir_dialog)
 
         self.main_window.resize(800, 600)
         self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")
@@ -35,9 +34,12 @@ class ShotPreparationToolApp(object):
         self.main_window.show()
         return self.app.exec_()
 
-    def __load_tabs(self):
+    def load_tabs(self):
+        self.__set_settings_dir(str(self.ui_form.settingsDirectoryEdit.text()))
+
         self.pages = []
         self.tables = []
+        self.ui_form.tabWidget.clear()
 
         for filename in self.settings_files:
             page = QtGui.QWidget()
@@ -101,10 +103,21 @@ class ShotPreparationToolApp(object):
         with open(absolute_filename, 'w') as file_handle:
             file_handle.write(json.dumps(settings, separators=(',', ': '), indent=4, sort_keys=True))
 
+    def __set_settings_dir(self, settings_dir):
+        self.settings_dir = os.path.abspath(settings_dir)
+        self.settings_files = filter(lambda filename: filename.endswith('.json'), os.listdir(self.settings_dir))
+
+    def __browse_settings_dir_dialog(self):
+        dialog = QtGui.QFileDialog(self.main_window)
+        dialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
+        dialog.exec_()
+        self.__update_settings_dir_edit(str(dialog.directory().absolutePath()))
+
+    def __update_settings_dir_edit(self, directory):
+        self.ui_form.settingsDirectoryEdit.setText(directory)
+
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        raise SystemExit('Error: must specify a settings directory')
-    app = ShotPreparationToolApp(sys.argv[1])
+    app = ShotPreparationToolApp()
     retval = app.exec_()
     sys.exit(retval)

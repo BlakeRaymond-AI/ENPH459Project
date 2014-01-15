@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Jan 14 22:58:18 2014
+# Created: Tue Jan 14 23:52:57 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -36,20 +36,45 @@ class Ui_MainWindow(object):
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 0)
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.label = QtGui.QLabel(self.centralWidget)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.horizontalLayout_2.addWidget(self.label)
+        self.settingsDirectoryEdit = QtGui.QLineEdit(self.centralWidget)
+        self.settingsDirectoryEdit.setObjectName(_fromUtf8("settingsDirectoryEdit"))
+        self.horizontalLayout_2.addWidget(self.settingsDirectoryEdit)
+        self.browseSettingsDirectoryButton = QtGui.QToolButton(self.centralWidget)
+        self.browseSettingsDirectoryButton.setObjectName(_fromUtf8("browseSettingsDirectoryButton"))
+        self.horizontalLayout_2.addWidget(self.browseSettingsDirectoryButton)
+        self.importButton = QtGui.QPushButton(self.centralWidget)
+        self.importButton.setObjectName(_fromUtf8("importButton"))
+        self.horizontalLayout_2.addWidget(self.importButton)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.tabWidget = QtGui.QTabWidget(self.centralWidget)
+        self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
+        self.verticalLayout.addWidget(self.tabWidget)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setSpacing(10)
+        self.horizontalLayout.setContentsMargins(-1, -1, 0, 0)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem1)
         self.saveButton = QtGui.QPushButton(self.centralWidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.saveButton.sizePolicy().hasHeightForWidth())
         self.saveButton.setSizePolicy(sizePolicy)
         self.saveButton.setObjectName(_fromUtf8("saveButton"))
-        self.verticalLayout.addWidget(self.saveButton)
+        self.horizontalLayout.addWidget(self.saveButton)
         self.discardButton = QtGui.QPushButton(self.centralWidget)
         self.discardButton.setObjectName(_fromUtf8("discardButton"))
-        self.verticalLayout.addWidget(self.discardButton)
-        self.tabWidget = QtGui.QTabWidget(self.centralWidget)
-        self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
-        self.verticalLayout.addWidget(self.tabWidget)
+        self.horizontalLayout.addWidget(self.discardButton)
+        self.verticalLayout.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
         self.menuBar.setGeometry(QtCore.QRect(0, 0, 710, 21))
@@ -68,6 +93,9 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.label.setText(_translate("MainWindow", "Settings directory:", None))
+        self.browseSettingsDirectoryButton.setText(_translate("MainWindow", "...", None))
+        self.importButton.setText(_translate("MainWindow", "Import", None))
         self.saveButton.setText(_translate("MainWindow", "Save", None))
         self.discardButton.setText(_translate("MainWindow", "Discard", None))
 
