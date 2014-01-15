@@ -127,9 +127,8 @@ class ShotPreparationToolApp(object):
 
     def __browse_settings_dir_dialog(self):
         dialog = QtGui.QFileDialog(self.main_window)
-        dialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
-        dialog.exec_()
-        self.__update_settings_dir_edit(str(dialog.directory().absolutePath()))
+        selected_dir = dialog.getExistingDirectory(self.main_window)
+        self.__update_settings_dir_edit(str(selected_dir))
 
     def __update_settings_dir_edit(self, directory):
         self.ui_form.settingsDirectoryEdit.setText(directory)
