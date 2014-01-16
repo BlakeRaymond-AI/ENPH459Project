@@ -3,8 +3,8 @@ __author__ = 'Blake'
 import os
 import os.path
 import re
-import json
 import sys
+import cPickle
 
 from PyQt4 import QtGui
 
@@ -45,7 +45,7 @@ class ShotPreparationToolApp(object):
 
         for filename in self.settings_files:
             page = QtGui.QWidget()
-            self.ui_form.tabWidget.addTab(page, re.sub('\.json', '', filename))
+            self.ui_form.tabWidget.addTab(page, re.sub('\.pickle', '', filename))
             layout = QtGui.QVBoxLayout(page)
             table = QtGui.QTableWidget(page)
 
@@ -84,14 +84,14 @@ class ShotPreparationToolApp(object):
             table.setItem(row_index, 1, QtGui.QTableWidgetItem(self.__get_display_value(settings[key])))
 
     def __get_display_value(self, dict_value):
-        return repr(dict_value)
+        return dict_value
 
     def __load_settings_dict(self, filename):
         absolute_filename = os.path.normpath(os.path.join(self.settings_dir, filename))
         with open(absolute_filename, 'r') as file_handle:
-            settings_dict = json.loads(file_handle.read())
+            settings_dict = cPickle.loads(file_handle.read())
             if not isinstance(settings_dict, dict):
-                raise TypeError('Settings file top-level JSON object must be a dictionary')
+                raise TypeError('Settings file top-level object must be a dictionary')
             return settings_dict
 
     def save(self):
@@ -107,7 +107,7 @@ class ShotPreparationToolApp(object):
         settings = dict()
         for row_index in range(table.rowCount()):
             table_key = self.__qstring_to_str(table.item(row_index, 0))
-            table_value = self.__get_settings_value(table.item(row_index, 1))
+            table_value = self.__qstring_to_str(table.item(row_index, 1))
             if table_key:
                 settings[table_key] = table_value
         return settings
@@ -124,14 +124,14 @@ class ShotPreparationToolApp(object):
 
     def __save_to_settings_file(self, settings, settings_file):
         if not isinstance(settings, dict):
-            raise TypeError('Settings file top-level JSON object must be a dictionary')
+            raise TypeError('Settings file top-level object must be a dictionary')
         absolute_filename = os.path.normpath(os.path.join(self.settings_dir, settings_file))
         with open(absolute_filename, 'w') as file_handle:
-            file_handle.write(json.dumps(settings, separators=(',', ': '), indent=4, sort_keys=True))
+            file_handle.write(cPickle.dumps(settings))
 
     def __set_settings_dir(self, settings_dir):
         self.settings_dir = os.path.abspath(settings_dir)
-        self.settings_files = filter(lambda filename: filename.endswith('.json'), os.listdir(self.settings_dir))
+        self.settings_files = filter(lambda filename: filename.endswith('.pickle'), os.listdir(self.settings_dir))
 
     def __browse_settings_dir_dialog(self):
         dialog = QtGui.QFileDialog(self.main_window)
