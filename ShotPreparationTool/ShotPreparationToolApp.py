@@ -82,7 +82,7 @@ class ShotPreparationToolApp(object):
             table.setItem(row_index, 1, QtGui.QTableWidgetItem(self.__get_display_value(settings[key])))
 
     def __get_display_value(self, dict_value):
-        return json.dumps(dict_value)
+        return repr(dict_value)
 
     def __load_settings_dict(self, filename):
         absolute_filename = os.path.normpath(os.path.join(self.settings_dir, filename))
@@ -112,7 +112,7 @@ class ShotPreparationToolApp(object):
         return str(table_key.text())
 
     def __get_settings_value(self, table_value):
-        return json.loads(self.__qstring_to_str(table_value))
+        return eval(self.__qstring_to_str(table_value))
 
     def __save_to_settings_file(self, settings, settings_file):
         if not isinstance(settings, dict):
