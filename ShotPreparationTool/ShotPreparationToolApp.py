@@ -22,6 +22,8 @@ class ShotPreparationToolApp(object):
         self.ui_form.discardButton.pressed.connect(self.reload_with_prompt)
         self.ui_form.importButton.pressed.connect(self.load_tabs_with_prompt)
         self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.__browse_settings_dir_dialog)
+        self.ui_form.addRowButton.pressed.connect(self.__add_row)
+        self.ui_form.removeRowButton.pressed.connect(self.__remove_row)
 
         self.main_window.resize(800, 600)
         self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")
@@ -104,15 +106,21 @@ class ShotPreparationToolApp(object):
     def __get_settings_from_table(self, table):
         settings = dict()
         for row_index in range(table.rowCount()):
-            settings[self.__qstring_to_str(table.item(row_index, 0))] = self.__get_settings_value(
-                table.item(row_index, 1))
+            table_key = self.__qstring_to_str(table.item(row_index, 0))
+            table_value = self.__get_settings_value(table.item(row_index, 1))
+            if table_key:
+                settings[table_key] = table_value
         return settings
 
     def __qstring_to_str(self, table_key):
         return str(table_key.text())
 
     def __get_settings_value(self, table_value):
-        return eval(self.__qstring_to_str(table_value))
+        table_str_value = self.__qstring_to_str(table_value)
+        try:
+            return eval(table_str_value)
+        except NameError:
+            return str(table_str_value)
 
     def __save_to_settings_file(self, settings, settings_file):
         if not isinstance(settings, dict):
@@ -149,6 +157,25 @@ class ShotPreparationToolApp(object):
         return message_box.question(self.main_window, 'Discard changes',
                                     'Are you sure you want to reimport?  Doing so will discard all changes.',
                                     QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
+
+    def __add_row(self):
+        current_page_index = self.ui_form.tabWidget.currentIndex()
+        if current_page_index == -1:
+            message_box = QtGui.QMessageBox(self.main_window)
+            message_box.information(self.main_window, '', 'Please import first.')
+            return
+        table = self.tables[current_page_index][0]
+        table.setRowCount(table.rowCount() + 1)
+
+    def __remove_row(self):
+        current_page_index = self.ui_form.tabWidget.currentIndex()
+        if current_page_index == -1:
+            message_box = QtGui.QMessageBox(self.main_window)
+            message_box.information(self.main_window, '', 'Please import first.')
+            return
+        table = self.tables[current_page_index][0]
+        current_row = table.currentRow()
+        table.removeRow(current_row)
 
 
 if __name__ == '__main__':

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Jan 14 23:52:57 2014
-#      by: PyQt4 UI code generator 4.10.3
+# Created: Thu Jan 16 11:53:20 2014
+#      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -57,12 +57,24 @@ class Ui_MainWindow(object):
         self.tabWidget = QtGui.QTabWidget(self.centralWidget)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.verticalLayout.addWidget(self.tabWidget)
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setContentsMargins(-1, -1, -1, 10)
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
+        self.addRowButton = QtGui.QPushButton(self.centralWidget)
+        self.addRowButton.setObjectName(_fromUtf8("addRowButton"))
+        self.horizontalLayout_3.addWidget(self.addRowButton)
+        self.removeRowButton = QtGui.QPushButton(self.centralWidget)
+        self.removeRowButton.setObjectName(_fromUtf8("removeRowButton"))
+        self.horizontalLayout_3.addWidget(self.removeRowButton)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem1)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setContentsMargins(-1, -1, 0, 0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem1)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
         self.saveButton = QtGui.QPushButton(self.centralWidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)
@@ -96,6 +108,8 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Settings directory:", None))
         self.browseSettingsDirectoryButton.setText(_translate("MainWindow", "...", None))
         self.importButton.setText(_translate("MainWindow", "Import", None))
+        self.addRowButton.setText(_translate("MainWindow", "Add row", None))
+        self.removeRowButton.setText(_translate("MainWindow", "Remove row", None))
         self.saveButton.setText(_translate("MainWindow", "Save", None))
         self.discardButton.setText(_translate("MainWindow", "Discard", None))
 
