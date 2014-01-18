@@ -67,7 +67,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                 except Exception as expt:
                     message_box = QtGui.QMessageBox(None)
                     message_box.warning(None, '', 'Could not evaluate expression: \"%s\"; error: \n\n%s' % (
-                    new_value_string, expt.message))
+                        new_value_string, expt.message))
                     return False
                 else:
                     del self.h5file[current_name]
@@ -86,7 +86,6 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             self.__group()[name] = ''
 
         self.endInsertRows()
-
         return True
 
 
