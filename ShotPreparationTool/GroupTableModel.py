@@ -1,4 +1,4 @@
-__author__ = 'Blake'
+__author__ = 'Blake & Jeff'
 
 import os
 import os.path
@@ -9,10 +9,13 @@ import numpy as np
 
 
 class GroupTableModel(QtCore.QAbstractTableModel):
+
     def __init__(self, h5file, group_name, parent):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self.h5file = h5file
         self.group_name = group_name
+
+    #todo: needs remove_row functions. This can be found in the tutorial
 
     def __group(self):
         return self.h5file[self.group_name]
@@ -50,13 +53,28 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             current_name = self.group_name + '/' + name
 
             if index.column() == 0:
-                # rename
                 new_name = self.group_name + '/' + str(value.toString())
                 current_group = self.h5file[current_name]
+                #remove the row being edited. This entails
+                #-remove the group that's being edited from the h5 file
+                #-remove that row from the model/view
+                if '<remove>' in new_name:
+                    self.removeRows(index, index.row)
+                    del self.h5file[current_name]
+                    return True
+
                 if not str(value.toString()) or new_name == current_name:
                     return False
-                self.h5file[new_name] = current_group
-                del self.h5file[current_name]
+
+                try:
+                    self.h5file[new_name] = current_group
+                    del self.h5file[current_name]
+                except RuntimeError as ex:
+                    print ex.message
+
+                if '<Click to add row>' in current_name:
+                    self.add_row()
+
             elif index.column() == 1:
                 # change value
                 new_value_string = str(value.toString())
@@ -88,6 +106,19 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
+    def removeRows(self, position, rows, parent = None, *args, **kwargs):
+        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+        #TODO: insert removing rows here
+        self.endRemoveRows()
+
+
+    def add_row(self):
+        self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
+        name = '<Click to add row>'
+        self.__group()[name] = ''
+        self.endInsertRows()
+        return True
+
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
@@ -98,9 +129,12 @@ if __name__ == '__main__':
         h5file = h5py.File('foobar.h5')
         groups = h5file.create_group('groups')
         group1 = groups.create_group('group1')
-        group1['rb_pump_amplitude'] = 1
-        group1['rb_pump_detuning'] = 2
-        group1['Channels.Parameters.Mass.FirstMass'] = [14, 16, 18, 28, 32, 40, 44]
+        group1['test1'] = 1
+        group1['test2'] = 2
+        group1['test3'] = [14, 16, 18, 28, 32, 40, 44]
+        group1['<Click to add row>'] = ''
+
+    #add a new row onto the bottom of the file called <click to add row>
 
     model = GroupTableModel(h5file, group_name='groups/group1', parent=None)
 
