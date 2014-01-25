@@ -15,8 +15,6 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         self.h5file = h5file
         self.group_name = group_name
 
-    #todo: needs remove_row functions. This can be found in the tutorial
-
     def __group(self):
         return self.h5file[self.group_name]
 
@@ -55,9 +53,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             if index.column() == 0:
                 new_name = self.group_name + '/' + str(value.toString())
                 current_group = self.h5file[current_name]
-                #remove the row being edited. This entails
-                #-remove the group that's being edited from the h5 file
-                #-remove that row from the model/view
+
                 if '<remove>' in new_name:
                     self.removeRows(index, index.row)
                     del self.h5file[current_name]
@@ -69,8 +65,9 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                 try:
                     self.h5file[new_name] = current_group
                     del self.h5file[current_name]
-                except RuntimeError as ex:
-                    print ex.message
+                except RuntimeError as expt:
+                    message_box = QtGui.QMessageBox(None)
+                    message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
 
                 if '<Click to add row>' in current_name:
                     self.add_row()
@@ -133,8 +130,6 @@ if __name__ == '__main__':
         group1['test2'] = 2
         group1['test3'] = [14, 16, 18, 28, 32, 40, 44]
         group1['<Click to add row>'] = ''
-
-    #add a new row onto the bottom of the file called <click to add row>
 
     model = GroupTableModel(h5file, group_name='groups/group1', parent=None)
 
