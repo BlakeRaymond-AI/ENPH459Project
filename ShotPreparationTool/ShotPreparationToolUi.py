@@ -2,8 +2,10 @@ __author__ = 'Blake'
 
 import sys
 from PyQt4 import QtGui
+import inspect
+import os
 
-from mainwindow import Ui_MainWindow
+from shotpreparationtool_ui import Ui_MainWindow
 
 
 class ShotPreparationToolUi(object):
@@ -16,53 +18,66 @@ class ShotPreparationToolUi(object):
         self.connect_buttons()
 
     def init_ui(self):
-        self.main_window.resize(800, 600)
-        self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")
-        centre_point = QtGui.QDesktopWidget().availableGeometry().center()
-        self.main_window.frameGeometry().moveCenter(centre_point)
-        self.main_window.move(self.main_window.frameGeometry().topLeft())
+        self.app.setStyle("Plastique")
 
     def connect_buttons(self):
-        self.ui_form.addTabButton.pressed.connect(self.add_tab_button_pressed)
-        self.ui_form.addRowButton.pressed.connect(self.add_row_button_pressed)
-        self.ui_form.removeTabButton.pressed.connect(self.remove_tab_button_pressed)
-        self.ui_form.removeRowButton.pressed.connect(self.remove_row_button_pressed)
-        self.ui_form.saveButton.pressed.connect(self.save_button_pressed)
-        self.ui_form.discardButton.pressed.connect(self.discard_button_pressed)
-        self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.browse_settings_button_pressed)
-        self.ui_form.importButton.pressed.connect(self.import_button_pressed)
+        form = self.ui_form
+
+        form.actionNew.triggered.connect(self.actionNew)
+        form.actionOpen.triggered.connect(self.actionOpen)
+        form.actionSave.triggered.connect(self.actionSave)
+        form.actionSave_As.triggered.connect(self.actionSave_As)
+        form.actionClose.triggered.connect(self.actionClose)
+        form.actionExit.triggered.connect(self.actionExit)
+        form.actionAddGroup.triggered.connect(self.actionAddGroup)
+        form.actionRemoveGroup.triggered.connect(self.actionRemoveGroup)
+        form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+
+    def actionNew(self):
+        print inspect.stack()[0][3]
+
+    def actionOpen(self):
+        print inspect.stack()[0][3]
+        file_dialog = QtGui.QFileDialog(self.main_window)
+        dialog_return = file_dialog.getOpenFileNameAndFilter(parent=self.main_window, caption='Open existing HDF5 file', directory=str(os.getcwd()), filter='.h5')
+        self.file_name = str(dialog_return[0])
+        print 'would open %s' % str(self.file_name)
+
+    def actionSave(self):
+        print inspect.stack()[0][3]
+        print 'would save to %s' % str(self.file_name)
+
+    def actionSave_As(self):
+        print inspect.stack()[0][3]
+        file_dialog = QtGui.QFileDialog(self.main_window)
+        dialog_return = file_dialog.getSaveFileNameAndFilter(parent=self.main_window, caption='Save As HDF5 file', directory=str(os.getcwd()), filter='.h5')
+        self.file_name = str(dialog_return[0])
+        print 'would save as %s' % str(self.file_name)
+
+    def actionClose(self):
+        print inspect.stack()[0][3]
+
+    def actionExit(self):
+        print inspect.stack()[0][3]
+        self.app.quit()
+
+    def actionAddGroup(self):
+        print inspect.stack()[0][3]
+
+    def actionRemoveGroup(self):
+        print inspect.stack()[0][3]
+
+    def actionRemoveRow(self):
+        print inspect.stack()[0][3]
 
     def show(self):
         self.main_window.show()
 
-    def save_button_pressed(self):
-        print 'save button'
-
-    def discard_button_pressed(self):
-        print 'discard button'
-
-    def import_button_pressed(self):
-        print 'import button'
-
-    def browse_settings_button_pressed(self):
-        print 'browse settings'
-
-    def add_row_button_pressed(self):
-        print 'add row'
-
-    def remove_row_button_pressed(self):
-        print 'remove row'
-
-    def add_tab_button_pressed(self):
-        print 'add tab'
-
-    def remove_tab_button_pressed(self):
-        print 'remove tab'
 
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
-    ui = ShotPreparationToolUi(None)
+    ui = ShotPreparationToolUi(app)
     ui.show()
     sys.exit(app.exec_())
 
