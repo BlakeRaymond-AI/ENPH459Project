@@ -6,7 +6,7 @@ import os
 import os.path
 import re
 import sys
-import cPickle
+import GroupTableModel
 
 from PyQt4 import QtGui
 
@@ -17,7 +17,7 @@ from mainwindow import Ui_MainWindow
 #close with and without saving
 #work with a temp file
 #save file (copies the temp file over the old file)
-#we should remove
+#we should remove some of these functions because they aren't needed.
 
 
 class ShotPreparationToolApp(object):
@@ -38,8 +38,6 @@ class ShotPreparationToolApp(object):
         self.ui_form.discardButton.pressed.connect(self.reload_with_prompt)
         self.ui_form.importButton.pressed.connect(self.load_tabs_with_prompt)
         self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.__browse_settings_dir_dialog)
-        self.ui_form.addRowButton.pressed.connect(self.__add_row)
-        self.ui_form.removeRowButton.pressed.connect(self.__remove_row)
 
         self.main_window.resize(800, 600)
         self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")

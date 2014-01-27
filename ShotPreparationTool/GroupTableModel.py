@@ -46,6 +46,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                         return str(value)
 
     def setData(self, index, value, role=None):
+        #refactor this to use f.copy instead of making a new one and then copying over.
         if role == QtCore.Qt.EditRole:
             name = self.__group().keys()[index.row()]
             current_name = self.group_name + '/' + name
@@ -121,18 +122,27 @@ if __name__ == '__main__':
     app = QtGui.QApplication([])
 
     if os.path.exists('foobar.h5'):
-        h5file = h5py.File('foobar.h5')
-    else:
-        h5file = h5py.File('foobar.h5')
-        groups = h5file.create_group('groups')
-        group1 = groups.create_group('group1')
-        group1['test1'] = 1
-        group1['test2'] = 2
-        group1['test3'] = [14, 16, 18, 28, 32, 40, 44]
-        group1['<Click to add row>'] = ''
+        os.remove('test.h5')
+        os.remove('foobar.h5')
 
-    model = GroupTableModel(h5file, group_name='groups/group1', parent=None)
+    h5file = h5py.File('foobar.h5')
+    devices = h5file.create_group('devices')
+    RGA = devices.create_group('RGA')
+    MOT = devices.create_group('MOT')
+    RGA['test1'] = 1
+    RGA['test2'] = 2
+    RGA['test3'] = [14, 16, 18, 28, 32, 40, 44]
+    RGA['<Click to add row>'] = ''
+    MOT['stuff'] = "test string"
 
+    testFile = h5py.File('test.h5')
+#    testFile.create_group('devices')
+#    del testFile['devices']
+    h5file.copy('devices', testFile)
+
+    model = GroupTableModel(h5file, group_name='devices/RGA', parent=None)
+
+    #commands to create the views
     view = QtGui.QTableView()
     view.setModel(model)
 
