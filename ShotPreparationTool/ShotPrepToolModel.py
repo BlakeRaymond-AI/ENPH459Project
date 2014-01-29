@@ -54,6 +54,9 @@ if __name__ == '__main__':
     h5pathname = 'devices.h5'
     test = ShotPrepToolModel(h5pathname)
     devices = test.returnModelsInFile()
+    print devices['RGA'].h5file['RGA']['test data point'][()]
+    devices['RGA'].h5file['RGA']['test data point'][()] = 'this has been changed'
+    print devices['RGA'].h5file['RGA']['test data point'][()]
 
     test.cleanUp()
 

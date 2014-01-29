@@ -7,7 +7,6 @@ from PyQt4 import QtGui, QtCore
 import h5py
 import numpy as np
 
-
 class GroupTableModel(QtCore.QAbstractTableModel):
 
     def __init__(self, h5file, group_name, parent):
@@ -71,7 +70,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                     message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
 
                 if '<Click to add row>' in current_name:
-                    self.add_row()
+                    return self.add_row()
 
             elif index.column() == 1:
                 # change value
@@ -106,9 +105,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
 
     def removeRows(self, position, rows, parent = None, *args, **kwargs):
         self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
-        #TODO: insert removing rows here
         self.endRemoveRows()
-
 
     def add_row(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
@@ -117,27 +114,23 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
-
 if __name__ == '__main__':
     app = QtGui.QApplication([])
 
-    if os.path.exists('foobar.h5'):
+    if os.path.exists('test.h5'):
         os.remove('test.h5')
+    if os.path.exists('foobar.h5'):
         os.remove('foobar.h5')
 
     h5file = h5py.File('foobar.h5')
     devices = h5file.create_group('devices')
     RGA = devices.create_group('RGA')
-    MOT = devices.create_group('MOT')
     RGA['test1'] = 1
     RGA['test2'] = 2
     RGA['test3'] = [14, 16, 18, 28, 32, 40, 44]
     RGA['<Click to add row>'] = ''
-    MOT['stuff'] = "test string"
 
     testFile = h5py.File('test.h5')
-#    testFile.create_group('devices')
-#    del testFile['devices']
     h5file.copy('devices', testFile)
 
     model = GroupTableModel(h5file, group_name='devices/RGA', parent=None)
