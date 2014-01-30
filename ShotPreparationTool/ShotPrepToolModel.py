@@ -20,23 +20,26 @@ class ShotPrepToolModel(object):
             os.remove(self.h5tempFileName)
         shutil.copy2(self.h5pathName, self.h5tempFileName)
         self.workingFile = h5py.File(self.h5tempFileName)
+        self.__buildModelsInFile()
 
     def cleanUp(self):
         self.originalFile.close()
         self.workingFile.close()
         os.remove(self.h5tempFileName)
 
-    def returnModelsInFile(self):
-        dict_of_devices = {}
+    def __buildModelsInFile(self):
+        self.dict_of_devices = {}
         for device in self.workingFile['devices']:
             model = GroupTableModel.GroupTableModel(self.workingFile['devices'], device, parent=None)
-            dict_of_devices[device] = model
-        return dict_of_devices
+            self.dict_of_devices[device] = model
+
+    def returnModelsInFile(self):
+        return self.dict_of_devices
 
     def discardCharges(self):
-        #self.workingFile['devices'] = self.originalFile['devices']
         del self.workingFile['devices']
         self.originalFile.copy('devices', self.workingFile)
+        self.__buildModelsInFile()
 
     def saveChanges(self):
         del self.originalFile['devices']

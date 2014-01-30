@@ -46,14 +46,11 @@ class ShotPrepToolModelTests(unittest.TestCase):
         devices['RGA'].h5file['RGA']['test data point'][()] = '2'
         self.assertEqual(devices['RGA'].h5file['RGA']['test data point'][()], '2')
 
-        #print devices['RGA'].h5file['RGA']['test data point'][()]
-
         devices['MOT'].h5file['MOT']['test data point 2'][()] = '1'
         self.assertEqual(devices['MOT'].h5file['MOT']['test data point 2'][()], '1')
 
         self.testModel.discardCharges()
-
-        #print devices['RGA'].h5file['RGA']['test data point'][()]
+        devices = self.testModel.returnModelsInFile()
 
         self.assertEqual('1', devices['RGA'].h5file['RGA']['test data point'][()])
         self.assertEqual('2', devices['MOT'].h5file['MOT']['test data point 2'][()])
@@ -67,10 +64,11 @@ class ShotPrepToolModelTests(unittest.TestCase):
         self.assertEqual(devices['MOT'].h5file['MOT']['test data point 2'][()], '1')
 
         self.testModel.saveChanges()
-        self.assertEqual('2', devices['RGA'].h5file['RGA']['test data point'][()])
-        self.assertEqual('1', devices['MOT'].h5file['MOT']['test data point 2'][()])
 
-
+        saveFile = h5py.File('test_file.h5')
+        self.assertEqual('2', saveFile['devices']['RGA']['test data point'][()])
+        self.assertEqual('1', saveFile['devices']['MOT']['test data point 2'][()])
+        saveFile.close()
 
 
 if __name__ == '__main__':
