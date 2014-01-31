@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>710</width>
-    <height>473</height>
+    <width>900</width>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,6 +67,15 @@
     </item>
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>882</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="currentIndex">
        <number>-1</number>
       </property>
@@ -159,7 +168,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>710</width>
+     <width>900</width>
      <height>21</height>
     </rect>
    </property>

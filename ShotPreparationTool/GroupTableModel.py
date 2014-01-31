@@ -1,4 +1,4 @@
-__author__ = 'Blake'
+__author__ = 'Blake & Jeff'
 
 import os
 import os.path
@@ -7,8 +7,8 @@ from PyQt4 import QtGui, QtCore
 import h5py
 import numpy as np
 
-
 class GroupTableModel(QtCore.QAbstractTableModel):
+
     def __init__(self, h5file, group_name, parent):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self.h5file = h5file
@@ -45,18 +45,33 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                         return str(value)
 
     def setData(self, index, value, role=None):
+        #refactor this to use f.copy instead of making a new one and then copying over.
         if role == QtCore.Qt.EditRole:
             name = self.__group().keys()[index.row()]
             current_name = self.group_name + '/' + name
 
             if index.column() == 0:
-                # rename
                 new_name = self.group_name + '/' + str(value.toString())
                 current_group = self.h5file[current_name]
+
+                if '<remove>' in new_name:
+                    self.removeRows(index, index.row)
+                    del self.h5file[current_name]
+                    return True
+
                 if not str(value.toString()) or new_name == current_name:
                     return False
-                self.h5file[new_name] = current_group
-                del self.h5file[current_name]
+
+                try:
+                    self.h5file[new_name] = current_group
+                    del self.h5file[current_name]
+                except RuntimeError as expt:
+                    message_box = QtGui.QMessageBox(None)
+                    message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
+
+                if '<Click to add row>' in current_name:
+                    return self.add_row()
+
             elif index.column() == 1:
                 # change value
                 new_value_string = str(value.toString())
@@ -88,22 +103,39 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
+    def removeRows(self, position, rows, parent = None, *args, **kwargs):
+        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+        self.endRemoveRows()
+
+    def add_row(self):
+        self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
+        name = '<Click to add row>'
+        self.__group()[name] = ''
+        self.endInsertRows()
+        return True
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
 
+    if os.path.exists('test.h5'):
+        os.remove('test.h5')
     if os.path.exists('foobar.h5'):
-        h5file = h5py.File('foobar.h5')
-    else:
-        h5file = h5py.File('foobar.h5')
-        groups = h5file.create_group('groups')
-        group1 = groups.create_group('group1')
-        group1['rb_pump_amplitude'] = 1
-        group1['rb_pump_detuning'] = 2
-        group1['Channels.Parameters.Mass.FirstMass'] = [14, 16, 18, 28, 32, 40, 44]
+        os.remove('foobar.h5')
 
-    model = GroupTableModel(h5file, group_name='groups/group1', parent=None)
+    h5file = h5py.File('foobar.h5')
+    devices = h5file.create_group('devices')
+    RGA = devices.create_group('RGA')
+    RGA['test1'] = 1
+    RGA['test2'] = 2
+    RGA['test3'] = [14, 16, 18, 28, 32, 40, 44]
+    RGA['<Click to add row>'] = ''
 
+    testFile = h5py.File('test.h5')
+    h5file.copy('devices', testFile)
+
+    model = GroupTableModel(h5file, group_name='devices/RGA', parent=None)
+
+    #commands to create the views
     view = QtGui.QTableView()
     view.setModel(model)
 

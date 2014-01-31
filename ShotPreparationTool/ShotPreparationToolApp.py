@@ -1,17 +1,33 @@
-__author__ = 'Blake'
+import json
+
+__author__ = 'Blake & Jeff'
 
 import os
 import os.path
 import re
 import sys
-import cPickle
+import GroupTableModel
 
 from PyQt4 import QtGui
 
 from mainwindow import Ui_MainWindow
 
+#todo: stuff and things
+#features to add - create a new hdf5 file in the folder
+#close with and without saving
+#work with a temp file
+#save file (copies the temp file over the old file)
+#we should remove some of these functions because they aren't needed.
+
 
 class ShotPreparationToolApp(object):
+
+    #go to a directory
+    #load all the files into tables
+    #display all the data to the user through the model-view pattern.
+
+    #save and discard - will need a temp file. The model automatically saves all changes.
+
     def __init__(self):
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
@@ -22,8 +38,6 @@ class ShotPreparationToolApp(object):
         self.ui_form.discardButton.pressed.connect(self.reload_with_prompt)
         self.ui_form.importButton.pressed.connect(self.load_tabs_with_prompt)
         self.ui_form.browseSettingsDirectoryButton.pressed.connect(self.__browse_settings_dir_dialog)
-        self.ui_form.addRowButton.pressed.connect(self.__add_row)
-        self.ui_form.removeRowButton.pressed.connect(self.__remove_row)
 
         self.main_window.resize(800, 600)
         self.main_window.setWindowTitle("QDG Lab Shot Preparation Tool")
@@ -39,13 +53,17 @@ class ShotPreparationToolApp(object):
     def load_tabs(self):
         self.__set_settings_dir(str(self.ui_form.settingsDirectoryEdit.text()))
 
+        #todo: get the load_tabs function to work with the model and view pattern
+        #change the tabWidget to the GroupTableModel.
+        #to start, don't need the listmodel.
+
         self.pages = []
         self.tables = []
         self.ui_form.tabWidget.clear()
 
         for filename in self.settings_files:
             page = QtGui.QWidget()
-            self.ui_form.tabWidget.addTab(page, re.sub('\.pickle', '', filename))
+            self.ui_form.tabWidget.addTab(page, re.sub('\.json', '', filename))
             layout = QtGui.QVBoxLayout(page)
             table = QtGui.QTableWidget(page)
 
@@ -84,12 +102,12 @@ class ShotPreparationToolApp(object):
             table.setItem(row_index, 1, QtGui.QTableWidgetItem(self.__get_display_value(settings[key])))
 
     def __get_display_value(self, dict_value):
-        return dict_value
+        return json.dumps(dict_value)
 
     def __load_settings_dict(self, filename):
         absolute_filename = os.path.normpath(os.path.join(self.settings_dir, filename))
         with open(absolute_filename, 'r') as file_handle:
-            settings_dict = cPickle.loads(file_handle.read())
+            settings_dict = json.loads(file_handle.read())
             if not isinstance(settings_dict, dict):
                 raise TypeError('Settings file top-level object must be a dictionary')
             return settings_dict
@@ -127,11 +145,11 @@ class ShotPreparationToolApp(object):
             raise TypeError('Settings file top-level object must be a dictionary')
         absolute_filename = os.path.normpath(os.path.join(self.settings_dir, settings_file))
         with open(absolute_filename, 'w') as file_handle:
-            file_handle.write(cPickle.dumps(settings))
+            file_handle.write(json.dumps(settings))
 
     def __set_settings_dir(self, settings_dir):
         self.settings_dir = os.path.abspath(settings_dir)
-        self.settings_files = filter(lambda filename: filename.endswith('.pickle'), os.listdir(self.settings_dir))
+        self.settings_files = filter(lambda filename: filename.endswith('.json'), os.listdir(self.settings_dir))
 
     def __browse_settings_dir_dialog(self):
         dialog = QtGui.QFileDialog(self.main_window)
