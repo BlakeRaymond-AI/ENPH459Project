@@ -2,9 +2,11 @@ import os
 import os.path
 import shutil
 
-from PyQt4 import QtGui
 import h5py
 import GroupTableModel
+
+EMPTY_ROW_KEY = "<Click to add row>"
+
 
 class ShotPrepToolModel(object):
     def __init__(self, h5pathName):
@@ -14,6 +16,7 @@ class ShotPrepToolModel(object):
         else:
             self.originalFile = h5py.File(self.h5pathName)
             self.originalFile.create_group('devices')
+            self.originalFile.flush()
 
         self.h5tempFileName = h5pathName + '.tmp'
         if os.path.exists(self.h5tempFileName):
@@ -30,7 +33,8 @@ class ShotPrepToolModel(object):
     def __buildModelsInFile(self):
         self.dict_of_devices = {}
         for device in self.workingFile['devices']:
-            model = GroupTableModel.GroupTableModel(self.workingFile['devices'], device, parent=None)
+            model = GroupTableModel.GroupTableModel(self.workingFile['devices'], device, parent=None,
+                                                    empty_row_string=EMPTY_ROW_KEY)
             self.dict_of_devices[device] = model
 
     def returnModelsInFile(self):
@@ -44,12 +48,21 @@ class ShotPrepToolModel(object):
     def saveChanges(self):
         del self.originalFile['devices']
         self.workingFile.copy('devices', self.originalFile)
+        for device in self.originalFile['devices'].values():
+            if EMPTY_ROW_KEY in device:
+                del device[EMPTY_ROW_KEY]
+        self.originalFile.flush()
 
     def removeDevice(self, deviceName):
-        del self.workingFile[deviceName]
+        del self.workingFile['devices'][deviceName]
+        self.__buildModelsInFile()
 
     def addDevice(self, deviceName):
-        self.workingFile.create_group(deviceName)
+        self.workingFile['devices'].create_group(deviceName)
+        self.__buildModelsInFile()
+
+    def saveAs(self, filename):
+        shutil.copy2(self.h5tempFileName, filename)
 
 
 if __name__ == '__main__':

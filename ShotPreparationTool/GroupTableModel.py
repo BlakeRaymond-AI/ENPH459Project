@@ -8,11 +8,12 @@ import h5py
 import numpy as np
 
 class GroupTableModel(QtCore.QAbstractTableModel):
-
-    def __init__(self, h5file, group_name, parent):
+    def __init__(self, h5file, group_name, parent, empty_row_string='<Click to add row>'):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self.h5file = h5file
         self.group_name = group_name
+        self.empty_row_string = empty_row_string
+        self.add_row()
 
     def __group(self):
         return self.h5file[self.group_name]
@@ -69,7 +70,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                     message_box = QtGui.QMessageBox(None)
                     message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
 
-                if '<Click to add row>' in current_name:
+                if self.empty_row_string in current_name:
                     return self.add_row()
 
             elif index.column() == 1:
@@ -93,15 +94,16 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             return True
         return False
 
-    def insertRows(self, position, rows, QModelIndex_parent=None, *args, **kwargs):
-        self.beginInsertRows(QtCore.QModelIndex(), 0, rows + len(self.__group().keys()) - 1)
+    def removeRowByName(self, name):
+        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
 
-        for i in range(rows):
-            name = 'item_' + str(len(self.__group().keys()))
-            self.__group()[name] = ''
+        device = self.__group()
+        if name in device:
+            del device[name]
+        else:
+            raise KeyError('Cannot find key \'%s\' in device group' % name)
 
-        self.endInsertRows()
-        return True
+        self.endRemoveRows()
 
     def removeRows(self, position, rows, parent = None, *args, **kwargs):
         self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
@@ -109,10 +111,10 @@ class GroupTableModel(QtCore.QAbstractTableModel):
 
     def add_row(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
-        name = '<Click to add row>'
-        self.__group()[name] = ''
+        name = self.empty_row_string
+        if not name in self.__group():
+            self.__group()[name] = ''
         self.endInsertRows()
-        return True
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
