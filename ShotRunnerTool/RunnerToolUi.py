@@ -27,7 +27,8 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionOpen.triggered.connect(self.actionOpen)
         self.ui_form.actionSave.triggered.connect(self.actionSave)
         self.ui_form.actionSave_As.triggered.connect(self.actionSave_As)
-        self.ui_form.actionQuit.triggered.connect(self.actionQuit)
+        self.ui_form.actionExit.triggered.connect(self.actionExit)
+        self.ui_form.actionClose.triggered.connect(self.actionClose)
 
     def show(self):
         self.main_window.show()
@@ -44,11 +45,14 @@ class ShotRunnerToolUi(object):
     def actionSave_As(self):
         print "saving a file as"
 
-    def actionQuit(self):
+    def actionExit(self):
         print "quitting..."
 
     def actionOpen(self):
         print "opening a file"
+
+    def actionClose(self):
+        print "closing a file"
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
