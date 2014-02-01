@@ -17,7 +17,7 @@ class ShotPreparationToolUi(object):
         self.app = app
         self.init_ui()
         self.connect_buttons()
-        self.app.lastWindowClosed.connect(self.actionClose)
+        self.hookCloseEvent()
         self.unsaved_changes = False
 
     def init_ui(self):
@@ -44,6 +44,34 @@ class ShotPreparationToolUi(object):
             self.main_window.setWindowTitle('%s - QDG Lab Shot Preparation Tool' % path_leaf)
         else:
             self.main_window.setWindowTitle('QDG Lab Shot Preparation Tool')
+
+    def checkShouldDiscardAnyUnsavedChanges(self):
+        if self.unsaved_changes:
+            message_box = QtGui.QMessageBox()
+            response = message_box.question(self.main_window, 'Unsaved changes',
+                                            'You have unsaved changes.  Are you sure you wish to continue?',
+                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                            QtGui.QMessageBox.Cancel)
+            if response == QtGui.QMessageBox.Cancel:
+                return False
+        return True
+
+    def checkHasOpenFile(self):
+        if not (hasattr(self, 'model') and self.model):
+            dialog = QtGui.QMessageBox(self.main_window)
+            dialog.warning(self.main_window, 'Please load first', 'Please open an H5 file first.')
+            return False
+        return True
+
+    def hookCloseEvent(self):
+        def handleCloseEvent(event):
+            if self.checkShouldDiscardAnyUnsavedChanges():
+                event.accept()
+            else:
+                event.ignore()
+
+        self.main_window.closeEvent = handleCloseEvent
+        self.app.closeEvent = handleCloseEvent
 
     def modelChanged(self):
         self.unsaved_changes = True
@@ -78,7 +106,7 @@ class ShotPreparationToolUi(object):
             self.modelSaved()
 
     def actionSave(self):
-        if self.file_name:
+        if hasattr(self, 'file_name') and self.file_name:
             self.model.saveChanges()
             self.modelSaved()
 
@@ -97,16 +125,7 @@ class ShotPreparationToolUi(object):
             self.init_tabs(self.model.returnModelsInFile())
 
     def actionClose(self):
-        if self.unsaved_changes:
-            message_box = QtGui.QMessageBox()
-            response = message_box.question(self.main_window, 'Unsaved changes',
-                                            'You have unsaved changes.  Are you sure you wish to continue?',
-                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                            QtGui.QMessageBox.Cancel)
-            if response == QtGui.QMessageBox.Cancel:
-                return
-
-        if hasattr(self, 'model') and self.model:
+        if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
             self.clear_tabs()
             self.model.cleanUp()
             self.model = None
@@ -118,7 +137,7 @@ class ShotPreparationToolUi(object):
         self.app.quit()
 
     def actionAddDevice(self):
-        if hasattr(self, 'model') and self.model:
+        if self.checkHasOpenFile():
             dialog = QtGui.QInputDialog(self.main_window)
             response = dialog.getText(self.main_window, 'Add group', 'Enter name of device:')
             group_name = response[0]
@@ -126,32 +145,26 @@ class ShotPreparationToolUi(object):
             self.init_tabs(self.model.returnModelsInFile())
             self.modelChanged()
 
-        else:
-            dialog = QtGui.QMessageBox(self.main_window)
-            dialog.warning(self.main_window, 'Please load first', 'Please open an H5 file first.')
-
     def actionRemoveDevice(self):
-        if not (hasattr(self, 'model') and self.model):
-            dialog = QtGui.QMessageBox(self.main_window)
-            dialog.warning(self.main_window, 'Please load first', 'Please open an H5 file first.')
-
-        current_tab = self.ui_form.tabWidget.currentWidget()
-        device_name = str(current_tab.windowTitle())
-        self.model.removeDevice(device_name)
-        self.init_tabs(self.model.returnModelsInFile())
-        self.modelChanged()
+        if self.checkHasOpenFile():
+            current_tab = self.ui_form.tabWidget.currentWidget()
+            device_name = str(current_tab.windowTitle())
+            self.model.removeDevice(device_name)
+            self.init_tabs(self.model.returnModelsInFile())
+            self.modelChanged()
 
     def actionRemoveRow(self):
-        current_tab = self.ui_form.tabWidget.currentWidget()
-        table = current_tab.findChild(QtGui.QTableView)
-        selected = table.selectedIndexes()
-        key_indices = [i.sibling(i.row(), 0) for i in selected]
-        model = table.model()
-        for index in key_indices:
-            name = model.data(index, role=QtCore.Qt.DisplayRole)
-            model.removeRowByName(name)
-        else:
-            self.modelChanged()
+        if self.checkHasOpenFile():
+            current_tab = self.ui_form.tabWidget.currentWidget()
+            table = current_tab.findChild(QtGui.QTableView)
+            selected = table.selectedIndexes()
+            key_indices = [i.sibling(i.row(), 0) for i in selected]
+            model = table.model()
+            for index in key_indices:
+                name = model.data(index, role=QtCore.Qt.DisplayRole)
+                model.removeRowByName(name)
+            else:
+                self.modelChanged()
 
     def show(self):
         self.main_window.show()
