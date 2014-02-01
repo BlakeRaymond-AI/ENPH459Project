@@ -141,9 +141,10 @@ class ShotPreparationToolUi(object):
             dialog = QtGui.QInputDialog(self.main_window)
             response = dialog.getText(self.main_window, 'Add group', 'Enter name of device:')
             group_name = response[0]
-            self.model.addDevice(str(group_name))
-            self.init_tabs(self.model.returnModelsInFile())
-            self.modelChanged()
+            if group_name:
+                self.model.addDevice(str(group_name))
+                self.init_tabs(self.model.returnModelsInFile())
+                self.modelChanged()
 
     def actionRemoveDevice(self):
         if self.checkHasOpenFile():
