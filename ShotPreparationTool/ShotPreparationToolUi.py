@@ -88,9 +88,9 @@ class ShotPreparationToolUi(object):
         file_name = str(dialog_return[0])
         if file_name:
             self.model.saveAs(file_name)
-            self.modelSaved()
             self.actionClose()
             self.file_name = file_name
+            self.modelSaved()
 
             self.model = ShotPrepToolModel(self.file_name)
             self.init_tabs(self.model.returnModelsInFile())
