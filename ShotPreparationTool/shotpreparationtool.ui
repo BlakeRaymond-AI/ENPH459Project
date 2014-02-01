@@ -57,10 +57,10 @@
    </widget>
    <widget class="QMenu" name="menuGroup">
     <property name="title">
-     <string>Group</string>
+     <string>Device</string>
     </property>
-    <addaction name="actionAddGroup"/>
-    <addaction name="actionRemoveGroup"/>
+    <addaction name="actionAddDevice"/>
+    <addaction name="actionRemoveDevice"/>
    </widget>
    <widget class="QMenu" name="menuRow">
     <property name="title">
@@ -111,12 +111,12 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionAddGroup">
+  <action name="actionAddDevice">
    <property name="text">
     <string>Add</string>
    </property>
   </action>
-  <action name="actionRemoveGroup">
+  <action name="actionRemoveDevice">
    <property name="text">
     <string>Remove Current</string>
    </property>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'shotpreparationtool.ui'
 #
-# Created: Sat Jan 25 15:54:03 2014
+# Created: Sat Feb 01 13:26:47 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,11 +17,13 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -69,10 +71,10 @@ class Ui_MainWindow(object):
         self.actionClose.setObjectName(_fromUtf8("actionClose"))
         self.actionExit = QtGui.QAction(MainWindow)
         self.actionExit.setObjectName(_fromUtf8("actionExit"))
-        self.actionAddGroup = QtGui.QAction(MainWindow)
-        self.actionAddGroup.setObjectName(_fromUtf8("actionAddGroup"))
-        self.actionRemoveGroup = QtGui.QAction(MainWindow)
-        self.actionRemoveGroup.setObjectName(_fromUtf8("actionRemoveGroup"))
+        self.actionAddDevice = QtGui.QAction(MainWindow)
+        self.actionAddDevice.setObjectName(_fromUtf8("actionAddDevice"))
+        self.actionRemoveDevice = QtGui.QAction(MainWindow)
+        self.actionRemoveDevice.setObjectName(_fromUtf8("actionRemoveDevice"))
         self.actionRemoveRow = QtGui.QAction(MainWindow)
         self.actionRemoveRow.setObjectName(_fromUtf8("actionRemoveRow"))
         self.menuFile.addAction(self.actionNew)
@@ -83,8 +85,8 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionExit)
-        self.menuGroup.addAction(self.actionAddGroup)
-        self.menuGroup.addAction(self.actionRemoveGroup)
+        self.menuGroup.addAction(self.actionAddDevice)
+        self.menuGroup.addAction(self.actionRemoveDevice)
         self.menuRow.addAction(self.actionRemoveRow)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuGroup.menuAction())
@@ -97,7 +99,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "QDG Lab Shot Preparation Tool", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
-        self.menuGroup.setTitle(_translate("MainWindow", "Group", None))
+        self.menuGroup.setTitle(_translate("MainWindow", "Device", None))
         self.menuRow.setTitle(_translate("MainWindow", "Row", None))
         self.actionNew.setText(_translate("MainWindow", "New...", None))
         self.actionOpen.setText(_translate("MainWindow", "Open...", None))
@@ -105,7 +107,7 @@ class Ui_MainWindow(object):
         self.actionSave_As.setText(_translate("MainWindow", "Save As...", None))
         self.actionClose.setText(_translate("MainWindow", "Close", None))
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
-        self.actionAddGroup.setText(_translate("MainWindow", "Add", None))
-        self.actionRemoveGroup.setText(_translate("MainWindow", "Remove Current", None))
+        self.actionAddDevice.setText(_translate("MainWindow", "Add", None))
+        self.actionRemoveDevice.setText(_translate("MainWindow", "Remove Current", None))
         self.actionRemoveRow.setText(_translate("MainWindow", "Remove Selected", None))
 

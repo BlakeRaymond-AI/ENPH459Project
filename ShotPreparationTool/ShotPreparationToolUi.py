@@ -32,8 +32,8 @@ class ShotPreparationToolUi(object):
         form.actionSave_As.triggered.connect(self.actionSave_As)
         form.actionClose.triggered.connect(self.actionClose)
         form.actionExit.triggered.connect(self.actionExit)
-        form.actionAddGroup.triggered.connect(self.actionAddGroup)
-        form.actionRemoveGroup.triggered.connect(self.actionRemoveGroup)
+        form.actionAddDevice.triggered.connect(self.actionAddDevice)
+        form.actionRemoveDevice.triggered.connect(self.actionRemoveDevice)
         form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
 
     def setTitle(self):
@@ -117,7 +117,7 @@ class ShotPreparationToolUi(object):
         self.actionClose()
         self.app.quit()
 
-    def actionAddGroup(self):
+    def actionAddDevice(self):
         if hasattr(self, 'model') and self.model:
             dialog = QtGui.QInputDialog(self.main_window)
             response = dialog.getText(self.main_window, 'Add group', 'Enter name of device:')
@@ -130,7 +130,7 @@ class ShotPreparationToolUi(object):
             dialog = QtGui.QMessageBox(self.main_window)
             dialog.warning(self.main_window, 'Please load first', 'Please open an H5 file first.')
 
-    def actionRemoveGroup(self):
+    def actionRemoveDevice(self):
         if not (hasattr(self, 'model') and self.model):
             dialog = QtGui.QMessageBox(self.main_window)
             dialog.warning(self.main_window, 'Please load first', 'Please open an H5 file first.')
