@@ -62,6 +62,7 @@ class ShotPrepToolModel(object):
         self.__buildModelsInFile()
 
     def saveAs(self, filename):
+        self.workingFile.flush()
         shutil.copy2(self.h5tempFileName, filename)
 
 
