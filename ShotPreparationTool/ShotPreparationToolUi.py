@@ -17,6 +17,7 @@ class ShotPreparationToolUi(object):
         self.app = app
         self.init_ui()
         self.connect_buttons()
+        self.app.lastWindowClosed.connect(self.actionClose)
         self.unsaved_changes = False
 
     def init_ui(self):
