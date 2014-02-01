@@ -15,15 +15,15 @@ class ShotPreparationToolUi(object):
         self.ui_form = Ui_MainWindow()
         self.ui_form.setupUi(self.main_window)
         self.app = app
-        self.init_ui()
-        self.connect_buttons()
+        self.initUI()
+        self.connectButtons()
         self.hookCloseEvent()
         self.unsaved_changes = False
 
-    def init_ui(self):
+    def initUI(self):
         self.app.setStyle("Plastique")
 
-    def connect_buttons(self):
+    def connectButtons(self):
         form = self.ui_form
 
         form.actionNew.triggered.connect(self.actionNew)
@@ -89,7 +89,7 @@ class ShotPreparationToolUi(object):
             self.actionClose()
             self.file_name = str(dialog_return[0])
             self.model = ShotPrepToolModel(self.file_name)
-            self.init_tabs(self.model.returnModelsInFile())
+            self.initTabs(self.model.returnModelsInFile())
             self.modelSaved()
 
     def actionOpen(self):
@@ -102,7 +102,7 @@ class ShotPreparationToolUi(object):
             self.actionClose()
             self.file_name = file_name
             self.model = ShotPrepToolModel(self.file_name)
-            self.init_tabs(self.model.returnModelsInFile())
+            self.initTabs(self.model.returnModelsInFile())
             self.modelSaved()
 
     def actionSave(self):
@@ -122,7 +122,7 @@ class ShotPreparationToolUi(object):
             self.modelSaved()
 
             self.model = ShotPrepToolModel(self.file_name)
-            self.init_tabs(self.model.returnModelsInFile())
+            self.initTabs(self.model.returnModelsInFile())
 
     def actionClose(self):
         if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
@@ -143,7 +143,7 @@ class ShotPreparationToolUi(object):
             group_name = response[0]
             if group_name:
                 self.model.addDevice(str(group_name))
-                self.init_tabs(self.model.returnModelsInFile())
+                self.initTabs(self.model.returnModelsInFile())
                 self.modelChanged()
 
     def actionRemoveDevice(self):
@@ -151,7 +151,7 @@ class ShotPreparationToolUi(object):
             current_tab = self.ui_form.tabWidget.currentWidget()
             device_name = str(current_tab.windowTitle())
             self.model.removeDevice(device_name)
-            self.init_tabs(self.model.returnModelsInFile())
+            self.initTabs(self.model.returnModelsInFile())
             self.modelChanged()
 
     def actionRemoveRow(self):
@@ -173,7 +173,7 @@ class ShotPreparationToolUi(object):
     def clear_tabs(self):
         self.ui_form.tabWidget.clear()
 
-    def init_tabs(self, models):
+    def initTabs(self, models):
         self.connectModelSignals(models)
         self.clear_tabs()
         tab_widget = self.ui_form.tabWidget

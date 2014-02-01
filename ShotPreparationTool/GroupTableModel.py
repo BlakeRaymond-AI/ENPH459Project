@@ -13,7 +13,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         self.h5file = h5file
         self.group_name = group_name
         self.empty_row_string = empty_row_string
-        self.add_row()
+        self.addRow()
 
     def __group(self):
         return self.h5file[self.group_name]
@@ -71,7 +71,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                     message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
 
                 if self.empty_row_string in current_name:
-                    return self.add_row()
+                    return self.addRow()
 
             elif index.column() == 1:
                 # change value
@@ -109,7 +109,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
         self.endRemoveRows()
 
-    def add_row(self):
+    def addRow(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
         name = self.empty_row_string
         if not name in self.__group():
