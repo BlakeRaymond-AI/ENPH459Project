@@ -21,7 +21,6 @@ class JsonUtils(object):
 
     @staticmethod
     def getDataFromJsonFile(filename):
-        jsonPathName = filename
         if os.path.exists(filename):
             with open(filename, 'r') as jsonFile:
                 jsonData = json.loads(jsonFile.read())
@@ -39,8 +38,7 @@ class JsonUtils(object):
 
 def main():
     jsonDict = {'foo': 'bar'}
-    JsonUtils.saveJsonFileByPath('testStuff.json', jsonDict)
-    print JsonUtils.getDataFromJsonFile('testStuff.json')
+    print JsonUtils.getDataFromJsonFile('test.json')
 
 
 if __name__ == '__main__':

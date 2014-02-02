@@ -1,14 +1,15 @@
 __author__ = 'Jeff'
 
 from PyQt4 import QtGui, QtCore
+import JsonUtils
 
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
         QtCore.QAbstractListModel.__init__(self, parent)
-        self.testData = [{'1': 'one'}, {'2': 'two'}, {'3': 'three'},]
+        self.data = [{'1': 'one'}, {'2': 'two'}, {'3': 'three'},]
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
-        return len(self.testData)
+        return len(self.data)
 
     def columnCount(self, QModelIndex_parent=None, *args, **kwargs):
         return 2
@@ -17,8 +18,8 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         row = index.row()
         column = index.column()
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
-            key = self.testData[row].keys()
-            data = self.testData[row][key[0]]
+            key = self.data[row].keys()
+            data = self.data[row][key[0]]
             if column == 0:
                 return key[0]
             if column == 1:
@@ -31,14 +32,14 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         row = index.row()
         column = index.column()
         if role == QtCore.Qt.EditRole:
-            keyAsList = self.testData[row].keys()
+            keyAsList = self.data[row].keys()
             key = keyAsList[0]
             if column == 0: #editting the KEYS for the json file
-                tempData = self.testData[row][key]
-                self.testData[row][value] = tempData
-                del self.testData[row][key]
+                tempData = self.data[row][key]
+                self.data[row][value] = tempData
+                del self.data[row][key]
             elif column == 1: #editting the DATA for the json file
-                self.testData[row][key] = value
+                self.data[row][key] = value
             self.dataChanged.emit(index, index)
             return True
         return False
@@ -55,6 +56,11 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
+    def saveDataToFileByPath(self, fileName):
+        JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.data)
+
+    def openDataByPath(self, fileName):
+        self.data = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
@@ -62,7 +68,9 @@ if __name__ == '__main__':
     table_view = QtGui.QTableView()
     table_model = RunnerToolTableModel()
 
-    table_view.setModel(RunnerToolTableModel())
+    table_model.openDataByPath('test.json')
+
+    table_view.setModel(table_model)
     table_view.show()
 
     app.exec_()
