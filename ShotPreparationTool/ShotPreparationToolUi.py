@@ -11,20 +11,20 @@ from ShotPrepToolModel import ShotPrepToolModel
 
 class ShotPreparationToolUi(object):
     def __init__(self, app):
-        self.main_window = QtGui.QMainWindow()
-        self.ui_form = Ui_MainWindow()
-        self.ui_form.setupUi(self.main_window)
+        self.mainWindow = QtGui.QMainWindow()
+        self.uiForm = Ui_MainWindow()
+        self.uiForm.setupUi(self.mainWindow)
         self.app = app
         self.initUI()
         self.connectButtons()
         self.hookCloseEvent()
-        self.unsaved_changes = False
+        self.unsavedChanges = False
 
     def initUI(self):
         self.app.setStyle("Plastique")
 
     def connectButtons(self):
-        form = self.ui_form
+        form = self.uiForm
 
         form.actionNew.triggered.connect(self.actionNew)
         form.actionOpen.triggered.connect(self.actionOpen)
@@ -37,19 +37,19 @@ class ShotPreparationToolUi(object):
         form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
 
     def setTitle(self):
-        if self.file_name is not None:
-            path_leaf = os.path.basename(self.file_name)
-            if self.unsaved_changes:
-                path_leaf += '*'
-            self.main_window.setWindowTitle('%s - QDG Lab Shot Preparation Tool' % path_leaf)
+        if self.fileName is not None:
+            pathLeaf = os.path.basename(self.fileName)
+            if self.unsavedChanges:
+                pathLeaf += '*'
+            self.mainWindow.setWindowTitle('%s - QDG Lab Shot Preparation Tool' % pathLeaf)
         else:
-            self.main_window.setWindowTitle('QDG Lab Shot Preparation Tool')
+            self.mainWindow.setWindowTitle('QDG Lab Shot Preparation Tool')
 
     def checkShouldDiscardAnyUnsavedChanges(self):
-        if self.unsaved_changes:
-            message_box = QtGui.QMessageBox()
-            response = message_box.question(self.main_window, 'Unsaved changes',
-                                            'You have unsaved changes.  Are you sure you wish to continue?',
+        if self.unsavedChanges:
+            messageBox = QtGui.QMessageBox()
+            response = messageBox.question(self.mainWindow, 'Unsaved changes',
+                                           'You have unsaved changes.  Are you sure you wish to continue?',
                                             QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
                                             QtGui.QMessageBox.Cancel)
             if response == QtGui.QMessageBox.Cancel:
@@ -58,8 +58,8 @@ class ShotPreparationToolUi(object):
 
     def checkHasOpenFile(self):
         if not (hasattr(self, 'model') and self.model):
-            dialog = QtGui.QMessageBox(self.main_window)
-            dialog.warning(self.main_window, 'Please load first', 'Please open an H5 file first.')
+            dialog = QtGui.QMessageBox(self.mainWindow)
+            dialog.warning(self.mainWindow, 'Please load first', 'Please open an H5 file first.')
             return False
         return True
 
@@ -70,66 +70,66 @@ class ShotPreparationToolUi(object):
             else:
                 event.ignore()
 
-        self.main_window.closeEvent = handleCloseEvent
+        self.mainWindow.closeEvent = handleCloseEvent
         self.app.closeEvent = handleCloseEvent
 
     def modelChanged(self):
-        self.unsaved_changes = True
+        self.unsavedChanges = True
         self.setTitle()
 
     def modelSaved(self):
-        self.unsaved_changes = False
+        self.unsavedChanges = False
         self.setTitle()
 
     def actionNew(self):
-        file_dialog = QtGui.QFileDialog(self.main_window)
-        dialog_return = file_dialog.getSaveFileNameAndFilter(parent=self.main_window, caption='New HDF5 file',
-                                                             directory=str(os.getcwd()), filter='*.h5')
-        if dialog_return[0]:
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
+                                                           directory=str(os.getcwd()), filter='*.h5')
+        if dialogReturn[0]:
             self.actionClose()
-            self.file_name = str(dialog_return[0])
-            self.model = ShotPrepToolModel(self.file_name)
+            self.fileName = str(dialogReturn[0])
+            self.model = ShotPrepToolModel(self.fileName)
             self.initTabs(self.model.returnModelsInFile())
             self.modelSaved()
 
     def actionOpen(self):
-        file_dialog = QtGui.QFileDialog(self.main_window)
-        dialog_return = file_dialog.getOpenFileNameAndFilter(parent=self.main_window, caption='Open existing HDF5 file',
-                                                             directory=str(os.getcwd()), filter='*.h5')
-        file_name = str(dialog_return[0])
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Open existing HDF5 file',
+                                                           directory=str(os.getcwd()), filter='*.h5')
+        fileName = str(dialogReturn[0])
 
-        if file_name:
+        if fileName:
             self.actionClose()
-            self.file_name = file_name
-            self.model = ShotPrepToolModel(self.file_name)
+            self.fileName = fileName
+            self.model = ShotPrepToolModel(self.fileName)
             self.initTabs(self.model.returnModelsInFile())
             self.modelSaved()
 
     def actionSave(self):
-        if hasattr(self, 'file_name') and self.file_name:
+        if hasattr(self, 'fileName') and self.fileName:
             self.model.saveChanges()
             self.modelSaved()
 
     def actionSave_As(self):
-        file_dialog = QtGui.QFileDialog(self.main_window)
-        dialog_return = file_dialog.getSaveFileNameAndFilter(parent=self.main_window, caption='Save As HDF5 file',
-                                                             directory=str(os.getcwd()), filter='*.h5')
-        file_name = str(dialog_return[0])
-        if file_name:
-            self.model.saveAs(file_name)
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='Save As HDF5 file',
+                                                           directory=str(os.getcwd()), filter='*.h5')
+        fileName = str(dialogReturn[0])
+        if fileName:
+            self.model.saveAs(fileName)
             self.actionClose()
-            self.file_name = file_name
+            self.fileName = fileName
             self.modelSaved()
 
-            self.model = ShotPrepToolModel(self.file_name)
+            self.model = ShotPrepToolModel(self.fileName)
             self.initTabs(self.model.returnModelsInFile())
 
     def actionClose(self):
         if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
-            self.clear_tabs()
+            self.clearTabs()
             self.model.cleanUp()
             self.model = None
-            self.file_name = None
+            self.fileName = None
             self.modelSaved()
 
     def actionExit(self):
@@ -138,58 +138,58 @@ class ShotPreparationToolUi(object):
 
     def actionAddDevice(self):
         if self.checkHasOpenFile():
-            dialog = QtGui.QInputDialog(self.main_window)
-            response = dialog.getText(self.main_window, 'Add group', 'Enter name of device:')
-            group_name = response[0]
-            if group_name:
-                self.model.addDevice(str(group_name))
+            dialog = QtGui.QInputDialog(self.mainWindow)
+            response = dialog.getText(self.mainWindow, 'Add group', 'Enter name of device:')
+            groupName = response[0]
+            if groupName:
+                self.model.addDevice(str(groupName))
                 self.initTabs(self.model.returnModelsInFile())
                 self.modelChanged()
 
     def actionRemoveDevice(self):
         if self.checkHasOpenFile():
-            current_tab = self.ui_form.tabWidget.currentWidget()
-            device_name = str(current_tab.windowTitle())
-            self.model.removeDevice(device_name)
+            currentTab = self.uiForm.tabWidget.currentWidget()
+            deviceName = str(currentTab.windowTitle())
+            self.model.removeDevice(deviceName)
             self.initTabs(self.model.returnModelsInFile())
             self.modelChanged()
 
     def actionRemoveRow(self):
         if self.checkHasOpenFile():
-            current_tab = self.ui_form.tabWidget.currentWidget()
-            table = current_tab.findChild(QtGui.QTableView)
+            currentTab = self.uiForm.tabWidget.currentWidget()
+            table = currentTab.findChild(QtGui.QTableView)
             selected = table.selectedIndexes()
-            key_indices = [i.sibling(i.row(), 0) for i in selected]
+            keyIndices = [i.sibling(i.row(), 0) for i in selected]
             model = table.model()
-            for index in key_indices:
+            for index in keyIndices:
                 name = model.data(index, role=QtCore.Qt.DisplayRole)
                 model.removeRowByName(name)
             else:
                 self.modelChanged()
 
     def show(self):
-        self.main_window.show()
+        self.mainWindow.show()
 
-    def clear_tabs(self):
-        self.ui_form.tabWidget.clear()
+    def clearTabs(self):
+        self.uiForm.tabWidget.clear()
 
     def initTabs(self, models):
         self.connectModelSignals(models)
-        self.clear_tabs()
-        tab_widget = self.ui_form.tabWidget
+        self.clearTabs()
+        tabWidget = self.uiForm.tabWidget
         for title, model in models.items():
             page = QtGui.QWidget()
             layout = QtGui.QHBoxLayout(page)
 
-            table_view = QtGui.QTableView(page)
-            table_view.horizontalHeader().setResizeMode(1) #fit to width
-            table_view.horizontalHeader().setVisible(False)
-            table_view.verticalHeader().setVisible(False)
-            table_view.setFont(QtGui.QFont("Courier New"))
+            tableView = QtGui.QTableView(page)
+            tableView.horizontalHeader().setResizeMode(1) #fit to width
+            tableView.horizontalHeader().setVisible(False)
+            tableView.verticalHeader().setVisible(False)
+            tableView.setFont(QtGui.QFont("Courier New"))
 
-            layout.addWidget(table_view)
-            table_view.setModel(model)
-            tab_widget.addTab(page, title)
+            layout.addWidget(tableView)
+            tableView.setModel(model)
+            tabWidget.addTab(page, title)
             page.setWindowTitle(title)
 
     def connectModelSignals(self, models):
