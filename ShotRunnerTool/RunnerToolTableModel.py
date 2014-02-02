@@ -3,9 +3,9 @@ __author__ = 'Jeff'
 from PyQt4 import QtGui, QtCore
 
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, jsonFilePathName, parent=None):
+    def __init__(self, parent=None):
         QtCore.QAbstractListModel.__init__(self, parent)
-        self.testData = [('1', 'one'), ('2', 'two'), ('3', 'three')]
+        self.testData = [{'1': 'one'}, {'2': 'two'}, {'3': 'three'},]
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
         return len(self.testData)
@@ -16,11 +16,11 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def data(self, index, role=None):
         row = index.row()
         column = index.column()
-
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
-            name, data = self.testData[row]
+            key = self.testData[row].keys()
+            data = self.testData[row][key[0]]
             if column == 0:
-                return name
+                return key[0]
             if column == 1:
                 return data
 
@@ -30,13 +30,15 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def setData(self, index, value, role=None):
         row = index.row()
         column = index.column()
-        name, data = self.testData[row]
         if role == QtCore.Qt.EditRole:
-            if column == 0:
-                name = value
-            elif column == 1:
-                data = value
-            self.testData[row] = (name, data)
+            keyAsList = self.testData[row].keys()
+            key = keyAsList[0]
+            if column == 0: #editting the KEYS for the json file
+                tempData = self.testData[row][key]
+                self.testData[row][value] = tempData
+                del self.testData[row][key]
+            elif column == 1: #editting the DATA for the json file
+                self.testData[row][key] = value
             self.dataChanged.emit(index, index)
             return True
         return False
