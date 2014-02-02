@@ -55,11 +55,6 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                 new_name = self.group_name + '/' + str(value.toString())
                 current_group = self.h5file[current_name]
 
-                if '<remove>' in new_name:
-                    self.removeRows(index, index.row)
-                    del self.h5file[current_name]
-                    return True
-
                 if not str(value.toString()) or new_name == current_name:
                     return False
 
@@ -71,7 +66,8 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                     message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
 
                 if self.empty_row_string in current_name:
-                    return self.addRow()
+                    # add another new row
+                    self.addRow()
 
             elif index.column() == 1:
                 # change value
@@ -95,15 +91,14 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         return False
 
     def removeRowByName(self, name):
-        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
-
         device = self.__group()
         if name in device:
-            del device[name]
+            if not self.empty_row_string in name:
+                self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+                del device[name]
+                self.endRemoveRows()
         else:
             raise KeyError('Cannot find key \'%s\' in device group' % name)
-
-        self.endRemoveRows()
 
     def removeRows(self, position, rows, parent = None, *args, **kwargs):
         self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
