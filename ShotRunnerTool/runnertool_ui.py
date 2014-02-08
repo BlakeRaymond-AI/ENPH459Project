@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Fri Feb 07 16:08:31 2014
+# Created: Fri Feb 07 17:21:25 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -66,8 +66,8 @@ class Ui_MainWindow(object):
         self.actionOpen.setObjectName(_fromUtf8("actionOpen"))
         self.actionSave = QtGui.QAction(MainWindow)
         self.actionSave.setObjectName(_fromUtf8("actionSave"))
-        self.actionSave_As = QtGui.QAction(MainWindow)
-        self.actionSave_As.setObjectName(_fromUtf8("actionSave_As"))
+        self.actionSaveAs = QtGui.QAction(MainWindow)
+        self.actionSaveAs.setObjectName(_fromUtf8("actionSaveAs"))
         self.actionClose = QtGui.QAction(MainWindow)
         self.actionClose.setObjectName(_fromUtf8("actionClose"))
         self.actionExit = QtGui.QAction(MainWindow)
@@ -80,7 +80,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionSave_As)
+        self.menuFile.addAction(self.actionSaveAs)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionExit)
@@ -100,7 +100,7 @@ class Ui_MainWindow(object):
         self.actionNew.setText(_translate("MainWindow", "New...", None))
         self.actionOpen.setText(_translate("MainWindow", "Open...", None))
         self.actionSave.setText(_translate("MainWindow", "Save", None))
-        self.actionSave_As.setText(_translate("MainWindow", "Save As...", None))
+        self.actionSaveAs.setText(_translate("MainWindow", "Save As...", None))
         self.actionClose.setText(_translate("MainWindow", "Close", None))
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
         self.actionAddRow.setText(_translate("MainWindow", "Add Row", None))

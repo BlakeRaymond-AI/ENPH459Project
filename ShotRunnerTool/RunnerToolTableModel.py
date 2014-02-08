@@ -47,12 +47,12 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
             keyAsList = self.data[row].keys()
             key = keyAsList[0]
             if column == 0:    #editting the KEYS for the json file
-                value = self.getFilenameFromDialogBox('*.py')
+                value = str(self.getFilenameFromDialogBox('*.py'))
                 tempData = self.data[row][key]
                 self.data[row][value] = tempData
                 del self.data[row][key]
             elif column == 1: #editting the DATA for the json file
-                value = self.getFilenameFromDialogBox('*.json')
+                value = str(self.getFilenameFromDialogBox('*.json'))
                 self.data[row][key] = value
             self.dataChanged.emit(index, index)
             return True
