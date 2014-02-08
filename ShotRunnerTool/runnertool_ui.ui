@@ -75,7 +75,15 @@
     <addaction name="actionClose"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuRow">
+    <property name="title">
+     <string>Row</string>
+    </property>
+    <addaction name="actionAddRow"/>
+    <addaction name="actionRemoveRow"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuRow"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew">
@@ -106,6 +114,16 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionAddRow">
+   <property name="text">
+    <string>Add Row</string>
+   </property>
+  </action>
+  <action name="actionRemoveRow">
+   <property name="text">
+    <string>Remove Row</string>
    </property>
   </action>
  </widget>
