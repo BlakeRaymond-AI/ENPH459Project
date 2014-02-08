@@ -58,8 +58,12 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionAddRow.triggered.connect(self.actionAddRow)
         self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
 
-    def connectModelSignals(self):
-        pass
+    def connectModelSignals(self, models=None):
+        for title, model in models.items():
+            #model.dataChanged.connect(self.modelChanged) #modelchanged doesn't update the view, it only is a key if there's unsaved changes or not
+            #model.rowsInserted.connect(self.modelChanged)
+            #model.rowsRemoved.connect(self.modelChanged)
+            pass
 
     def show(self):
         self.mainWindow.show()
@@ -115,7 +119,14 @@ class ShotRunnerToolUi(object):
 
     def actionRemoveRow(self):
         self.runnerTableModel.removeRows((0,0), 1)
-        #this should be changed to remove row by name.
+        if self.fileName != None: #a file is currently open
+            selected = self.runnerTableModel.selectedIndexes()
+            keyIndices = [i.sibling(i.row(), 0) for i in selected]
+            for index in keyIndices:
+                name = self.runnerTableModel.data(index)
+                self.runnerTableModel.removeRowByName(name)
+            else:
+                self.modelChanged()
         print "removing a row from the table"
 
 if __name__ == '__main__':
