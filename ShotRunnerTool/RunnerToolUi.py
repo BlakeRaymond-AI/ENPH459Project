@@ -9,9 +9,10 @@ from RunnerToolTableModel import RunnerToolTableModel
 #TODOS:
 
 #impliment the buttons functionality
+#when open file is called, update the view for the runnertablemodel. Right now it doesn't update the view or the row count
 
 #file menu:
-#open
+#open - fix that the view isn't updating when new data is loaded from a file
 #close
 #quit
 
@@ -91,7 +92,9 @@ class ShotRunnerToolUi(object):
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
 
     def actionExit(self):
-        print "quitting..."
+        #if unsaved data:
+        #check if the user wants to save the data.
+        print "exitting the runner"
 
     def actionOpen(self):
         #loads the data into the tableModel from a json file
@@ -103,13 +106,17 @@ class ShotRunnerToolUi(object):
         print self.runnerTableModel.data
 
     def actionClose(self):
-        print "closing a file"
+        self.fileName = None    #release the file that the save command would write to.
+        self.runnerTableModel.data = [{'':''}]
 
     def actionAddRow(self):
-        print "adding a row"
+        self.runnerTableModel.addRow()
+        self.runnerTableModel.data.append({'': ''})
 
     def actionRemoveRow(self):
-        print "removing a row"
+        self.runnerTableModel.removeRows((0,0), 1)
+        #this should be changed to remove row by name.
+        print "removing a row from the table"
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])

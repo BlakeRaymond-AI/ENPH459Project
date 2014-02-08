@@ -60,8 +60,6 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def insertRows(self, position, rows, QModelIndex_parent=None, *args, **kwargs):
         self.beginInsertRows(QtCore.QModelIndex(), 0, rows + self.numberOfRows)
-        for i in range(rows):
-            pass
         self.endInsertRows()
         return True
 
@@ -69,6 +67,19 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
         self.endInsertRows()
         return True
+
+    def removeRowByName(self, name):
+        try:
+            if name in self.data:
+                self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+                #del self.data[name] #this part not completed yet
+                self.endRemoveRows()
+        except:
+            raise KeyError('Cannot find key \'%s\' in device group' % name)
+
+    def removeRows(self, position, rows, parent = None, *args, **kwargs):
+        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+        self.endRemoveRows()
 
     def saveDataToFileByPath(self, fileName):
         JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.data)
@@ -82,6 +93,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
             dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.*')
         else:
             dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter=fileSuffixFilter)
+        self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(0), self.columnCount(0)))
         return dialogReturn
 
 if __name__ == '__main__':
@@ -89,10 +101,9 @@ if __name__ == '__main__':
 
     table_view = QtGui.QTableView()
     table_model = RunnerToolTableModel()
-
-    table_model.openDataByPath('test.json')
-
     table_view.setModel(table_model)
     table_view.show()
+
+    table_model.openDataByPath('test.json')
 
     app.exec_()
