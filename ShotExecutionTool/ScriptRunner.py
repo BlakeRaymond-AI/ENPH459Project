@@ -33,3 +33,13 @@ class ScriptRunner(object):
         out, err = self.process.communicate()
         self.running = False
         return out, err
+
+    def getOutputStream(self):
+        if not self.running:
+            raise RuntimeError('Subprocess not started')
+        return self.process.stdout
+
+    def getErrorStream(self):
+        if not self.running:
+            raise RuntimeError('Subprocess not started')
+        return self.process.stderr

@@ -47,6 +47,25 @@ class ScriptRunnerTests(unittest.TestCase):
         out, _ = runner.join()
         self.assertEqual('Foobar\n', out)
 
+    def test_canGetOutputStream(self):
+        script = "print 'Foobar'"
+        with open(self.tempFile, 'w') as f:
+            f.write(script)
+        runner = ScriptRunner(self.tempFile)
+        runner.executeAsync()
+        out = runner.getOutputStream().readline()
+        self.assertEqual('Foobar\n', out)
+        runner.join()
+
+    def test_canGetErrorStream(self):
+        script = "raise Exception('foo')"
+        with open(self.tempFile, 'w') as f:
+            f.write(script)
+        runner = ScriptRunner(self.tempFile)
+        runner.executeAsync()
+        self.assertTrue(any('Exception: foo' in line for line in runner.getErrorStream()))
+        runner.join()
+
 
 if __name__ == '__main__':
     unittest.main()
