@@ -6,6 +6,19 @@ from PyQt4 import QtGui
 from runnertool_ui import Ui_MainWindow
 from RunnerToolTableModel import RunnerToolTableModel
 
+#TODOS:
+
+#impliment the buttons functionality
+
+#file menu:
+#open
+#close
+#quit
+
+#row menu:
+#add row
+#remove row
+
 class ShotRunnerToolUi(object):
     def __init__(self, app):
         self.mainWindow = QtGui.QMainWindow()
@@ -64,30 +77,30 @@ class ShotRunnerToolUi(object):
             self.fileName = str(dialogReturn[0])
 
     def actionSave(self):
-        #saves the data in the tablemodel to the json file that was selected with new or open.
-
-        #what should we do if no file has been selected? check if the filename hasn't been set to none, if it has then
-        #call the actionNew method???
-        self.runnerTableModel.saveDataToFileByPath(self.fileName)
-
+        #saves the data in the tableModel to the json file that was selected with new or open.
+        if self.fileName != None: #the filename will be none if no file has been selected yet
+            self.runnerTableModel.saveDataToFileByPath(self.fileName)
+        if self.fileName == None:
+            self.actionSaveAs()
 
     def actionSaveAs(self):
-        #opens a new file and then saves the data to the new file immediatly. Stores that file so the next save command
+        #opens a new file and then saves the data to the new file immediately. Stores that file so the next save command
         #will also save to that file
-        fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
-                                                           directory=str(os.getcwd()), filter='*.json')
-        if dialogReturn[0]:
-            self.actionClose()
-            self.fileName = str(dialogReturn[0])
-
-        self.runnerTableModel.saveDataToFileByPath(self.fileName)
+        self.actionNew()
+        if self.fileName != None:
+            self.runnerTableModel.saveDataToFileByPath(self.fileName)
 
     def actionExit(self):
         print "quitting..."
 
     def actionOpen(self):
-        print "opening a file"
+        #loads the data into the tableModel from a json file
+        fileDialog = QtGui.QFileDialog()
+        dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
+        self.fileName = str(dialogReturn)
+        self.runnerTableModel.openDataByPath(self.fileName)
+        #make sure that the runner table will actually update the view. Right now loading the data will not update the view
+        print self.runnerTableModel.data
 
     def actionClose(self):
         print "closing a file"
