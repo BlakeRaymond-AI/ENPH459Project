@@ -2,11 +2,23 @@ __author__ = 'Jeff'
 
 from PyQt4 import QtGui, QtCore
 import JsonUtils
+import os
+
+#TODOS:
+
+#fix the dialogbox. Right now it opens AFTER enter has been pressed. It should open on select.
+    #might need to modify: the role (editrole) or maybe can't even edit it in setData, might need a new function (select data?)
+
+#gold plating: enable dragging and dropping files for inputting in filenames
+#restructure the json files: have different keys: i.e. scriptFile (just the name, for displaying to the user), fullScriptPath (fullname w/path)
+    #dataFile, fullDataFilePath (same logic as the script datas)
+    # --this wasn't done before because I didn't think that there was a need. There is because the path names are too long
+
 
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
-        QtCore.QAbstractListModel.__init__(self, parent)
-        self.data = [{'1': 'one'}, {'2': 'two'}, {'3': 'three'},]
+        QtCore.QAbstractListModel.__init__(self)
+        self.data = [{'': ''}]        #store an empty list for the data until it is loaded from the json file
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
         return len(self.data)
@@ -26,7 +38,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
                 return data
 
     def flags(self, index):
-        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsSelectable
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
 
     def setData(self, index, value, role=None):
         row = index.row()
@@ -34,11 +46,13 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.EditRole:
             keyAsList = self.data[row].keys()
             key = keyAsList[0]
-            if column == 0: #editting the KEYS for the json file
+            if column == 0:    #editting the KEYS for the json file
+                value = self.getFilenameFromDialogBox('*.py')
                 tempData = self.data[row][key]
                 self.data[row][value] = tempData
                 del self.data[row][key]
             elif column == 1: #editting the DATA for the json file
+                value = self.getFilenameFromDialogBox('*.json')
                 self.data[row][key] = value
             self.dataChanged.emit(index, index)
             return True
@@ -61,6 +75,14 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def openDataByPath(self, fileName):
         self.data = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
+
+    def getFilenameFromDialogBox(self, fileSuffixFilter=None):
+        fileDialog = QtGui.QFileDialog()
+        if fileSuffixFilter == None:
+            dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.*')
+        else:
+            dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter=fileSuffixFilter)
+        return dialogReturn
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])

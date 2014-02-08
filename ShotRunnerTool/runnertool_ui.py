@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Sat Feb 01 13:37:19 2014
+# Created: Fri Feb 07 16:08:31 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,6 +54,8 @@ class Ui_MainWindow(object):
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
+        self.menuRow = QtGui.QMenu(self.menuBar)
+        self.menuRow.setObjectName(_fromUtf8("menuRow"))
         MainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtGui.QStatusBar(MainWindow)
         self.statusBar.setObjectName(_fromUtf8("statusBar"))
@@ -70,6 +72,10 @@ class Ui_MainWindow(object):
         self.actionClose.setObjectName(_fromUtf8("actionClose"))
         self.actionExit = QtGui.QAction(MainWindow)
         self.actionExit.setObjectName(_fromUtf8("actionExit"))
+        self.actionAddRow = QtGui.QAction(MainWindow)
+        self.actionAddRow.setObjectName(_fromUtf8("actionAddRow"))
+        self.actionRemoveRow = QtGui.QAction(MainWindow)
+        self.actionRemoveRow.setObjectName(_fromUtf8("actionRemoveRow"))
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -78,7 +84,10 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionExit)
+        self.menuRow.addAction(self.actionAddRow)
+        self.menuRow.addAction(self.actionRemoveRow)
         self.menuBar.addAction(self.menuFile.menuAction())
+        self.menuBar.addAction(self.menuRow.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -87,10 +96,13 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
         self.runButton.setText(_translate("MainWindow", "Run Scripts", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
+        self.menuRow.setTitle(_translate("MainWindow", "Row", None))
         self.actionNew.setText(_translate("MainWindow", "New...", None))
         self.actionOpen.setText(_translate("MainWindow", "Open...", None))
         self.actionSave.setText(_translate("MainWindow", "Save", None))
         self.actionSave_As.setText(_translate("MainWindow", "Save As...", None))
         self.actionClose.setText(_translate("MainWindow", "Close", None))
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
+        self.actionAddRow.setText(_translate("MainWindow", "Add Row", None))
+        self.actionRemoveRow.setText(_translate("MainWindow", "Remove Row", None))
 
