@@ -1,7 +1,7 @@
 __author__ = 'Jeff'
 
 import sys, os
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from runnertool_ui import Ui_MainWindow
 from RunnerToolTableModel import RunnerToolTableModel
@@ -12,7 +12,7 @@ from RunnerToolTableModel import RunnerToolTableModel
 #quit
 
 #row menu:
-#remove row - remove the row by name (remove the key/data and the row)
+#remove row - remove the row by the index so that I can search for it
 
 class ShotRunnerToolUi(object):
     def __init__(self, app):
@@ -112,11 +112,10 @@ class ShotRunnerToolUi(object):
 
     def actionRemoveRow(self):
         selected = self.ui_form.tableView.selectedIndexes()
-        print selected
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
         for index in keyIndices:
-            pass
-            #model.removeRowByName(name)
+            row = self.runnerTableModel.data(index, role='removeRowRoll')
+            self.runnerTableModel.removeRowByRowNumber(row)
 
 
 if __name__ == '__main__':

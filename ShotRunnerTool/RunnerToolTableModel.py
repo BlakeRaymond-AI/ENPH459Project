@@ -32,6 +32,8 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
                 return self.fileData[row]['scriptFileName']
             if column == 1:
                 return self.fileData[row]['settingsFileName']
+        if role == 'removeRowRoll' :
+            return row
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
@@ -64,14 +66,10 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
-    def removeRowByName(self, name):
-        try:
-            if name in self.fileData:
-                self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
-                #del self.data[name] #this part not completed yet
-                self.endRemoveRows()
-        except:
-            raise KeyError('Cannot find key \'%s\' in device group' % name)
+    def removeRowByRowNumber(self, row):
+        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+        self.fileData.pop(row)
+        self.endRemoveRows()
 
     def removeRows(self, position, rows, parent = None, *args, **kwargs):
         self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
