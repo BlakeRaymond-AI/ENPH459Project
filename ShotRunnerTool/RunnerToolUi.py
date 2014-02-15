@@ -7,18 +7,12 @@ from runnertool_ui import Ui_MainWindow
 from RunnerToolTableModel import RunnerToolTableModel
 
 #TODOS:
-
-#impliment the buttons functionality
-#when open file is called, update the view for the runnertablemodel. Right now it doesn't update the view or the row count
-
 #file menu:
-#open - fix that the view isn't updating when new data is loaded from a file
 #close
 #quit
 
 #row menu:
-#add row
-#remove row
+#remove row - remove the row by name (remove the key/data and the row)
 
 class ShotRunnerToolUi(object):
     def __init__(self, app):
@@ -59,11 +53,12 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
 
     def connectModelSignals(self, models=None):
-        for title, model in models.items():
+        #for title, model in models.items():
             #model.dataChanged.connect(self.modelChanged) #modelchanged doesn't update the view, it only is a key if there's unsaved changes or not
             #model.rowsInserted.connect(self.modelChanged)
             #model.rowsRemoved.connect(self.modelChanged)
-            pass
+            #pass
+        pass
 
     def show(self):
         self.mainWindow.show()
@@ -98,7 +93,7 @@ class ShotRunnerToolUi(object):
     def actionExit(self):
         #if unsaved data:
         #check if the user wants to save the data.
-        print "exitting the runner"
+        print "exiting the runner"
 
     def actionOpen(self):
         #loads the data into the tableModel from a json file
@@ -107,27 +102,22 @@ class ShotRunnerToolUi(object):
         self.fileName = str(dialogReturn)
         self.runnerTableModel.openDataByPath(self.fileName)
         #make sure that the runner table will actually update the view. Right now loading the data will not update the view
-        print self.runnerTableModel.data
+        print self.runnerTableModel.fileData
 
     def actionClose(self):
         self.fileName = None    #release the file that the save command would write to.
-        self.runnerTableModel.data = [{'':''}]
 
     def actionAddRow(self):
         self.runnerTableModel.addRow()
-        self.runnerTableModel.data.append({'': ''})
 
     def actionRemoveRow(self):
-        self.runnerTableModel.removeRows((0,0), 1)
-        if self.fileName != None: #a file is currently open
-            selected = self.runnerTableModel.selectedIndexes()
-            keyIndices = [i.sibling(i.row(), 0) for i in selected]
-            for index in keyIndices:
-                name = self.runnerTableModel.data(index)
-                self.runnerTableModel.removeRowByName(name)
-            else:
-                self.modelChanged()
-        print "removing a row from the table"
+        selected = self.ui_form.tableView.selectedIndexes()
+        print selected
+        keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        for index in keyIndices:
+            pass
+            #model.removeRowByName(name)
+
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])

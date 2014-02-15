@@ -9,19 +9,16 @@ import os
 #fix the dialogbox. Right now it opens AFTER enter has been pressed. It should open on select.
     #might need to modify: the role (editrole) or maybe can't even edit it in setData, might need a new function (select data?)
 
-#gold plating: enable dragging and dropping files for inputting in filenames
-#restructure the json files: have different keys: i.e. scriptFile (just the name, for displaying to the user), fullScriptPath (fullname w/path)
-    #dataFile, fullDataFilePath (same logic as the script datas)
-    # --this wasn't done before because I didn't think that there was a need. There is because the path names are too long
-
+#add in validation of files for the open function
 
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
         QtCore.QAbstractListModel.__init__(self)
-        self.data = [{'': ''}]        #store an empty list for the data until it is loaded from the json file
+        self.fileData = [{'scriptFileName': '', 'scriptFilePath' : '',
+                      'settingsFileName' : '', 'settingsFilePath' : ''}] #store an empty list for the data until it is loaded from the json file
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
-        return len(self.data)
+        return len(self.fileData)
 
     def columnCount(self, QModelIndex_parent=None, *args, **kwargs):
         return 2
@@ -29,13 +26,12 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def data(self, index, role=None):
         row = index.row()
         column = index.column()
+        debuggingData = self.fileData #easier to view with the debugger
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
-            key = self.data[row].keys()
-            data = self.data[row][key[0]]
             if column == 0:
-                return key[0]
+                return self.fileData[row]['scriptFileName']
             if column == 1:
-                return data
+                return self.fileData[row]['settingsFileName']
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
@@ -44,16 +40,14 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         row = index.row()
         column = index.column()
         if role == QtCore.Qt.EditRole:
-            keyAsList = self.data[row].keys()
-            key = keyAsList[0]
-            if column == 0:    #editting the KEYS for the json file
+            if column == 0:    #editing the script file name
                 value = str(self.getFilenameFromDialogBox('*.py'))
-                tempData = self.data[row][key]
-                self.data[row][value] = tempData
-                del self.data[row][key]
-            elif column == 1: #editting the DATA for the json file
-                value = str(self.getFilenameFromDialogBox('*.json'))
-                self.data[row][key] = value
+                self.fileData[row]['scriptFilePath'] = value
+                self.fileData[row]['scriptFileName'] = self.__parseFilenameFromDialogBox(value)
+            elif column == 1: #editing the settings file name (should be h5 files)
+                value = str(self.getFilenameFromDialogBox('*.h5'))
+                self.fileData[row]['settingsFilePath'] = value
+                self.fileData[row]['settingsFileName'] = self.__parseFilenameFromDialogBox(value)
             self.dataChanged.emit(index, index)
             return True
         return False
@@ -65,12 +59,14 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def addRow(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
+        self.fileData.append({'scriptFileName': '', 'scriptFilePath' : '',
+                      'settingsFileName' : '', 'settingsFilePath' : ''})
         self.endInsertRows()
         return True
 
     def removeRowByName(self, name):
         try:
-            if name in self.data:
+            if name in self.fileData:
                 self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
                 #del self.data[name] #this part not completed yet
                 self.endRemoveRows()
@@ -82,10 +78,14 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endRemoveRows()
 
     def saveDataToFileByPath(self, fileName):
-        JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.data)
+        JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.fileData)
 
     def openDataByPath(self, fileName):
-        self.data = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
+        self.beginResetModel()
+        tempData = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
+        #validate that the file is in the right format. If its not, then throw an error.
+        self.fileData = tempData
+        self.endResetModel()
 
     def getFilenameFromDialogBox(self, fileSuffixFilter=None):
         fileDialog = QtGui.QFileDialog()
@@ -96,6 +96,10 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(0), self.columnCount(0)))
         return dialogReturn
 
+    def __parseFilenameFromDialogBox(self, value):
+        return os.path.basename(value)
+
+
 if __name__ == '__main__':
     app = QtGui.QApplication([])
 
@@ -104,6 +108,5 @@ if __name__ == '__main__':
     table_view.setModel(table_model)
     table_view.show()
 
-    table_model.openDataByPath('test.json')
-
     app.exec_()
+    table_model.saveDataToFileByPath('debugging.json')
