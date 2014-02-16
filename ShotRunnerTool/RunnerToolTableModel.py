@@ -79,11 +79,24 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.fileData)
 
     def openDataByPath(self, fileName):
-        self.beginResetModel()
         tempData = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
-        #validate that the file is in the right format. If its not, then throw an error.
-        self.fileData = tempData
-        self.endResetModel()
+        if not self.__validateFileData(tempData):
+            return
+        else:
+            self.beginResetModel()
+            self.fileData = tempData
+            self.endResetModel()
+            return
+
+    def __validateFileData(self, tempData):
+        for data in tempData:
+            #check that the keys in the file contain 'scriptFileName', 'scriptFilePath', 'settingsFileName', 'settingsFilePath'
+            if ( not('settingsFileName' in data.keys()) or not('scriptFilePath' in data.keys()) or not('scriptFileName' in data.keys())
+                 or not('settingsFilePath' in data.keys())):
+                print "the file format is wrong"
+                return False
+            return True
+
 
     def getFilenameFromDialogBox(self, fileSuffixFilter=None):
         fileDialog = QtGui.QFileDialog()
