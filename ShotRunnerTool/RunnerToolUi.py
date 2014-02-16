@@ -11,9 +11,6 @@ from RunnerToolTableModel import RunnerToolTableModel
 #close
 #quit
 
-#row menu:
-#remove row - remove the row by the index so that I can search for it
-
 class ShotRunnerToolUi(object):
     def __init__(self, app):
         self.mainWindow = QtGui.QMainWindow()
@@ -102,7 +99,6 @@ class ShotRunnerToolUi(object):
         self.fileName = str(dialogReturn)
         self.runnerTableModel.openDataByPath(self.fileName)
         #make sure that the runner table will actually update the view. Right now loading the data will not update the view
-        print self.runnerTableModel.fileData
 
     def actionClose(self):
         self.fileName = None    #release the file that the save command would write to.
