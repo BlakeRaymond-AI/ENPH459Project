@@ -80,7 +80,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def openDataByPath(self, fileName):
         tempData = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
-        if not self.__validateFileData(tempData):
+        if not self.__validateFileData(fileName, tempData):
             return
         else:
             self.beginResetModel()
@@ -88,13 +88,11 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
             self.endResetModel()
             return
 
-    def __validateFileData(self, tempData):
+    def __validateFileData(self, fileName, tempData):
         for data in tempData:
-            #check that the keys in the file contain 'scriptFileName', 'scriptFilePath', 'settingsFileName', 'settingsFilePath'
             if ( not('settingsFileName' in data.keys()) or not('scriptFilePath' in data.keys()) or not('scriptFileName' in data.keys())
                  or not('settingsFilePath' in data.keys())):
-                print "the file format is wrong"
-                return False
+                raise Exception, "The file \"%s\" is either corrupt or in the wrong format" %(fileName)
             return True
 
 

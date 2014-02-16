@@ -97,8 +97,11 @@ class ShotRunnerToolUi(object):
         fileDialog = QtGui.QFileDialog()
         dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
         self.fileName = str(dialogReturn)
-        self.runnerTableModel.openDataByPath(self.fileName)
-        #make sure that the runner table will actually update the view. Right now loading the data will not update the view
+        try:
+            self.runnerTableModel.openDataByPath(self.fileName)
+        except Exception as ex:
+            dialog = QtGui.QMessageBox(self.mainWindow)
+            dialog.warning(self.mainWindow, 'error during open', ex.message)
 
     def actionClose(self):
         self.fileName = None    #release the file that the save command would write to.
