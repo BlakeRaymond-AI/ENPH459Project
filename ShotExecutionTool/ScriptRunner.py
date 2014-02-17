@@ -14,6 +14,9 @@ class ScriptRunner(object):
         self.process = subprocess.Popen([sys.executable, self.scriptPath], stdout=PIPE, stderr=PIPE)
         self.running = True
 
+    def isRunning(self):
+        return self.running
+
     def execute(self):
         if self.running:
             raise RuntimeError('Subprocess already started')
