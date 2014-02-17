@@ -6,10 +6,8 @@ from PyQt4 import QtGui, QtCore
 from runnertool_ui import Ui_MainWindow
 from RunnerToolTableModel import RunnerToolTableModel
 
-#TODOS:
-#file menu:
-#close
-#quit
+#nice to have features: if there is any unsaved changes, open a dialog box warning the user if he/she wants to
+    #proceed for open/close/exit
 
 class ShotRunnerToolUi(object):
     def __init__(self, app):
@@ -29,7 +27,6 @@ class ShotRunnerToolUi(object):
         self.ui_form.tableView.horizontalHeader().setVisible(False)
         self.ui_form.tableView.verticalHeader().setVisible(False)
         self.ui_form.tableView.setFont(QtGui.QFont("Courier New"))
-        self.connectModelSignals()
 
     def init_ui(self):
         self.mainWindow.resize(800, 600)
@@ -48,14 +45,6 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionClose.triggered.connect(self.actionClose)
         self.ui_form.actionAddRow.triggered.connect(self.actionAddRow)
         self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
-
-    def connectModelSignals(self, models=None):
-        #for title, model in models.items():
-            #model.dataChanged.connect(self.modelChanged) #modelchanged doesn't update the view, it only is a key if there's unsaved changes or not
-            #model.rowsInserted.connect(self.modelChanged)
-            #model.rowsRemoved.connect(self.modelChanged)
-            #pass
-        pass
 
     def show(self):
         self.mainWindow.show()
@@ -89,8 +78,7 @@ class ShotRunnerToolUi(object):
 
     def actionExit(self):
         #if unsaved data:
-        #check if the user wants to save the data.
-        print "exiting the runner"
+        sys.exit()
 
     def actionOpen(self):
         #loads the data into the tableModel from a json file
@@ -105,6 +93,7 @@ class ShotRunnerToolUi(object):
 
     def actionClose(self):
         self.fileName = None    #release the file that the save command would write to.
+        self.runnerTableModel.close()
 
     def actionAddRow(self):
         self.runnerTableModel.addRow()

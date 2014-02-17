@@ -9,11 +9,9 @@ import os
 #fix the dialogbox. Right now it opens AFTER enter has been pressed. It should open on select.
     #might need to modify: the role (editrole) or maybe can't even edit it in setData, might need a new function (select data?)
 
-#add in validation of files for the open function
-
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
-        QtCore.QAbstractListModel.__init__(self)
+        QtCore.QAbstractListModel.__init__(self, None)
         self.fileData = [{'scriptFileName': '', 'scriptFilePath' : '',
                       'settingsFileName' : '', 'settingsFilePath' : ''}] #store an empty list for the data until it is loaded from the json file
 
@@ -34,6 +32,8 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
                 return self.fileData[row]['settingsFileName']
         if role == 'removeRowRoll' :
             return row
+        if role == QtCore.Qt.EditRole:
+            print "editing"
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
@@ -108,6 +108,11 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __parseFilenameFromDialogBox(self, value):
         return os.path.basename(value)
 
+    def close(self):
+        self.beginResetModel()
+        self.fileData = [{'scriptFileName': '', 'scriptFilePath' : '',
+                      'settingsFileName' : '', 'settingsFilePath' : ''}]
+        self.endResetModel()
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
