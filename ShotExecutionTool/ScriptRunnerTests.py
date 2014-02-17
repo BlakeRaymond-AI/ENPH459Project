@@ -53,7 +53,7 @@ class ScriptRunnerTests(unittest.TestCase):
             f.write(script)
         runner = ScriptRunner(self.tempFile)
         runner.executeAsync()
-        out = runner.getOutputStream().readline()
+        out = runner.outputStream().next()
         self.assertEqual('Foobar\n', out)
         runner.join()
 
@@ -63,7 +63,7 @@ class ScriptRunnerTests(unittest.TestCase):
             f.write(script)
         runner = ScriptRunner(self.tempFile)
         runner.executeAsync()
-        self.assertTrue(any('Exception: foo' in line for line in runner.getErrorStream()))
+        self.assertTrue(any('Exception: foo' in line for line in runner.errorStream()))
         runner.join()
 
 
