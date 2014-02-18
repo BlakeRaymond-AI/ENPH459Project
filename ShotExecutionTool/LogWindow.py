@@ -9,6 +9,6 @@ class LogWindow(QtGui.QPlainTextEdit):
 
     @QtCore.pyqtSlot(QtCore.QString)
     def appendMessage(self, message):
-        self.appendPlainText(message)
+        self.appendPlainText(str(message).strip())
         self.verticalScrollBar().setValue(self.verticalScrollBar().maximum())
 
