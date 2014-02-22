@@ -19,16 +19,23 @@ class H5SettingsLoader(object):
         pass
 
     def loadSettings(self, path):
+        deviceSettings = self.loadDevices(path)
+        settings = self.Settings()
+        for deviceName, device in deviceSettings.items():
+            setattr(settings, deviceName, device)
+        return settings
+
+    def loadDevices(self, path):
         if not os.path.exists(path):
             raise RuntimeError('Could not find settings file %s' % path)
         h5file = h5py.File(path)
         devices = h5file[self.devicesGroupName]
-        settings = self.Settings()
+        deviceSettingsDict = {}
         for deviceName, device in devices.items():
             deviceSettings = self.Settings()
             for key, value in device.items():
                 loadedValue = H5DataSetLoader.load(value)
                 setattr(deviceSettings, key, loadedValue)
-            setattr(settings, deviceName, deviceSettings)
+            deviceSettingsDict[deviceName] = deviceSettings
         h5file.close()
-        return settings
+        return deviceSettingsDict

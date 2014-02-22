@@ -45,3 +45,8 @@ class H5SettingsLoaderTests(unittest.TestCase):
         self.assertEqual(2, settings.fooDevice.intConstant)
         self.assertEqual(3.14, settings.fooDevice.floatConstant)
         self.assertEqual([1, 2], settings.fooDevice.arrayConstant)
+
+    def test_loadDevicesReturnsDictionaryOfDevices(self):
+        loader = H5SettingsLoader()
+        devices = loader.loadDevices(self.tempFileName)
+        self.assertEqual('baz', devices['fooDevice'].stringConstant)
