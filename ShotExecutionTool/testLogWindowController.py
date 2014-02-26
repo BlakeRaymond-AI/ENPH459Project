@@ -11,7 +11,7 @@ from LogWindow import LogWindow
 from ScriptRunner import ScriptRunner
 
 
-class LogWindowControllerTests(unittest.TestCase):
+class testLogWindowController(unittest.TestCase):
     def setUp(self):
         self.app = QtGui.QApplication([])
         self.tempFile = 'foo.tmp'

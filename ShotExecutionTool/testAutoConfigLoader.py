@@ -5,7 +5,10 @@ import config
 import AutoConfigLoader
 
 
-class AutoConfigLoaderTests(unittest.TestCase):
+class testAutoConfigLoader(unittest.TestCase):
+    def tearDown(self):
+        config.settings = config._SettingsContainer()
+
     def test_loadsFromDefaultFileOnImportModule(self):
         self.assertIsNotNone(AutoConfigLoader.SETTINGS_FILE_NAME) # prevent PyCharm from optimizing away the import
 

@@ -6,7 +6,7 @@ import unittest
 from ScriptRunner import ScriptRunner
 
 
-class ScriptRunnerTests(unittest.TestCase):
+class testScriptRunner(unittest.TestCase):
     def setUp(self):
         self.tempFile = 'foo.tmp'
         with open(self.tempFile, 'w') as _:

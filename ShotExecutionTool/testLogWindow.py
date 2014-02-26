@@ -4,11 +4,10 @@ import unittest
 
 from PyQt4 import QtGui, QtCore
 
-from signals.StringSignal import StringSignal
 from LogWindow import LogWindow
+from StringSignal import StringSignal
 
-
-class LogWindowTests(unittest.TestCase):
+class testLogWindow(unittest.TestCase):
     def setUp(self):
         self.app = QtGui.QApplication([])
 

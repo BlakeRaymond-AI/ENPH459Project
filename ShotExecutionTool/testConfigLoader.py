@@ -5,7 +5,7 @@ from config import *
 from ConfigLoader import ConfigLoader
 
 
-class ConfigLoaderTests(unittest.TestCase):
+class testConfigLoader(unittest.TestCase):
     class StubFileLoader(object):
         def __init__(self, settingsToReturn):
             self.settingsToReturn = settingsToReturn

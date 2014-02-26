@@ -9,7 +9,7 @@ import h5py
 from H5SettingsLoader import H5SettingsLoader
 
 
-class H5SettingsLoaderTests(unittest.TestCase):
+class testH5SettingsLoader(unittest.TestCase):
     def setUp(self):
         self.tempFileName = 'temp.h5'
         tempFile = h5py.File(self.tempFileName)
