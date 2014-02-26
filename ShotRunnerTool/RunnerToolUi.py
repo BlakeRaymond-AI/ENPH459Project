@@ -74,8 +74,11 @@ class ShotRunnerToolUi(object):
     def actionSaveAs(self):
         #opens a new file and then saves the data to the new file immediately. Stores that file so the next save command
         #will also save to that file
-        self.actionNew()
-        if self.fileName != None:
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
+                                                           directory=str(os.getcwd()), filter='*.json')
+        if str(dialogReturn[0]) != None and str(dialogReturn[0]) != '':
+            self.fileName = str(dialogReturn[0])
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
             self.unsavedChanges = False
 
@@ -88,12 +91,13 @@ class ShotRunnerToolUi(object):
         if self.shouldDiscardUnsavedChanges():
             fileDialog = QtGui.QFileDialog()
             dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
-            self.fileName = str(dialogReturn)
-            try:
-                self.runnerTableModel.openDataByPath(self.fileName)
-            except Exception as ex:
-                dialog = QtGui.QMessageBox(self.mainWindow)
-                dialog.warning(self.mainWindow, 'error during open', ex.message)
+            if str(dialogReturn) != None and str(dialogReturn) != '':
+                self.fileName = str(dialogReturn)
+                try:
+                    self.runnerTableModel.openDataByPath(self.fileName)
+                except Exception as ex:
+                    dialog = QtGui.QMessageBox(self.mainWindow)
+                    dialog.warning(self.mainWindow, 'error during open', ex.message)
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
