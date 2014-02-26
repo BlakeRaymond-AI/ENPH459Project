@@ -11,6 +11,8 @@ from H5DataSetLoader import H5DataSetLoader
 class H5SettingsLoader(object):
     devicesGroupName = 'devices'
 
+    # Python does not allow adding attributes to object
+    # using setattr, so create a dummy class for this purpose.
     class Settings(object):
         def __init__(self):
             pass
