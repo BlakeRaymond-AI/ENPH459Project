@@ -83,7 +83,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def saveDataToFileByPath(self, fileName):
         for eachRow in self.fileData:
-            if eachRow['scriptFilePath'] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
+            if eachRow['scriptFileName'] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
         JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.fileData)
 
     def openDataByPath(self, fileName):
@@ -92,6 +92,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
             return
         else:
             self.beginResetModel()
+            self.fileData = tempData
             self.fileData.append(dict(DEFAULT_ENTRY))
             self.endResetModel()
             return
