@@ -1,5 +1,3 @@
-import StringSignal
-
 __author__ = 'Blake'
 
 import unittest

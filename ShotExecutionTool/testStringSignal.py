@@ -1,10 +1,9 @@
-import StringSignal
-
 __author__ = 'Blake'
 
 import unittest
 
 from PyQt4.QtCore import QString
+
 from StringSignal import StringSignal
 
 class testStringSignal(unittest.TestCase):
