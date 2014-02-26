@@ -1,9 +1,9 @@
-from signals.StringSignal import StringSignal
+import StringSignal
 
 __author__ = 'Blake'
 
 from GeneratorEmitter import GeneratorEmitter
-
+from StringSignal import StringSignal
 
 class LogWindowController(object):
     def __init__(self, runner, logWindow):

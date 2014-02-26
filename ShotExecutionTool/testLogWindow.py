@@ -1,12 +1,13 @@
+import StringSignal
+
 __author__ = 'Blake'
 
 import unittest
 
 from PyQt4 import QtGui, QtCore
 
-from signals.StringSignal import StringSignal
 from LogWindow import LogWindow
-
+from StringSignal import StringSignal
 
 class testLogWindow(unittest.TestCase):
     def setUp(self):
