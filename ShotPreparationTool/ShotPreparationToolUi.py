@@ -126,15 +126,19 @@ class ShotPreparationToolUi(object):
 
     def actionClose(self):
         if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
-            self.clearTabs()
-            self.model.cleanUp()
-            self.model = None
-            self.fileName = None
-            self.modelSaved()
+            self.close()
+
+    def close(self):
+        self.clearTabs()
+        self.model.cleanUp()
+        self.model = None
+        self.fileName = None
+        self.modelSaved()
 
     def actionExit(self):
-        self.actionClose()
-        self.app.quit()
+        if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
+            self.close()
+            self.app.quit()
 
     def actionAddDevice(self):
         if self.checkHasOpenFile():
