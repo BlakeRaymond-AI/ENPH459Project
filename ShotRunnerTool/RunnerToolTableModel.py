@@ -9,11 +9,15 @@ import os
 #fix the dialogbox. Right now it opens AFTER enter has been pressed. It should open on select.
     #might need to modify: the role (editrole) or maybe can't even edit it in setData, might need a new function (select data?)
 
+EMPTY_ROW_KEY = '<Click to add row>'
+DEFAULT_ENTRY = {'scriptFileName': EMPTY_ROW_KEY, 'scriptFilePath' : '',
+                      'settingsFileName' : '', 'settingsFilePath' : ''} #store an empty list for the data until it is loaded from the json file
+
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
         QtCore.QAbstractListModel.__init__(self, None)
-        self.fileData = [{'scriptFileName': '', 'scriptFilePath' : '',
-                      'settingsFileName' : '', 'settingsFilePath' : ''}] #store an empty list for the data until it is loaded from the json file
+        self.fileData = []
+        self.fileData.append(dict(DEFAULT_ENTRY))
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
         return len(self.fileData)
@@ -43,9 +47,12 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         column = index.column()
         if role == QtCore.Qt.EditRole:
             if column == 0:    #editing the script file name
+                addNewRow = False
+                if self.fileData[row]['scriptFileName'] == EMPTY_ROW_KEY: addNewRow = True
                 value = str(self.getFilenameFromDialogBox('*.py'))
                 self.fileData[row]['scriptFilePath'] = value
                 self.fileData[row]['scriptFileName'] = self.__parseFilenameFromDialogBox(value)
+                if addNewRow: self.addRow()
             elif column == 1: #editing the settings file name (should be h5 files)
                 value = str(self.getFilenameFromDialogBox('*.h5'))
                 self.fileData[row]['settingsFilePath'] = value
@@ -61,8 +68,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def addRow(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
-        self.fileData.append({'scriptFileName': '', 'scriptFilePath' : '',
-                      'settingsFileName' : '', 'settingsFilePath' : ''})
+        self.fileData.append(dict(DEFAULT_ENTRY))
         self.endInsertRows()
         return True
 
@@ -76,6 +82,8 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endRemoveRows()
 
     def saveDataToFileByPath(self, fileName):
+        for eachRow in self.fileData:
+            if eachRow['scriptFilePath'] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
         JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.fileData)
 
     def openDataByPath(self, fileName):
@@ -84,7 +92,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
             return
         else:
             self.beginResetModel()
-            self.fileData = tempData
+            self.fileData.append(dict(DEFAULT_ENTRY))
             self.endResetModel()
             return
 
@@ -110,8 +118,8 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def close(self):
         self.beginResetModel()
-        self.fileData = [{'scriptFileName': '', 'scriptFilePath' : '',
-                      'settingsFileName' : '', 'settingsFilePath' : ''}]
+        self.fileData = []
+        self.fileData.append(dict(DEFAULT_ENTRY))
         self.endResetModel()
 
 if __name__ == '__main__':
@@ -123,4 +131,4 @@ if __name__ == '__main__':
     table_view.show()
 
     app.exec_()
-    table_model.saveDataToFileByPath('debugging.json')
+    #table_model.saveDataToFileByPath('debugging.json')
