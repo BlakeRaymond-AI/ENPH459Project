@@ -9,7 +9,6 @@ from H5DataSetLoader import H5DataSetLoader
 
 
 class H5SettingsLoader(object):
-    devicesGroupName = 'devices'
 
     # Python does not allow adding attributes to object
     # using setattr, so create a dummy class for this purpose.
@@ -19,6 +18,9 @@ class H5SettingsLoader(object):
 
     def __init__(self):
         pass
+
+    # static member
+    devicesGroupName = 'devices'
 
     def loadSettings(self, path):
         deviceSettings = self.loadDevices(path)
