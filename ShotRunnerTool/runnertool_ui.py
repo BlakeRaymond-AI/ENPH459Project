@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Fri Feb 07 17:21:25 2014
+# Created: Tue Feb 25 22:46:42 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -84,7 +84,6 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionExit)
-        self.menuRow.addAction(self.actionAddRow)
         self.menuRow.addAction(self.actionRemoveRow)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuRow.menuAction())
