@@ -8,7 +8,7 @@ from signals.StringSignal import StringSignal
 from LogWindow import LogWindow
 
 
-class LogWindowTests(unittest.TestCase):
+class testLogWindow(unittest.TestCase):
     def setUp(self):
         self.app = QtGui.QApplication([])
 
