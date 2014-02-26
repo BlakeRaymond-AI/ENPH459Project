@@ -6,9 +6,6 @@ from PyQt4 import QtGui, QtCore
 from runnertool_ui import Ui_MainWindow
 from RunnerToolTableModel import RunnerToolTableModel
 
-#nice to have features: if there is any unsaved changes, open a dialog box warning the user if he/she wants to
-    #proceed for open/close/exit
-
 class ShotRunnerToolUi(object):
     def __init__(self, app):
         self.mainWindow = QtGui.QMainWindow()
@@ -18,7 +15,7 @@ class ShotRunnerToolUi(object):
         self.init_ui()
         self.runnerTableModel = RunnerToolTableModel(self.mainWindow)
         self.init_model()
-        self.connectButtons()
+        self.connectSignalsAndSlots()
         self.fileName = None
 
     def init_model(self):
@@ -34,8 +31,9 @@ class ShotRunnerToolUi(object):
         centre_point = QtGui.QDesktopWidget().availableGeometry().center()
         self.mainWindow.frameGeometry().moveCenter(centre_point)
         self.mainWindow.move(self.mainWindow.frameGeometry().topLeft())
+        self.unsavedChanges = False
 
-    def connectButtons(self):
+    def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
         self.ui_form.actionNew.triggered.connect(self.actionNew)
         self.ui_form.actionOpen.triggered.connect(self.actionOpen)
@@ -45,6 +43,7 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionClose.triggered.connect(self.actionClose)
         self.ui_form.actionAddRow.triggered.connect(self.actionAddRow)
         self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+        self.runnerTableModel.dataChanged.connect(self.modelChanged)
 
     def show(self):
         self.mainWindow.show()
@@ -55,19 +54,22 @@ class ShotRunnerToolUi(object):
     def actionNew(self):
         #saves the filename for the wanted new file for the runner tool's table model.
         #the filename will be what is written to when the save command is called
-        fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
-                                                           directory=str(os.getcwd()), filter='*.json')
-        if dialogReturn[0]:
-            self.actionClose()
-            self.fileName = str(dialogReturn[0])
+        if self.shouldDiscardUnsavedChanges():
+            fileDialog = QtGui.QFileDialog(self.mainWindow)
+            dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
+                                                               directory=str(os.getcwd()), filter='*.json')
+            if dialogReturn[0]:
+                self.actionClose()
+                self.fileName = str(dialogReturn[0])
 
     def actionSave(self):
         #saves the data in the tableModel to the json file that was selected with new or open.
         if self.fileName != None: #the filename will be none if no file has been selected yet
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
+            self.unsavedChanges = False
         if self.fileName == None:
             self.actionSaveAs()
+            self.unsavedChanges = False
 
     def actionSaveAs(self):
         #opens a new file and then saves the data to the new file immediately. Stores that file so the next save command
@@ -75,25 +77,28 @@ class ShotRunnerToolUi(object):
         self.actionNew()
         if self.fileName != None:
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
+            self.unsavedChanges = False
 
     def actionExit(self):
-        #if unsaved data:
-        sys.exit()
+        if self.shouldDiscardUnsavedChanges():
+            sys.exit()
 
     def actionOpen(self):
         #loads the data into the tableModel from a json file
-        fileDialog = QtGui.QFileDialog()
-        dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
-        self.fileName = str(dialogReturn)
-        try:
-            self.runnerTableModel.openDataByPath(self.fileName)
-        except Exception as ex:
-            dialog = QtGui.QMessageBox(self.mainWindow)
-            dialog.warning(self.mainWindow, 'error during open', ex.message)
+        if self.shouldDiscardUnsavedChanges():
+            fileDialog = QtGui.QFileDialog()
+            dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
+            self.fileName = str(dialogReturn)
+            try:
+                self.runnerTableModel.openDataByPath(self.fileName)
+            except Exception as ex:
+                dialog = QtGui.QMessageBox(self.mainWindow)
+                dialog.warning(self.mainWindow, 'error during open', ex.message)
 
     def actionClose(self):
-        self.fileName = None    #release the file that the save command would write to.
-        self.runnerTableModel.close()
+        if self.shouldDiscardUnsavedChanges():
+            self.fileName = None    #release the file that the save command would write to.
+            self.runnerTableModel.close()
 
     def actionAddRow(self):
         self.runnerTableModel.addRow()
@@ -105,6 +110,19 @@ class ShotRunnerToolUi(object):
             row = self.runnerTableModel.data(index, role='removeRowRoll')
             self.runnerTableModel.removeRowByRowNumber(row)
 
+    def modelChanged(self):
+        self.unsavedChanges = True
+
+    def shouldDiscardUnsavedChanges(self):
+        if self.unsavedChanges:
+            messageBox = QtGui.QMessageBox()
+            response = messageBox.question(self.mainWindow, 'Unsaved changes',
+                                           'You have unsaved changes. Are you sure you wish to continue?',
+                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                            QtGui.QMessageBox.Cancel)
+            if response == QtGui.QMessageBox.Cancel:
+                return False
+        return True
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
