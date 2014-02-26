@@ -17,13 +17,13 @@ class H5SettingsLoaderTests(unittest.TestCase):
         tempFile = h5py.File(self.tempFileName)
         devices = tempFile.create_group('devices')
 
-        device1 = devices.create_group('fooDevice')
+        device1 = devices.create_group('testDevice1')
         device1['stringConstant'] = 'baz'
         device1['intConstant'] = 2
         device1['floatConstant'] = 3.14
         device1['arrayConstant'] = [1, 2]
 
-        device2 = devices.create_group('barDevice')
+        device2 = devices.create_group('testDevice2')
         device2['stringConstant'] = 'quux'
 
         tempFile.close()
@@ -35,18 +35,18 @@ class H5SettingsLoaderTests(unittest.TestCase):
     def test_loadsOneDeviceObjectPerGroupUnderDevices(self):
         loader = H5SettingsLoader()
         settings = loader.loadSettings(self.tempFileName)
-        self.assertTrue(hasattr(settings, 'fooDevice'))
-        self.assertTrue(hasattr(settings, 'barDevice'))
+        self.assertTrue(hasattr(settings, 'testDevice1'))
+        self.assertTrue(hasattr(settings, 'testDevice2'))
 
     def test_loadsSettingsFromDeviceKeysAndValues(self):
         loader = H5SettingsLoader()
         settings = loader.loadSettings(self.tempFileName)
-        self.assertEqual('baz', settings.fooDevice.stringConstant)
-        self.assertEqual(2, settings.fooDevice.intConstant)
-        self.assertEqual(3.14, settings.fooDevice.floatConstant)
-        self.assertEqual([1, 2], settings.fooDevice.arrayConstant)
+        self.assertEqual('baz', settings.testDevice1.stringConstant)
+        self.assertEqual(2, settings.testDevice1.intConstant)
+        self.assertEqual(3.14, settings.testDevice1.floatConstant)
+        self.assertEqual([1, 2], settings.testDevice1.arrayConstant)
 
     def test_loadDevicesReturnsDictionaryOfDevices(self):
         loader = H5SettingsLoader()
         devices = loader.loadDevices(self.tempFileName)
-        self.assertEqual('baz', devices['fooDevice'].stringConstant)
+        self.assertEqual('baz', devices['testDevice1'].stringConstant)
