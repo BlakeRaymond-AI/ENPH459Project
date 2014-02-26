@@ -12,8 +12,6 @@ from H5SettingsLoader import H5SettingsLoader
 class H5SettingsLoaderTests(unittest.TestCase):
     def setUp(self):
         self.tempFileName = 'temp.h5'
-        with open(self.tempFileName, 'w') as f:
-            pass
         tempFile = h5py.File(self.tempFileName)
         devices = tempFile.create_group('devices')
 
