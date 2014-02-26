@@ -39,17 +39,3 @@ class LogWindowController(object):
         self.outputEmitter.wait()
         self.errorEmitter.wait()
 
-
-from ScriptRunner import ScriptRunner
-from LogWindow import LogWindow
-from PyQt4 import QtGui
-
-if __name__ == '__main__':
-    app = QtGui.QApplication([])
-    runner = ScriptRunner('sample.py')
-    window = LogWindow(None)
-    controller = LogWindowController(runner, window)
-    window.show()
-    controller.runAsync()
-    app.exec_()
-    controller.join()
