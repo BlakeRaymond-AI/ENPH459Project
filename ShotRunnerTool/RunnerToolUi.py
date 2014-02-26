@@ -41,7 +41,6 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionSaveAs.triggered.connect(self.actionSaveAs)
         self.ui_form.actionExit.triggered.connect(self.actionExit)
         self.ui_form.actionClose.triggered.connect(self.actionClose)
-        self.ui_form.actionAddRow.triggered.connect(self.actionAddRow)
         self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
         self.runnerTableModel.dataChanged.connect(self.modelChanged)
 
@@ -103,9 +102,6 @@ class ShotRunnerToolUi(object):
         if self.shouldDiscardUnsavedChanges():
             self.fileName = None    #release the file that the save command would write to.
             self.runnerTableModel.close()
-
-    def actionAddRow(self):
-        self.runnerTableModel.addRow()
 
     def actionRemoveRow(self):
         selected = self.ui_form.tableView.selectedIndexes()
