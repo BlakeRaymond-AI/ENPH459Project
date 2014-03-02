@@ -4,11 +4,6 @@ from PyQt4 import QtGui, QtCore
 import JsonUtils
 import os
 
-#TODOS:
-
-#fix the dialogbox. Right now it opens AFTER enter has been pressed. It should open on select.
-    #might need to modify: the role (editrole) or maybe can't even edit it in setData, might need a new function (select data?)
-
 EMPTY_ROW_KEY = '<Click to add row>'
 DEFAULT_ENTRY = {'scriptFileName': EMPTY_ROW_KEY, 'scriptFilePath' : '',
                       'settingsFileName' : '', 'settingsFilePath' : ''} #store an empty list for the data until it is loaded from the json file
@@ -117,6 +112,12 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.fileData = []
         self.fileData.append(dict(DEFAULT_ENTRY))
         self.endResetModel()
+
+    def getScriptsAndSettingsFilePaths(self):
+        output = []
+        for shot in self.fileData:
+            output.append( (shot['scriptFilePath'], shot['settingsFilePath']) ) #returns the list of paths as tuples
+        return output
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
