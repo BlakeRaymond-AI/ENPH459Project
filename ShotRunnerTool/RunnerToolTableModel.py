@@ -5,8 +5,18 @@ import JsonUtils
 import os
 
 EMPTY_ROW_KEY = '<Click to add row>'
-DEFAULT_ENTRY = {'scriptFileName': EMPTY_ROW_KEY, 'scriptFilePath' : '',
-                      'settingsFileName' : '', 'settingsFilePath' : ''} #store an empty list for the data until it is loaded from the json file
+
+SCRIPT_FILE_KEY = 'scriptFileName'
+SCRIPT_PATH_KEY = 'scriptFilePath'
+SETTINGS_FILE_KEY = 'settingsFileName'
+SETTINGS_PATH_KEY = 'settingsFilePath'
+
+SCRIPT_FILE_EXTENSION = '.py'
+SETTINGS_FILE_EXTENSION = '.h5'
+
+DEFAULT_ENTRY = {SCRIPT_FILE_KEY: EMPTY_ROW_KEY, SCRIPT_PATH_KEY : '',
+                      SETTINGS_FILE_KEY : '', SETTINGS_PATH_KEY : ''} #store an empty list for the data until it is loaded from the json file
+
 
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
@@ -25,9 +35,9 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         column = index.column()
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
             if column == 0:
-                return self.fileData[row]['scriptFileName']
+                return self.fileData[row][SCRIPT_FILE_KEY]
             if column == 1:
-                return self.fileData[row]['settingsFileName']
+                return self.fileData[row][SETTINGS_FILE_KEY]
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
@@ -38,15 +48,15 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.EditRole:
             if column == 0:    #editing the script file name
                 addNewRow = False
-                if self.fileData[row]['scriptFileName'] == EMPTY_ROW_KEY: addNewRow = True
-                value = str(self.getFilenameFromDialogBox('*.py'))
-                self.fileData[row]['scriptFilePath'] = value
-                self.fileData[row]['scriptFileName'] = self.__parseFilenameFromDialogBox(value)
+                if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: addNewRow = True
+                value = str(self.getFilenameFromDialogBox(SCRIPT_FILE_EXTENSION))
+                self.fileData[row][SCRIPT_PATH_KEY] = value
+                self.fileData[row][SCRIPT_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
                 if addNewRow: self.addRow()
             elif column == 1: #editing the settings file name (should be h5 files)
-                value = str(self.getFilenameFromDialogBox('*.h5'))
-                self.fileData[row]['settingsFilePath'] = value
-                self.fileData[row]['settingsFileName'] = self.__parseFilenameFromDialogBox(value)
+                value = str(self.getFilenameFromDialogBox(SETTINGS_FILE_EXTENSION))
+                self.fileData[row][SETTINGS_PATH_KEY] = value
+                self.fileData[row][SETTINGS_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
             self.dataChanged.emit(index, index)
             return True
         return False
@@ -73,7 +83,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def saveDataToFileByPath(self, fileName):
         for eachRow in self.fileData:
-            if eachRow['scriptFileName'] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
+            if eachRow[SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
         JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.fileData)
 
     def openDataByPath(self, fileName):
@@ -89,8 +99,8 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
 
     def __validateFileData(self, fileName, tempData):
         for data in tempData:
-            if ( not('settingsFileName' in data.keys()) or not('scriptFilePath' in data.keys()) or not('scriptFileName' in data.keys())
-                 or not('settingsFilePath' in data.keys())):
+            if ( not(SCRIPT_FILE_KEY in data.keys()) or not(SCRIPT_PATH_KEY in data.keys()) or not(SCRIPT_FILE_KEY in data.keys())
+                 or not(SCRIPT_PATH_KEY in data.keys())):
                 raise Exception, "The file \"%s\" is either corrupt or in the wrong format" %(fileName)
             return True
 
@@ -116,7 +126,7 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def getScriptsAndSettingsFilePaths(self):
         output = []
         for shot in self.fileData:
-            output.append( (shot['scriptFilePath'], shot['settingsFilePath']) ) #returns the list of paths as tuples
+            output.append( (shot[SCRIPT_PATH_KEY], shot[SETTINGS_PATH_KEY]) ) #returns the list of paths as tuples
         return output
 
 if __name__ == '__main__':
@@ -128,4 +138,3 @@ if __name__ == '__main__':
     table_view.show()
 
     app.exec_()
-    #table_model.saveDataToFileByPath('debugging.json')
