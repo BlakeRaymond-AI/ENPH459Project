@@ -9,7 +9,6 @@ from H5DataSetLoader import H5DataSetLoader
 
 
 class H5SettingsLoader(object):
-
     # Python does not allow adding attributes to object
     # using setattr, so create a dummy class for this purpose.
     class Settings(object):

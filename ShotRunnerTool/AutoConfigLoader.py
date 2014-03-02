@@ -5,6 +5,7 @@ __author__ = 'Blake'
 # By importing this file, the shot parameters are automatically loaded into the config module.
 
 import os.path
+
 from ConfigLoader import ConfigLoader
 from H5SettingsLoader import H5SettingsLoader
 
