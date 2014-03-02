@@ -4,7 +4,9 @@ import sys, os
 from PyQt4 import QtGui, QtCore
 
 from runnertool_ui import Ui_MainWindow
-from RunnerToolTableModel import RunnerToolTableModel
+from RunnerToolTableModel import RunnerToolTableModel, EMPTY_ROW_KEY
+from LogWindow import LogWindow
+from ShotRunnerToolModel import ShotRunnerToolModel
 
 class ShotRunnerToolUi(object):
     def __init__(self, app):
@@ -15,6 +17,7 @@ class ShotRunnerToolUi(object):
         self.init_ui()
         self.runnerTableModel = RunnerToolTableModel(self.mainWindow)
         self.init_model()
+        self.initLogWindow()
         self.connectSignalsAndSlots()
         self.fileName = None
 
@@ -24,6 +27,11 @@ class ShotRunnerToolUi(object):
         self.ui_form.tableView.horizontalHeader().setVisible(False)
         self.ui_form.tableView.verticalHeader().setVisible(False)
         self.ui_form.tableView.setFont(QtGui.QFont("Courier New"))
+
+    def initLogWindow(self):
+        self.logWindow = LogWindow(self.ui_form.centralWidget)
+        self.ui_form.horizontalLayout.addWidget(self.logWindow)
+        self.logWindow.setFont(QtGui.QFont("Courier New"))
 
     def init_ui(self):
         self.mainWindow.resize(800, 600)
@@ -48,7 +56,21 @@ class ShotRunnerToolUi(object):
         self.mainWindow.show()
 
     def runScripts(self):
-        print "running the scripts"
+        if hasattr(self, 'model'):
+            print 'already ran'
+
+        scripts = []
+        settingsFiles = []
+        for fileData in self.runnerTableModel.fileData:
+            if fileData['scriptFileName'] == EMPTY_ROW_KEY:
+                continue
+            scripts.append(fileData['scriptFilePath'])
+            settingsFiles.append(fileData['settingsFilePath'])
+
+        self.model = ShotRunnerToolModel().withLogWindow(self.logWindow) \
+                                          .withSettingsFiles(settingsFiles) \
+                                          .withScripts(scripts)
+        self.model.runScriptsAsync()
 
     def actionNew(self):
         #saves the filename for the wanted new file for the runner tool's table model.
@@ -123,6 +145,8 @@ class ShotRunnerToolUi(object):
             if response == QtGui.QMessageBox.Cancel:
                 return False
         return True
+
+
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])

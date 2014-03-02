@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Tue Feb 25 22:46:42 2014
+# Created: Sun Mar 02 01:01:50 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(900, 604)
+        MainWindow.resize(733, 453)
         self.centralWidget = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -36,6 +36,15 @@ class Ui_MainWindow(object):
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(-1, 9, -1, -1)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setContentsMargins(-1, 9, -1, -1)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.tableView = QtGui.QTableView(self.centralWidget)
+        self.tableView.setObjectName(_fromUtf8("tableView"))
+        self.verticalLayout_2.addWidget(self.tableView)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 0)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
@@ -44,13 +53,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.runButton)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.tableView = QtGui.QTableView(self.centralWidget)
-        self.tableView.setObjectName(_fromUtf8("tableView"))
-        self.verticalLayout.addWidget(self.tableView)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.verticalLayout.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 900, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 733, 21))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
