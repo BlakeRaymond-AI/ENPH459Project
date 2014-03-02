@@ -77,10 +77,6 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.fileData.pop(row)
         self.endRemoveRows()
 
-    def removeRows(self, position, rows, parent = None, *args, **kwargs):
-        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
-        self.endRemoveRows()
-
     def saveDataToFileByPath(self, fileName):
         for eachRow in self.fileData:
             if eachRow[SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
