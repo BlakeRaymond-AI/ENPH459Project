@@ -11,8 +11,8 @@ SCRIPT_PATH_KEY = 'scriptFilePath'
 SETTINGS_FILE_KEY = 'settingsFileName'
 SETTINGS_PATH_KEY = 'settingsFilePath'
 
-SCRIPT_FILE_EXTENSION = '.py'
-SETTINGS_FILE_EXTENSION = '.h5'
+SCRIPT_FILE_EXTENSION = '*.py'
+SETTINGS_FILE_EXTENSION = '*.h5'
 
 DEFAULT_ENTRY = {SCRIPT_FILE_KEY: EMPTY_ROW_KEY, SCRIPT_PATH_KEY : '',
                       SETTINGS_FILE_KEY : '', SETTINGS_PATH_KEY : ''} #store an empty list for the data until it is loaded from the json file
@@ -101,12 +101,9 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
             return True
 
 
-    def getFilenameFromDialogBox(self, fileSuffixFilter=None):
+    def getFilenameFromDialogBox(self, fileSuffixFilter='*.*'):
         fileDialog = QtGui.QFileDialog()
-        if fileSuffixFilter == None:
-            dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.*')
-        else:
-            dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter=fileSuffixFilter)
+        dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter=fileSuffixFilter)
         self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(0), self.columnCount(0)))
         return dialogReturn
 
