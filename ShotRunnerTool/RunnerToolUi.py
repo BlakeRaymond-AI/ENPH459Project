@@ -107,8 +107,7 @@ class ShotRunnerToolUi(object):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
         for index in keyIndices:
-            row = self.runnerTableModel.data(index, role='removeRowRoll')
-            self.runnerTableModel.removeRowByRowNumber(row)
+            self.runnerTableModel.removeRowByRowNumber(index.row)
 
     def modelChanged(self):
         self.unsavedChanges = True

@@ -28,16 +28,11 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def data(self, index, role=None):
         row = index.row()
         column = index.column()
-        debuggingData = self.fileData #easier to view with the debugger
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
             if column == 0:
                 return self.fileData[row]['scriptFileName']
             if column == 1:
                 return self.fileData[row]['settingsFileName']
-        if role == 'removeRowRoll' :
-            return row
-        if role == QtCore.Qt.EditRole:
-            print "editing"
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
