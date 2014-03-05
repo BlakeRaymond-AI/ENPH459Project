@@ -99,7 +99,7 @@ class ShotRunnerToolUi(object):
                     self.runnerTableModel.openDataByPath(self.fileName)
                 except Exception as ex:
                     dialog = QtGui.QMessageBox(self.mainWindow)
-                    dialog.warning(self.mainWindow, 'error during open', ex.message)
+                    dialog.warning(self.mainWindow, 'Error During Open', ex.message)
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
