@@ -25,7 +25,7 @@ class ShotRunnerToolUi(object):
     def init_model(self):
         self.ui_form.tableView.setModel(self.runnerTableModel)
         self.ui_form.tableView.horizontalHeader().setResizeMode(1)
-        self.ui_form.tableView.horizontalHeader().setVisible(False)
+        self.ui_form.tableView.horizontalHeader().setVisible(True)
         self.ui_form.tableView.verticalHeader().setVisible(False)
         self.ui_form.tableView.setFont(QtGui.QFont("Courier New"))
 
@@ -45,7 +45,7 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionExit.triggered.connect(self.actionExit)
         self.ui_form.actionClose.triggered.connect(self.actionClose)
         self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
-        self.runnerTableModel.dataChanged.connect(self.modelChanged)
+        self.runnerTableModel.dataChanged.connect(self.dataChanged)
 
     def show(self):
         self.mainWindow.show()
@@ -100,6 +100,7 @@ class ShotRunnerToolUi(object):
                 except Exception as ex:
                     dialog = QtGui.QMessageBox(self.mainWindow)
                     dialog.warning(self.mainWindow, 'Error During Open', ex.message)
+        self.setTitle()
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
@@ -112,9 +113,6 @@ class ShotRunnerToolUi(object):
         for index in keyIndices:
             self.runnerTableModel.removeRowByRowNumber(index.row)
 
-    def modelChanged(self):
-        self.unsavedChanges = True
-
     def shouldDiscardUnsavedChanges(self):
         if self.unsavedChanges:
             messageBox = QtGui.QMessageBox()
@@ -126,8 +124,22 @@ class ShotRunnerToolUi(object):
                 return False
         return True
 
+    def dataChanged(self):
+        self.unsavedChanges = True
+        self.setTitle()
+
     def dataSaved(self):
         self.unsavedChanges = False
+        self.setTitle()
+
+    def setTitle(self):
+        if self.fileName is not None:
+            pathLeaf = os.path.basename(self.fileName)
+            if self.unsavedChanges:
+                pathLeaf += '*'
+            self.mainWindow.setWindowTitle('%s - QDG Lab Shot Runner Tool' % pathLeaf)
+        else:
+            self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
