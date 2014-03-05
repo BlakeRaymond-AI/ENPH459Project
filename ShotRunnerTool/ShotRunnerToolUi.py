@@ -1,10 +1,12 @@
 __author__ = 'Jeff'
 
-import sys, os
-from PyQt4 import QtGui, QtCore
+import sys
+import os
+
+from PyQt4 import QtGui
 
 from runnertool_ui import Ui_MainWindow
-from RunnerToolTableModel import RunnerToolTableModel
+from ShotRunnerToolTableModel import ShotRunnerToolTableModel
 
 JSON_FILE_EXTENSION = '*.json'
 UP_ARROW_ICON = "resources/upArrow.png"
@@ -17,7 +19,7 @@ class ShotRunnerToolUi(object):
         self.ui_form.setupUi(self.mainWindow)
         self.app = app
         self.init_ui()
-        self.runnerTableModel = RunnerToolTableModel(self.mainWindow)
+        self.runnerTableModel = ShotRunnerToolTableModel(self.mainWindow)
         self.init_model()
         self.connectSignalsAndSlots()
         self.fileName = None
