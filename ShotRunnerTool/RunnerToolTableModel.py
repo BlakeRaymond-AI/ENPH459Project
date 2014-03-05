@@ -1,8 +1,11 @@
 __author__ = 'Jeff'
 
-from PyQt4 import QtGui, QtCore
-import JsonUtils
 import os
+
+from PyQt4 import QtGui, QtCore
+
+import JsonUtils
+
 
 EMPTY_ROW_KEY = '<Click to add row>'
 
@@ -19,7 +22,7 @@ DEFAULT_ENTRY = {SCRIPT_FILE_KEY: EMPTY_ROW_KEY, SCRIPT_PATH_KEY : '',
 
 class RunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
-        QtCore.QAbstractListModel.__init__(self, None)
+        QtCore.QAbstractTableModel.__init__(self, None)
         self.fileData = []
         self.fileData.append(dict(DEFAULT_ENTRY))
         self.headerLabels = ['Script Files', 'Settings Files']
