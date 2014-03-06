@@ -14,37 +14,10 @@ __author__ = 'Blake'
 HOST, PORT = "localhost", 9999
 DATA = "Hello from test script"
 
-TEST_SCRIPT = \
-    '''
-    import socket
-
-    import config
-    import AutoConfigLoader
-
-    HOST, PORT = config.settings.TCPServer.HOST, config.settings.TCPServer.PORT
-    DATA = config.settings.TCPServer.DATA
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    try:
-        # Connect to server and send data
-        sock.connect((HOST, PORT))
-        sock.sendall(DATA + "\\n")
-
-        # Receive data from the server and shut down
-        received = sock.recv(1024)
-    finally:
-        sock.close()
-    '''
-
-
 class TestShotRunnerController(TestCase):
     def setUp(self):
-        self.scriptFileName = '.testShotRunnerControllerScript.py'
         self.settingsFileName = '.testShotRunnerControllerSettings.h5'
         self.removeTempFiles()
-
-        self.createTestScript()
         self.createTestScriptParameters()
 
         self.messages = []
@@ -54,8 +27,6 @@ class TestShotRunnerController(TestCase):
         self.serverThread.start()
 
     def removeTempFiles(self):
-        if os.path.exists(self.scriptFileName):
-            os.remove(self.scriptFileName)
         if os.path.exists(self.settingsFileName):
             os.remove(self.settingsFileName)
 
@@ -65,10 +36,6 @@ class TestShotRunnerController(TestCase):
 
     def runServer(self):
         self.server.serve_forever()
-
-    def createTestScript(self):
-        with open(self.scriptFileName, 'w') as f:
-            f.write(TEST_SCRIPT)
 
     def generateHandlerClass(self):
         messages = self.messages
@@ -92,7 +59,7 @@ class TestShotRunnerController(TestCase):
         h5File.close()
 
     def test_canRunScriptWithInjectedParameters(self):
-        scripts = [self.scriptFileName]
+        scripts = ['testShotRunnerControllerTestScript.py']
         settingsFiles = [self.settingsFileName]
         controller = ShotRunnerController(scripts, settingsFiles)
         controller.run()
