@@ -16,6 +16,7 @@ UP_ARROW_ICON = "resources/upArrow.png"
 DOWN_ARROW_ICON = "resources/downArrow.png"
 
 MONOSPACED_FONT = QtGui.QFont("Courier New", 9)
+APP_STYLE = "Plastique"
 
 COLOUR_OFF_BLACK = QtGui.QColor(39, 40, 34)
 COLOUR_OFF_WHITE = QtGui.QColor(248, 248, 242)
@@ -27,6 +28,7 @@ class ShotRunnerToolUi(object):
         self.ui_form = Ui_MainWindow()
         self.ui_form.setupUi(self.mainWindow)
         self.app = app
+        self.setAppStyle()
         self.init_ui()
         self.runnerTableModel = ShotRunnerToolTableModel(self.mainWindow)
         self.init_model()
@@ -207,10 +209,13 @@ class ShotRunnerToolUi(object):
     def initController(self):
         self.controller = None
 
+    def setAppStyle(self):
+        self.app.setStyle(APP_STYLE)
+
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
-    ui = ShotRunnerToolUi(None)
+    ui = ShotRunnerToolUi(app)
     ui.show()
     sys.exit(app.exec_())
 
