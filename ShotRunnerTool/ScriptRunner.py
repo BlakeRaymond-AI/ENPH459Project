@@ -41,10 +41,14 @@ class ScriptRunner(object):
         if not self.running:
             raise RuntimeError('Subprocess not started')
         while self.process.poll() is None:
-            yield self.process.stdout.readline()
+            line = self.process.stdout.readline()
+            if line:
+                yield line
 
     def errorStream(self):
         if not self.running:
             raise RuntimeError('Subprocess not started')
         while self.process.poll() is None:
-            yield self.process.stderr.readline()
+            line = self.process.stderr.readline()
+            if line:
+                yield line

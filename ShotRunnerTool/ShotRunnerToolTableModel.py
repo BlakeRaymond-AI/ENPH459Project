@@ -1,8 +1,11 @@
 __author__ = 'Jeff'
 
-from PyQt4 import QtGui, QtCore
-import JsonUtils
 import os
+
+from PyQt4 import QtGui, QtCore
+
+import JsonUtils
+
 
 EMPTY_ROW_KEY = '<Click to add row>'
 
@@ -17,9 +20,10 @@ SETTINGS_FILE_EXTENSION = '*.h5'
 DEFAULT_ENTRY = {SCRIPT_FILE_KEY: EMPTY_ROW_KEY, SCRIPT_PATH_KEY : '',
                       SETTINGS_FILE_KEY : '', SETTINGS_PATH_KEY : ''} #store an empty list for the data until it is loaded from the json file
 
-class RunnerToolTableModel(QtCore.QAbstractTableModel):
+
+class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
-        QtCore.QAbstractListModel.__init__(self, None)
+        QtCore.QAbstractTableModel.__init__(self, None)
         self.fileData = []
         self.fileData.append(dict(DEFAULT_ENTRY))
         self.headerLabels = ['Script Files', 'Settings Files']
@@ -117,10 +121,9 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endResetModel()
 
     def getScriptsAndSettingsFilePaths(self):
-        output = []
-        for shot in self.fileData:
-            output.append( (shot[SCRIPT_PATH_KEY], shot[SETTINGS_PATH_KEY]) ) #returns the list of paths as tuples
-        return output
+        scripts = [shot[SCRIPT_PATH_KEY] for shot in self.fileData]
+        settings = [shot[SETTINGS_PATH_KEY] for shot in self.fileData]
+        return scripts, settings
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if role == QtCore.Qt.DisplayRole and orientation == QtCore.Qt.Horizontal:
@@ -150,7 +153,7 @@ if __name__ == '__main__':
     app = QtGui.QApplication([])
 
     table_view = QtGui.QTableView()
-    table_model = RunnerToolTableModel()
+    table_model = ShotRunnerToolTableModel()
     table_view.setModel(table_model)
     table_view.show()
 

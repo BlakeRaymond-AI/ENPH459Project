@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>604</height>
+    <width>748</width>
+    <height>458</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,6 +21,13 @@
     </sizepolicy>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout1">
+      <item>
+       <widget class="QTableView" name="tableView"/>
+      </item>
+     </layout>
+    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="bottomMargin">
@@ -62,9 +69,6 @@
       </item>
      </layout>
     </item>
-    <item>
-     <widget class="QTableView" name="tableView"/>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -72,7 +76,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>748</width>
      <height>21</height>
     </rect>
    </property>
@@ -98,7 +102,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuRow"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew">
    <property name="text">
     <string>New...</string>
