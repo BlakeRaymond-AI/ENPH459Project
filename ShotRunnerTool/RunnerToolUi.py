@@ -6,8 +6,9 @@ from PyQt4 import QtGui, QtCore
 from runnertool_ui import Ui_MainWindow
 from RunnerToolTableModel import RunnerToolTableModel
 
-
 JSON_FILE_EXTENSION = '*.json'
+UP_ARROW_ICON = "resources/upArrow.png"
+DOWN_ARROW_ICON = "resources/downArrow.png"
 
 class ShotRunnerToolUi(object):
     def __init__(self, app):
@@ -42,14 +43,12 @@ class ShotRunnerToolUi(object):
 
     def __loadButtonImages(self):
         try:
-            downIcon = QtGui.QIcon("downArrow.png")
-            upIcon = QtGui.QIcon("upArrow.png")
+            upIcon = QtGui.QIcon(UP_ARROW_ICON)
+            downIcon = QtGui.QIcon(DOWN_ARROW_ICON)
             self.ui_form.moveShotUpButton.setIcon(upIcon)
             self.ui_form.moveShotDownButton.setIcon(downIcon)
         except:
             raise Exception, "Couldn't load images for the moveUp and moveDown buttons"
-
-
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
@@ -135,6 +134,7 @@ class ShotRunnerToolUi(object):
         if self.shouldDiscardUnsavedChanges():
             self.fileName = None    #release the file that the save command would write to.
             self.runnerTableModel.close()
+            self.dataSaved()
 
     def actionRemoveRow(self):
         selected = self.ui_form.tableView.selectedIndexes()
