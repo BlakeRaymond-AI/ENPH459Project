@@ -1,11 +1,14 @@
 import os
 import os.path
+import shutil
 from unittest import TestCase
 import SocketServer
 import threading
 
 import h5py
 from PyQt4 import QtGui
+
+import AutoConfigLoader
 
 from LogWindow import LogWindow
 from ShotRunnerController import ShotRunnerController
@@ -15,18 +18,29 @@ __author__ = 'Blake'
 
 HOST, PORT = "localhost", 9999
 DATA = "Hello from test script"
+TEST_SCRIPT = "ShotRunnerControllerTestScript.py"
+
 
 class TestShotRunnerController(TestCase):
     def setUp(self):
         self.settingsFileName = '.testShotRunnerControllerSettings.h5'
         self.removeTempFiles()
         self.createTestScriptParameters()
+        self.backupDefaultSettings()
 
         self.messages = []
 
         self.server = SocketServer.TCPServer((HOST, PORT), self.generateHandlerClass())
         self.serverThread = threading.Thread(target=self.runServer)
         self.serverThread.start()
+
+    def backupDefaultSettings(self):
+        self.defaultSettingsFileBackup = '.shot_parameters.h5.backup'
+        shutil.copyfile(AutoConfigLoader.SETTINGS_FILE_NAME, self.defaultSettingsFileBackup)
+
+    def restoreDefaultSettings(self):
+        shutil.copyfile(self.defaultSettingsFileBackup, AutoConfigLoader.SETTINGS_FILE_NAME)
+        os.remove(self.defaultSettingsFileBackup)
 
     def removeTempFiles(self):
         if os.path.exists(self.settingsFileName):
@@ -37,6 +51,7 @@ class TestShotRunnerController(TestCase):
         self.server.server_close()
         self.serverThread.join()
         self.removeTempFiles()
+        self.restoreDefaultSettings()
 
     def runServer(self):
         self.server.serve_forever()
@@ -63,7 +78,7 @@ class TestShotRunnerController(TestCase):
         h5File.close()
 
     def test_canRunScriptWithInjectedParameters(self):
-        scripts = ['testShotRunnerControllerTestScript.py']
+        scripts = ['ShotRunnerControllerTestScript.py']
         settingsFiles = [self.settingsFileName]
         controller = ShotRunnerController(scripts, settingsFiles)
         controller.run()
@@ -73,7 +88,7 @@ class TestShotRunnerController(TestCase):
     def test_canConnectLogWindowToController(self):
         app = QtGui.QApplication([])
         logWindow = LogWindow(None)
-        scripts = ['testShotRunnerControllerTestScript.py']
+        scripts = [TEST_SCRIPT]
         settingsFiles = [self.settingsFileName]
         controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
         controller.run()
@@ -82,7 +97,7 @@ class TestShotRunnerController(TestCase):
     def test_canRunAsynchronously(self):
         app = QtGui.QApplication([])
         logWindow = LogWindow(None)
-        scripts = ['testShotRunnerControllerTestScript.py']
+        scripts = [TEST_SCRIPT]
         settingsFiles = [self.settingsFileName]
         controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
         controller.finished.connect(app.quit)
@@ -92,7 +107,7 @@ class TestShotRunnerController(TestCase):
 
     def test_canRunMultipleScripts(self):
         numberOfScripts = 2
-        scripts = ['testShotRunnerControllerTestScript.py'] * numberOfScripts
+        scripts = [TEST_SCRIPT] * numberOfScripts
         settingsFiles = [self.settingsFileName] * numberOfScripts
         controller = ShotRunnerController(scripts, settingsFiles)
         controller.run()
@@ -102,7 +117,7 @@ class TestShotRunnerController(TestCase):
         app = QtGui.QApplication([])
         logWindow = LogWindow(None)
         numberOfScripts = 2
-        scripts = ['testShotRunnerControllerTestScript.py'] * numberOfScripts
+        scripts = [TEST_SCRIPT] * numberOfScripts
         settingsFiles = [self.settingsFileName] * numberOfScripts
         controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
         controller.finished.connect(app.quit)
