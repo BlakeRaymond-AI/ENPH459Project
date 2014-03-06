@@ -121,10 +121,9 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endResetModel()
 
     def getScriptsAndSettingsFilePaths(self):
-        output = []
-        for shot in self.fileData:
-            output.append( (shot[SCRIPT_PATH_KEY], shot[SETTINGS_PATH_KEY]) ) #returns the list of paths as tuples
-        return output
+        scripts = [shot[SCRIPT_PATH_KEY] for shot in self.fileData]
+        settings = [shot[SETTINGS_PATH_KEY] for shot in self.fileData]
+        return scripts, settings
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if role == QtCore.Qt.DisplayRole and orientation == QtCore.Qt.Horizontal:

@@ -1,3 +1,6 @@
+from LogWindow import LogWindow
+from ShotRunnerController import ShotRunnerController
+
 __author__ = 'Jeff'
 
 import sys
@@ -12,6 +15,12 @@ JSON_FILE_EXTENSION = '*.json'
 UP_ARROW_ICON = "resources/upArrow.png"
 DOWN_ARROW_ICON = "resources/downArrow.png"
 
+MONOSPACED_FONT = QtGui.QFont("Courier New", 9)
+
+COLOUR_OFF_BLACK = QtGui.QColor(39, 40, 34)
+COLOUR_OFF_WHITE = QtGui.QColor(248, 248, 242)
+
+
 class ShotRunnerToolUi(object):
     def __init__(self, app):
         self.mainWindow = QtGui.QMainWindow()
@@ -22,6 +31,7 @@ class ShotRunnerToolUi(object):
         self.runnerTableModel = ShotRunnerToolTableModel(self.mainWindow)
         self.init_model()
         self.connectSignalsAndSlots()
+        self.initController()
         self.fileName = None
         self.dataSaved() #sets it so that there is no unsaved changes on initialization
 
@@ -30,7 +40,15 @@ class ShotRunnerToolUi(object):
         self.ui_form.tableView.horizontalHeader().setResizeMode(1)
         self.ui_form.tableView.horizontalHeader().setVisible(True)
         self.ui_form.tableView.verticalHeader().setVisible(False)
-        self.ui_form.tableView.setFont(QtGui.QFont("Courier New"))
+        self.ui_form.tableView.setFont(MONOSPACED_FONT)
+
+    def initLogWindow(self):
+        self.logWindow = LogWindow(self.mainWindow)
+        self.ui_form.horizontalLayout1.addWidget(self.logWindow)
+        self.logWindow.setTextColor(COLOUR_OFF_WHITE)
+        self.logWindow.setTextBackgroundColor(COLOUR_OFF_BLACK)
+        self.logWindow.setStyleSheet("* { background-color: rgb(39, 40, 34); }")
+        self.logWindow.setFont(MONOSPACED_FONT)
 
     def init_ui(self):
         self.mainWindow.resize(800, 600)
@@ -38,6 +56,9 @@ class ShotRunnerToolUi(object):
         centre_point = QtGui.QDesktopWidget().availableGeometry().center()
         self.mainWindow.frameGeometry().moveCenter(centre_point)
         self.mainWindow.move(self.mainWindow.frameGeometry().topLeft())
+
+        self.initLogWindow()
+
         try:
             self.__loadButtonImages()
         except:
@@ -69,7 +90,17 @@ class ShotRunnerToolUi(object):
         self.mainWindow.show()
 
     def runScripts(self):
-        print "running the scripts"
+        if self.controller:
+            raise RuntimeError('Already running scripts')
+        scripts, settings = self.runnerTableModel.getScriptsAndSettingsFilePaths()
+        self.controller = ShotRunnerController(scripts, settings, logWindow=self.logWindow)
+        self.controller.finished.connect(self.finishedRunningScripts)
+        self.ui_form.runButton.setEnabled(False)
+        self.controller.start()
+
+    def finishedRunningScripts(self):
+        self.controller = None
+        self.ui_form.runButton.setEnabled(True)
 
     def moveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
@@ -171,6 +202,10 @@ class ShotRunnerToolUi(object):
             self.mainWindow.setWindowTitle('%s - QDG Lab Shot Runner Tool' % pathLeaf)
         else:
             self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
+
+    def initController(self):
+        self.controller = None
+
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
