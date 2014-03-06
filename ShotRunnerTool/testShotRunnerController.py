@@ -5,7 +5,9 @@ import SocketServer
 import threading
 
 import h5py
+from PyQt4 import QtGui
 
+from LogWindow import LogWindow
 from ShotRunnerController import ShotRunnerController
 
 
@@ -33,6 +35,8 @@ class TestShotRunnerController(TestCase):
     def tearDown(self):
         self.removeTempFiles()
         self.server.shutdown()
+        self.server.server_close()
+        self.serverThread.join()
 
     def runServer(self):
         self.server.serve_forever()
@@ -65,3 +69,24 @@ class TestShotRunnerController(TestCase):
         controller.run()
         self.assertEqual(1, len(self.messages))
         self.assertEqual(DATA, self.messages[0])
+
+    def test_canConnectLogWindowToController(self):
+        app = QtGui.QApplication([])
+        logWindow = LogWindow(None)
+        scripts = ['testShotRunnerControllerTestScript.py']
+        settingsFiles = [self.settingsFileName]
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller.run()
+        self.assertEqual(DATA, str(logWindow.toPlainText()).strip())
+
+    def test_canRunAsynchronously(self):
+        app = QtGui.QApplication([])
+        logWindow = LogWindow(None)
+        scripts = ['testShotRunnerControllerTestScript.py']
+        settingsFiles = [self.settingsFileName]
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller.finished.connect(app.quit)
+        controller.start()
+        app.exec_()
+        self.assertEqual(DATA, str(logWindow.toPlainText()).strip())
+
