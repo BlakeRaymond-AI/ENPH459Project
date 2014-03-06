@@ -49,6 +49,7 @@ class ShotRunnerToolUi(object):
         self.logWindow.setTextBackgroundColor(COLOUR_OFF_BLACK)
         self.logWindow.setStyleSheet("* { background-color: rgb(39, 40, 34); }")
         self.logWindow.setFont(MONOSPACED_FONT)
+        self.logWindow.setReadOnly(True)
 
     def init_ui(self):
         self.mainWindow.resize(800, 600)
