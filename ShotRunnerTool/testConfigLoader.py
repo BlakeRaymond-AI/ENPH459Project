@@ -1,7 +1,8 @@
 __author__ = 'Blake'
 
 import unittest
-from config import *
+
+import config
 from ConfigLoader import ConfigLoader
 
 
@@ -27,5 +28,5 @@ class testConfigLoader(unittest.TestCase):
         stubLoader = self.StubFileLoader(devices)
         configLoader = ConfigLoader()
         configLoader.loadFromFile(stubLoader, None) #TODO this file interface is gross
-        self.assertEqual('bar', settings.FooDevice.stringConstant)
-        self.assertEqual(1, settings.FooDevice.intConstant)
+        self.assertEqual('bar', config.settings.FooDevice.stringConstant)
+        self.assertEqual(1, config.settings.FooDevice.intConstant)

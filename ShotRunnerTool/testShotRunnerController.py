@@ -33,10 +33,10 @@ class TestShotRunnerController(TestCase):
             os.remove(self.settingsFileName)
 
     def tearDown(self):
-        self.removeTempFiles()
         self.server.shutdown()
         self.server.server_close()
         self.serverThread.join()
+        self.removeTempFiles()
 
     def runServer(self):
         self.server.serve_forever()
@@ -90,3 +90,25 @@ class TestShotRunnerController(TestCase):
         app.exec_()
         self.assertEqual(DATA, str(logWindow.toPlainText()).strip())
 
+    def test_canRunMultipleScripts(self):
+        numberOfScripts = 2
+        scripts = ['testShotRunnerControllerTestScript.py'] * numberOfScripts
+        settingsFiles = [self.settingsFileName] * numberOfScripts
+        controller = ShotRunnerController(scripts, settingsFiles)
+        controller.run()
+        self.assertListEqual([DATA] * numberOfScripts, self.messages)
+
+    def test_canRunMultipleScriptsAsynchronously(self):
+        app = QtGui.QApplication([])
+        logWindow = LogWindow(None)
+        numberOfScripts = 2
+        scripts = ['testShotRunnerControllerTestScript.py'] * numberOfScripts
+        settingsFiles = [self.settingsFileName] * numberOfScripts
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller.finished.connect(app.quit)
+
+        controller.start()
+        app.exec_()
+
+        messages = str(logWindow.toPlainText()).strip().splitlines()
+        self.assertListEqual([DATA] * numberOfScripts, messages)
