@@ -6,16 +6,18 @@ import os
 
 class testJsonUtils(unittest.TestCase):
     def setUp(self):
-        pass
+        data = {'test' : 'things'}
+        JsonUtils.JsonUtils.saveJsonFileByPath('test_JsonUtils.json', data)
 
     def tearDown(self):
-        pass
+        os.remove('test_JsonUtils.json')
 
     def test_saveToFileByName(self):
         data = {'test' : 'things'}
-        JsonUtils.JsonUtils.saveJsonFileByPath('test_JsonUtils.json', data)
-        fileCreated = os.path.exists('test_JsonUtils.json')
+        JsonUtils.JsonUtils.saveJsonFileByPath('test_saveJsonFile.json', data)
+        fileCreated = os.path.exists('test_saveJsonFile.json')
         self.assertTrue(fileCreated)
+        os.remove('test_saveJsonFile.json')
 
     def test_loadFromFileByName(self):
         data = JsonUtils.JsonUtils.getDataFromJsonFile('test_JsonUtils.json')
