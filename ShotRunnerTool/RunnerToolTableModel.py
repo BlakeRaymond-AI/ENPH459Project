@@ -78,9 +78,10 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endRemoveRows()
 
     def saveDataToFileByPath(self, fileName):
-        for eachRow in self.fileData:
-            if eachRow[SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: self.fileData.remove(eachRow)
-        JsonUtils.JsonUtils.saveJsonFileByPath(fileName, self.fileData)
+        output = list(self.fileData)
+        for eachRow in output:
+            if eachRow[SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: output.remove(eachRow)
+        JsonUtils.JsonUtils.saveJsonFileByPath(fileName, output)
 
     def openDataByPath(self, fileName):
         tempData = JsonUtils.JsonUtils.getDataFromJsonFile(fileName)
@@ -99,7 +100,6 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
                  or not(SCRIPT_PATH_KEY in data.keys())):
                 raise Exception, "The file \"%s\" is either corrupt or in the wrong format" %(fileName)
             return True
-
 
     def getFilenameFromDialogBox(self, fileSuffixFilter='*.*'):
         fileDialog = QtGui.QFileDialog()
@@ -126,6 +126,25 @@ class RunnerToolTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.DisplayRole and orientation == QtCore.Qt.Horizontal:
             return self.headerLabels[section]
         return QtCore.QAbstractTableModel.headerData(self, section, orientation, role)
+
+    def moveCurrentShotUp(self, row):
+        if row > 0: #check so that it wont try to swap rows out of bounds
+            self.beginResetModel()
+            self.__swapRows(row, row-1)
+            self.endResetModel()
+
+    def moveCurrentShotDown(self, row):
+        if row < (len(self.fileData)): #check so that it wont try to swap rows out of bounds
+            self.beginResetModel()
+            self.__swapRows(row, row+1)
+            self.endResetModel()
+
+    def __swapRows(self, row, row2):
+        if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY or self.fileData[row2][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY:
+            #make sure not moving the empty row
+            return
+        else:
+            self.fileData[row], self.fileData[row2] = self.fileData[row2], self.fileData[row]
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])

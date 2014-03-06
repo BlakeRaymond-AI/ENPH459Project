@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Tue Feb 25 22:46:42 2014
+# Created: Wed Mar 05 16:06:21 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,6 +42,14 @@ class Ui_MainWindow(object):
         self.runButton = QtGui.QPushButton(self.centralWidget)
         self.runButton.setObjectName(_fromUtf8("runButton"))
         self.horizontalLayout_2.addWidget(self.runButton)
+        self.moveShotUpButton = QtGui.QPushButton(self.centralWidget)
+        self.moveShotUpButton.setText(_fromUtf8(""))
+        self.moveShotUpButton.setObjectName(_fromUtf8("moveShotUpButton"))
+        self.horizontalLayout_2.addWidget(self.moveShotUpButton)
+        self.moveShotDownButton = QtGui.QPushButton(self.centralWidget)
+        self.moveShotDownButton.setText(_fromUtf8(""))
+        self.moveShotDownButton.setObjectName(_fromUtf8("moveShotDownButton"))
+        self.horizontalLayout_2.addWidget(self.moveShotDownButton)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_2)

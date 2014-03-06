@@ -35,9 +35,26 @@ class ShotRunnerToolUi(object):
         centre_point = QtGui.QDesktopWidget().availableGeometry().center()
         self.mainWindow.frameGeometry().moveCenter(centre_point)
         self.mainWindow.move(self.mainWindow.frameGeometry().topLeft())
+        try:
+            self.__loadButtonImages()
+        except:
+            pass
+
+    def __loadButtonImages(self):
+        try:
+            downIcon = QtGui.QIcon("downArrow.png")
+            upIcon = QtGui.QIcon("upArrow.png")
+            self.ui_form.moveShotUpButton.setIcon(upIcon)
+            self.ui_form.moveShotDownButton.setIcon(downIcon)
+        except:
+            raise Exception, "Couldn't load images for the moveUp and moveDown buttons"
+
+
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
+        self.ui_form.moveShotUpButton.pressed.connect(self.moveShotUpList)
+        self.ui_form.moveShotDownButton.pressed.connect(self.moveShotDownList)
         self.ui_form.actionNew.triggered.connect(self.actionNew)
         self.ui_form.actionOpen.triggered.connect(self.actionOpen)
         self.ui_form.actionSave.triggered.connect(self.actionSave)
@@ -52,6 +69,18 @@ class ShotRunnerToolUi(object):
 
     def runScripts(self):
         print "running the scripts"
+
+    def moveShotUpList(self):
+        selected = self.ui_form.tableView.selectedIndexes()
+        keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        for index in keyIndices:
+            self.runnerTableModel.moveCurrentShotUp(index.row())
+
+    def moveShotDownList(self):
+        selected = self.ui_form.tableView.selectedIndexes()
+        keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        for index in keyIndices:
+            self.runnerTableModel.moveCurrentShotDown(index.row())
 
     def actionNew(self):
         #saves the filename for the wanted new file for the runner tool's table model.
@@ -111,7 +140,7 @@ class ShotRunnerToolUi(object):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
         for index in keyIndices:
-            self.runnerTableModel.removeRowByRowNumber(index.row)
+            self.runnerTableModel.removeRowByRowNumber(index.row())
 
     def shouldDiscardUnsavedChanges(self):
         if self.unsavedChanges:
