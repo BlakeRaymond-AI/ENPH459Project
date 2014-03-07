@@ -41,7 +41,7 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.EditRole:
             if self.workAroundQtBugFlag:
                 self.getShotFilesFromUser(index)
-            self.workAroundQtBugFlag = not(self.workAroundQtBugFlag)
+            self.workAroundQtBugFlag = not(self.workAroundQtBugFlag) #Qt has a weird bug were it will call data with the edit role twice. This is a work around for that bug
             if column == 0:
                 return self.fileData[row][SCRIPT_FILE_KEY]
             if column == 1:
