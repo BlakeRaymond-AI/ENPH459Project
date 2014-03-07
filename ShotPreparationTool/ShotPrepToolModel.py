@@ -5,6 +5,7 @@ import shutil
 import h5py
 
 import GroupTableModel
+from VariableNameValildator import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'
@@ -61,6 +62,8 @@ class ShotPrepToolModel(object):
     def addDevice(self, deviceName):
         if deviceName in self.workingFile[DEVICES_GROUP_NAME]:
             raise KeyError('Device with name \"%s\" already exists.' % deviceName)
+        if not VariableNameValidator.isValidVariableName(deviceName):
+            raise SyntaxError('Device name \"%s\" is not a valid Python variable name.' % deviceName)
         self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
         self.__buildModelsInFile()
 

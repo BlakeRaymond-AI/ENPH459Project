@@ -164,6 +164,9 @@ class ShotPreparationToolUi(object):
                     warningDialog = QtGui.QMessageBox(self.mainWindow)
                     warningDialog.warning(self.mainWindow, 'Device name in use', e.message)
                     return
+                except SyntaxError as e:
+                    warningDialog = QtGui.QMessageBox(self.mainWindow)
+                    warningDialog.warning(self.mainWindow, 'Invalid device name', e.message)
                 self.initTabs(self.model.returnModelsInFile())
                 self.modelChanged()
 
