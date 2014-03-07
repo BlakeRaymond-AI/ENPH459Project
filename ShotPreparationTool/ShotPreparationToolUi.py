@@ -11,6 +11,9 @@ from ShotPrepToolModel import ShotPrepToolModel
 
 class ShotPreparationToolUi(object):
     def __init__(self, app):
+        self.fileName = None
+        self.model = None
+
         self.mainWindow = QtGui.QMainWindow()
         self.uiForm = Ui_MainWindow()
         self.uiForm.setupUi(self.mainWindow)
@@ -57,7 +60,7 @@ class ShotPreparationToolUi(object):
         return True
 
     def checkHasOpenFile(self):
-        if not (hasattr(self, 'model') and self.model):
+        if self.model is None:
             dialog = QtGui.QMessageBox(self.mainWindow)
             dialog.warning(self.mainWindow, 'Please load first', 'Please open an H5 file first.')
             return False
@@ -101,12 +104,17 @@ class ShotPreparationToolUi(object):
         if fileName:
             self.actionClose()
             self.fileName = fileName
-            self.model = ShotPrepToolModel(self.fileName)
+            try:
+                self.model = ShotPrepToolModel(self.fileName)
+            except RuntimeError as e:
+                warningDialog = QtGui.QMessageBox(self.mainWindow)
+                warningDialog.warning(self.mainWindow, 'File locked', e.message)
+                return
             self.initTabs(self.model.returnModelsInFile())
             self.modelSaved()
 
     def actionSave(self):
-        if hasattr(self, 'fileName') and self.fileName:
+        if self.fileName is not None:
             self.model.saveChanges()
             self.modelSaved()
 
@@ -125,18 +133,19 @@ class ShotPreparationToolUi(object):
             self.initTabs(self.model.returnModelsInFile())
 
     def actionClose(self):
-        if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
+        if self.model is not None and self.checkShouldDiscardAnyUnsavedChanges():
             self.close()
 
     def close(self):
-        self.clearTabs()
-        self.model.cleanUp()
-        self.model = None
-        self.fileName = None
-        self.modelSaved()
+        if self.model is not None:
+            self.clearTabs()
+            self.model.cleanUp()
+            self.model = None
+            self.fileName = None
+            self.modelSaved()
 
     def actionExit(self):
-        if hasattr(self, 'model') and self.model and self.checkShouldDiscardAnyUnsavedChanges():
+        if self.model is not None and self.checkShouldDiscardAnyUnsavedChanges():
             self.close()
             self.app.quit()
 

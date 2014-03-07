@@ -3,7 +3,9 @@ import os.path
 import shutil
 
 import h5py
+
 import GroupTableModel
+
 
 EMPTY_ROW_KEY = "<Click to add row>"
 
@@ -20,7 +22,7 @@ class ShotPrepToolModel(object):
 
         self.h5tempFileName = h5pathName + '.tmp'
         if os.path.exists(self.h5tempFileName):
-            os.remove(self.h5tempFileName)
+            raise RuntimeError('The file \"%s\" appears to be in use by another instance of the tool.' % h5pathName)
         shutil.copy2(self.h5pathName, self.h5tempFileName)
         self.workingFile = h5py.File(self.h5tempFileName)
         self.__buildModelsInFile()
