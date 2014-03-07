@@ -69,6 +69,7 @@ class ShotPreparationToolUi(object):
     def hookCloseEvent(self):
         def handleCloseEvent(event):
             if self.checkShouldDiscardAnyUnsavedChanges():
+                self.close()
                 event.accept()
             else:
                 event.ignore()
