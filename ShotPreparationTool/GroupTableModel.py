@@ -67,10 +67,10 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             pass
         elif newName in self.group:
             self.warnUser('Duplicate variable name',
-                          'Variable with name \"%s\" already exists for this device.' % newName)
+                          'A variable with name \"%s\" already exists for this device.' % newName)
         elif not VariableNameValidator.isValidVariableName(newName):
             self.warnUser('Invalid variable name',
-                          'Variable name \"%s\" is not a valid Python variable name.' % newName)
+                          'The name \"%s\" is not a valid Python variable name.' % newName)
         else:
             currentValue = self.group[currentName]
             self.group[newName] = currentValue
@@ -87,7 +87,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             try:
                 newValueResult = eval(newValue)
             except Exception as expt:
-                warningMessage = 'Could not evaluate expression: \"%s\"; error: \n\n%s' % (newValue, expt.message)
+                warningMessage = "The expression \"%s\" could not be evaluated as a Python expression.  String values must be escaped with quotation marks." % newValue
                 self.warnUser('Invalid expression', warningMessage)
             else:
                 del self.group[currentValue]
