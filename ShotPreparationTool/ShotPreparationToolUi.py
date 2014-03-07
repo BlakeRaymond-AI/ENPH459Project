@@ -119,19 +119,18 @@ class ShotPreparationToolUi(object):
             self.modelSaved()
 
     def actionSave_As(self):
-        if self.checkShouldDiscardAnyUnsavedChanges():
-            fileDialog = QtGui.QFileDialog(self.mainWindow)
-            dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='Save As HDF5 file',
-                                                               directory=str(os.getcwd()), filter='*.h5')
-            fileName = str(dialogReturn[0])
-            if fileName:
-                self.model.saveAs(fileName)
-                self.close()
-                self.fileName = fileName
-                self.modelSaved()
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='Save As HDF5 file',
+                                                           directory=str(os.getcwd()), filter='*.h5')
+        fileName = str(dialogReturn[0])
+        if fileName:
+            self.model.saveAs(fileName)
+            self.close()
+            self.fileName = fileName
+            self.modelSaved()
 
-                self.model = ShotPrepToolModel(self.fileName)
-                self.initTabs(self.model.returnModelsInFile())
+            self.model = ShotPrepToolModel(self.fileName)
+            self.initTabs(self.model.returnModelsInFile())
 
     def actionClose(self):
         if self.model is not None and self.checkShouldDiscardAnyUnsavedChanges():
