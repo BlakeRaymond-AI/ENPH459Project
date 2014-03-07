@@ -22,7 +22,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         return len(self.group.keys())
 
     def columnCount(self, QModelIndex_parent=None, *args, **kwargs):
-        return 2
+        return NUMBER_OF_COLUMNS
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsSelectable
@@ -51,9 +51,9 @@ class GroupTableModel(QtCore.QAbstractTableModel):
 
         if not role == QtCore.Qt.EditRole:
             success = False
-        elif index.column() == 0:
+        elif index.column() == KEY_COLUMN_INDEX:
             success = self.tryChangeVariableName(current, new)
-        elif index.column() == 1:
+        elif index.column() == VALUE_COLUMN_INDEX:
             success = self.tryChangeVariableValue(current, new)
         else:
             success = False
