@@ -7,6 +7,9 @@ import h5py
 import GroupTableModel
 
 
+DEVICES_GROUP_NAME = 'devices'
+
+
 class ShotPrepToolModel(object):
     def __init__(self, h5pathName):
         self.h5pathName = h5pathName
@@ -14,7 +17,7 @@ class ShotPrepToolModel(object):
             self.originalFile = h5py.File(self.h5pathName)
         else:
             self.originalFile = h5py.File(self.h5pathName)
-            self.originalFile.create_group('devices')
+            self.originalFile.create_group(DEVICES_GROUP_NAME)
             self.originalFile.flush()
 
         self.h5tempFileName = h5pathName + '.tmp'
@@ -31,7 +34,7 @@ class ShotPrepToolModel(object):
 
     def __buildModelsInFile(self):
         self.dict_of_devices = {}
-        for deviceName, device in self.workingFile['devices'].items():
+        for deviceName, device in self.workingFile[DEVICES_GROUP_NAME].items():
             model = GroupTableModel.GroupTableModel(device, parent=None)
             self.dict_of_devices[deviceName] = model
 
@@ -39,41 +42,28 @@ class ShotPrepToolModel(object):
         return self.dict_of_devices
 
     def discardCharges(self):
-        del self.workingFile['devices']
-        self.originalFile.copy('devices', self.workingFile)
+        del self.workingFile[DEVICES_GROUP_NAME]
+        self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
         self.__buildModelsInFile()
 
     def saveChanges(self):
-        del self.originalFile['devices']
-        self.workingFile.copy('devices', self.originalFile)
-        for device in self.originalFile['devices'].values():
+        del self.originalFile[DEVICES_GROUP_NAME]
+        self.workingFile.copy(DEVICES_GROUP_NAME, self.originalFile)
+        for device in self.originalFile[DEVICES_GROUP_NAME].values():
             if GroupTableModel.EMPTY_ROW_STRING in device:
                 del device[GroupTableModel.EMPTY_ROW_STRING]
         self.originalFile.flush()
 
     def removeDevice(self, deviceName):
-        del self.workingFile['devices'][deviceName]
+        del self.workingFile[DEVICES_GROUP_NAME][deviceName]
         self.__buildModelsInFile()
 
     def addDevice(self, deviceName):
-        if deviceName in self.workingFile['devices']:
+        if deviceName in self.workingFile[DEVICES_GROUP_NAME]:
             raise KeyError('Device with name \"%s\" already exists.' % deviceName)
-        self.workingFile['devices'].create_group(deviceName)
+        self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
         self.__buildModelsInFile()
 
     def saveAs(self, filename):
         self.workingFile.flush()
         shutil.copy2(self.h5tempFileName, filename)
-
-
-if __name__ == '__main__':
-
-    h5pathname = 'devices.h5'
-    test = ShotPrepToolModel(h5pathname)
-    devices = test.returnModelsInFile()
-    print devices['RGA'].h5file['RGA']['test data point'][()]
-    devices['RGA'].h5file['RGA']['test data point'][()] = 'this has been changed'
-    print devices['RGA'].h5file['RGA']['test data point'][()]
-
-    test.cleanUp()
-
