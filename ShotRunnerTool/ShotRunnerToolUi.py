@@ -34,6 +34,7 @@ class ShotRunnerToolUi(object):
         self.init_model()
         self.connectSignalsAndSlots()
         self.initController()
+        self.hookCloseEvent()
         self.fileName = None
         self.dataSaved() #sets it so that there is no unsaved changes on initialization
 
@@ -120,13 +121,8 @@ class ShotRunnerToolUi(object):
     def actionNew(self):
         #saves the filename for the wanted new file for the runner tool's table model.
         #the filename will be what is written to when the save command is called
-        if self.shouldDiscardUnsavedChanges():
-            fileDialog = QtGui.QFileDialog(self.mainWindow)
-            dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
-                                                               directory=str(os.getcwd()), filter=JSON_FILE_EXTENSION)
-            if dialogReturn[0]:
-                self.actionClose()
-                self.fileName = str(dialogReturn[0])
+        self.actionClose()
+        self.fileName = None
 
     def actionSave(self):
         #saves the data in the tableModel to the json file that was selected with new or open.
@@ -151,6 +147,17 @@ class ShotRunnerToolUi(object):
     def actionExit(self):
         if self.shouldDiscardUnsavedChanges():
             sys.exit()
+
+    def hookCloseEvent(self):
+        print "test stuff"
+        def handleCloseEvent(event):
+            if self.shouldDiscardUnsavedChanges():
+                event.accept()
+            else:
+                event.ignore()
+
+        self.mainWindow.closeEvent = handleCloseEvent
+        self.app.closeEvent = handleCloseEvent
 
     def actionOpen(self):
         #loads the data into the tableModel from a json file
@@ -204,7 +211,10 @@ class ShotRunnerToolUi(object):
                 pathLeaf += '*'
             self.mainWindow.setWindowTitle('%s - QDG Lab Shot Runner Tool' % pathLeaf)
         else:
-            self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
+            if self.unsavedChanges:
+                self.mainWindow.setWindowTitle('* - QDG Lab Shot Runner Tool')
+            else:
+                self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
 
     def initController(self):
         self.controller = None
