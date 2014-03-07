@@ -1,4 +1,4 @@
-from ShotPreparationTool.VariableNameValildator import VariableNameValidator
+from ShotPreparationTool.VariableNameValidator import VariableNameValidator
 
 __author__ = 'Blake & Jeff'
 

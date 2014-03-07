@@ -5,7 +5,7 @@ import shutil
 import h5py
 
 import GroupTableModel
-from VariableNameValildator import VariableNameValidator
+from VariableNameValidator import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'
