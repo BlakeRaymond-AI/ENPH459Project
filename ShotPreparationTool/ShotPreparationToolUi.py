@@ -86,15 +86,16 @@ class ShotPreparationToolUi(object):
         self.setTitle()
 
     def actionNew(self):
-        fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
-                                                           directory=str(os.getcwd()), filter='*.h5')
-        if dialogReturn[0]:
-            self.actionClose()
-            self.fileName = str(dialogReturn[0])
-            self.model = ShotPrepToolModel(self.fileName)
-            self.initTabs(self.model.returnModelsInFile())
-            self.modelSaved()
+        if self.checkShouldDiscardAnyUnsavedChanges():
+            fileDialog = QtGui.QFileDialog(self.mainWindow)
+            dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
+                                                               directory=str(os.getcwd()), filter='*.h5')
+            if dialogReturn[0]:
+                self.close()
+                self.fileName = str(dialogReturn[0])
+                self.model = ShotPrepToolModel(self.fileName)
+                self.initTabs(self.model.returnModelsInFile())
+                self.modelSaved()
 
     def actionOpen(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
