@@ -14,6 +14,7 @@ from ShotRunnerToolTableModel import ShotRunnerToolTableModel
 JSON_FILE_EXTENSION = '*.json'
 UP_ARROW_ICON = "resources/upArrow.png"
 DOWN_ARROW_ICON = "resources/downArrow.png"
+REMOVE_ROW_ICON = "resources/removeRows.png"
 
 MONOSPACED_FONT = QtGui.QFont("Courier New", 9)
 APP_STYLE = "Plastique"
@@ -34,6 +35,7 @@ class ShotRunnerToolUi(object):
         self.init_model()
         self.connectSignalsAndSlots()
         self.initController()
+        self.hookCloseEvent()
         self.fileName = None
         self.dataSaved() #sets it so that there is no unsaved changes on initialization
 
@@ -71,8 +73,10 @@ class ShotRunnerToolUi(object):
         try:
             upIcon = QtGui.QIcon(UP_ARROW_ICON)
             downIcon = QtGui.QIcon(DOWN_ARROW_ICON)
+            removeIcon = QtGui.QIcon(REMOVE_ROW_ICON)
             self.ui_form.moveShotUpButton.setIcon(upIcon)
             self.ui_form.moveShotDownButton.setIcon(downIcon)
+            self.ui_form.removeRowButton.setIcon(removeIcon)
         except:
             raise Exception, "Couldn't load images for the moveUp and moveDown buttons"
 
@@ -86,7 +90,7 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionSaveAs.triggered.connect(self.actionSaveAs)
         self.ui_form.actionExit.triggered.connect(self.actionExit)
         self.ui_form.actionClose.triggered.connect(self.actionClose)
-        self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+        self.ui_form.removeRowButton.pressed.connect(self.actionRemoveRow)
         self.runnerTableModel.dataChanged.connect(self.dataChanged)
 
     def show(self):
@@ -108,25 +112,22 @@ class ShotRunnerToolUi(object):
     def moveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        keyIndices = list(set(keyIndices)) #removes all doubles in the list.
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotUp(index.row())
 
     def moveShotDownList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        keyIndices = reversed(list(set(keyIndices))) #removes all doubles in the list.
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotDown(index.row())
 
     def actionNew(self):
         #saves the filename for the wanted new file for the runner tool's table model.
         #the filename will be what is written to when the save command is called
-        if self.shouldDiscardUnsavedChanges():
-            fileDialog = QtGui.QFileDialog(self.mainWindow)
-            dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
-                                                               directory=str(os.getcwd()), filter=JSON_FILE_EXTENSION)
-            if dialogReturn[0]:
-                self.actionClose()
-                self.fileName = str(dialogReturn[0])
+        self.actionClose()
+        self.fileName = None
 
     def actionSave(self):
         #saves the data in the tableModel to the json file that was selected with new or open.
@@ -152,6 +153,16 @@ class ShotRunnerToolUi(object):
         if self.shouldDiscardUnsavedChanges():
             sys.exit()
 
+    def hookCloseEvent(self):
+        def handleCloseEvent(event):
+            if self.shouldDiscardUnsavedChanges():
+                event.accept()
+            else:
+                event.ignore()
+
+        self.mainWindow.closeEvent = handleCloseEvent
+        self.app.closeEvent = handleCloseEvent
+
     def actionOpen(self):
         #loads the data into the tableModel from a json file
         if self.shouldDiscardUnsavedChanges():
@@ -175,7 +186,8 @@ class ShotRunnerToolUi(object):
     def actionRemoveRow(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
-        for index in keyIndices:
+        setOfIndices = set(keyIndices)
+        for index in setOfIndices:
             self.runnerTableModel.removeRowByRowNumber(index.row())
 
     def shouldDiscardUnsavedChanges(self):
@@ -204,7 +216,10 @@ class ShotRunnerToolUi(object):
                 pathLeaf += '*'
             self.mainWindow.setWindowTitle('%s - QDG Lab Shot Runner Tool' % pathLeaf)
         else:
-            self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
+            if self.unsavedChanges:
+                self.mainWindow.setWindowTitle('* - QDG Lab Shot Runner Tool')
+            else:
+                self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
 
     def initController(self):
         self.controller = None
