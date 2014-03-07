@@ -112,12 +112,14 @@ class ShotRunnerToolUi(object):
     def moveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        keyIndices = list(set(keyIndices)) #removes all doubles in the list. Stops weirdness happening
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotUp(index.row())
 
     def moveShotDownList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
+        keyIndices = reversed(list(set(keyIndices))) #removes all doubles in the list. Stops weirdness happening
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotDown(index.row())
 
