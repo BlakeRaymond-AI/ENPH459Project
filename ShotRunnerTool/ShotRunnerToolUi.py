@@ -14,6 +14,7 @@ from ShotRunnerToolTableModel import ShotRunnerToolTableModel
 JSON_FILE_EXTENSION = '*.json'
 UP_ARROW_ICON = "resources/upArrow.png"
 DOWN_ARROW_ICON = "resources/downArrow.png"
+REMOVE_ROW_ICON = "resources/removeRows.png"
 
 MONOSPACED_FONT = QtGui.QFont("Courier New", 9)
 APP_STYLE = "Plastique"
@@ -72,8 +73,10 @@ class ShotRunnerToolUi(object):
         try:
             upIcon = QtGui.QIcon(UP_ARROW_ICON)
             downIcon = QtGui.QIcon(DOWN_ARROW_ICON)
+            removeIcon = QtGui.QIcon(REMOVE_ROW_ICON)
             self.ui_form.moveShotUpButton.setIcon(upIcon)
             self.ui_form.moveShotDownButton.setIcon(downIcon)
+            self.ui_form.removeRowButton.setIcon(removeIcon)
         except:
             raise Exception, "Couldn't load images for the moveUp and moveDown buttons"
 
@@ -87,7 +90,7 @@ class ShotRunnerToolUi(object):
         self.ui_form.actionSaveAs.triggered.connect(self.actionSaveAs)
         self.ui_form.actionExit.triggered.connect(self.actionExit)
         self.ui_form.actionClose.triggered.connect(self.actionClose)
-        self.ui_form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+        self.ui_form.removeRowButton.pressed.connect(self.actionRemoveRow)
         self.runnerTableModel.dataChanged.connect(self.dataChanged)
 
     def show(self):
@@ -182,7 +185,8 @@ class ShotRunnerToolUi(object):
     def actionRemoveRow(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
-        for index in keyIndices:
+        setOfIndices = set(keyIndices)
+        for index in setOfIndices:
             self.runnerTableModel.removeRowByRowNumber(index.row())
 
     def shouldDiscardUnsavedChanges(self):
