@@ -60,6 +60,8 @@ class ShotPrepToolModel(object):
         self.__buildModelsInFile()
 
     def addDevice(self, deviceName):
+        if deviceName in self.workingFile['devices']:
+            raise KeyError('Device with name \"%s\" already exists.' % deviceName)
         self.workingFile['devices'].create_group(deviceName)
         self.__buildModelsInFile()
 

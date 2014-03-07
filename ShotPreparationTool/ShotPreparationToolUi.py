@@ -158,7 +158,12 @@ class ShotPreparationToolUi(object):
             response = dialog.getText(self.mainWindow, 'Add group', 'Enter name of device:')
             groupName = response[0]
             if groupName:
-                self.model.addDevice(str(groupName))
+                try:
+                    self.model.addDevice(str(groupName))
+                except KeyError as e:
+                    warningDialog = QtGui.QMessageBox(self.mainWindow)
+                    warningDialog.warning(self.mainWindow, 'Device name in use', e.message)
+                    return
                 self.initTabs(self.model.returnModelsInFile())
                 self.modelChanged()
 
