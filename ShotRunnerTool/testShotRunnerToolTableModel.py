@@ -5,12 +5,6 @@ from unittest import TestCase
 from ShotRunnerToolTableModel import *
 
 class TestShotRunnerToolTableModel(TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_rowCount(self):
         tableModel = ShotRunnerToolTableModel()
         self.assertEqual(tableModel.rowCount(), 1) #check that there is one row by default
