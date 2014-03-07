@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'shotpreparationtool.ui'
 #
-# Created: Sat Feb 01 13:26:47 2014
+# Created: Thu Mar 06 20:25:01 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -53,12 +53,6 @@ class Ui_MainWindow(object):
         self.menuRow = QtGui.QMenu(self.menuBar)
         self.menuRow.setObjectName(_fromUtf8("menuRow"))
         MainWindow.setMenuBar(self.menuBar)
-        self.mainToolBar = QtGui.QToolBar(MainWindow)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(MainWindow)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        MainWindow.setStatusBar(self.statusBar)
         self.actionNew = QtGui.QAction(MainWindow)
         self.actionNew.setObjectName(_fromUtf8("actionNew"))
         self.actionOpen = QtGui.QAction(MainWindow)
