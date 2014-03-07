@@ -39,8 +39,9 @@ class TestShotRunnerToolTableModel(TestCase):
     def test_getScriptsAndSettingsFilePaths(self):
         tableModel = ShotRunnerToolTableModel()
         tableModel.addRow()
-        tableModel.fileData[1]['scriptFilePath'] = 'foo'
+        tableModel.fileData[1]['scriptFileName'] = 'foo'
+        tableModel.fileData[1]['scriptFilePath'] = 'shoop'
         tableModel.fileData[1]['settingsFilePath'] = 'baz'
         settings, scripts = tableModel.getScriptsAndSettingsFilePaths()
-        self.assertEqual(settings[1], 'foo')
-        self.assertEqual(scripts[1], 'baz')
+        self.assertEqual(settings[0], 'shoop')
+        self.assertEqual(scripts[0], 'baz')

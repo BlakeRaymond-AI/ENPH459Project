@@ -27,6 +27,7 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         self.fileData = []
         self.fileData.append(dict(DEFAULT_ENTRY))
         self.headerLabels = ['Script Files', 'Settings Files']
+        self.workAroundQtBugFlag = False
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
         return len(self.fileData)
@@ -37,35 +38,41 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
     def data(self, index, role=None):
         row = index.row()
         column = index.column()
-        if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
+        if role == QtCore.Qt.EditRole:
+            if self.workAroundQtBugFlag:
+                self.getShotFilesFromUser(index)
+            self.workAroundQtBugFlag = not(self.workAroundQtBugFlag)
+            if column == 0:
+                return self.fileData[row][SCRIPT_FILE_KEY]
+            if column == 1:
+                return self.fileData[row][SETTINGS_FILE_KEY]
+        if role == QtCore.Qt.DisplayRole:
             if column == 0:
                 return self.fileData[row][SCRIPT_FILE_KEY]
             if column == 1:
                 return self.fileData[row][SETTINGS_FILE_KEY]
 
     def flags(self, index):
-        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable #|QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
-    def setData(self, index, value, role=None):
+    def getShotFilesFromUser(self, index):
         row = index.row()
         column = index.column()
-        if role == QtCore.Qt.EditRole:
-            if column == 0:    #editing the script file name
-                addNewRow = False
-                if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: addNewRow = True
-                value = str(self.getFilenameFromDialogBox(SCRIPT_FILE_EXTENSION))
-                if value: #if the value is not None, False or an empty string
-                    self.fileData[row][SCRIPT_PATH_KEY] = value
-                    self.fileData[row][SCRIPT_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
-                    if addNewRow: self.addRow()
-            elif column == 1: #editing the settings file name (should be h5 files)
-                value = str(self.getFilenameFromDialogBox(SETTINGS_FILE_EXTENSION))
-                if value:
-                    self.fileData[row][SETTINGS_PATH_KEY] = value
-                    self.fileData[row][SETTINGS_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
-            self.dataChanged.emit(index, index)
-            return True
-        return False
+        if column == 0:    #editing the script file name
+            addNewRow = False
+            if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: addNewRow = True
+            value = str(self.getFilenameFromDialogBox(SCRIPT_FILE_EXTENSION))
+            if value: #if the value is not None, False or an empty string
+                self.fileData[row][SCRIPT_PATH_KEY] = value
+                self.fileData[row][SCRIPT_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
+                if addNewRow: self.addRow()
+        elif column == 1: #editing the settings file name (should be h5 files)
+            value = str(self.getFilenameFromDialogBox(SETTINGS_FILE_EXTENSION))
+            if value:
+                self.fileData[row][SETTINGS_PATH_KEY] = value
+                self.fileData[row][SETTINGS_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
+        self.dataChanged.emit(index, index)
+        return
 
     def insertRows(self, position, rows, QModelIndex_parent=None, *args, **kwargs):
         self.beginInsertRows(QtCore.QModelIndex(), 0, rows + self.numberOfRows)
@@ -124,8 +131,9 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         self.endResetModel()
 
     def getScriptsAndSettingsFilePaths(self):
-        scripts = [shot[SCRIPT_PATH_KEY] for shot in self.fileData]
-        settings = [shot[SETTINGS_PATH_KEY] for shot in self.fileData]
+        filteredFileData = filter(lambda x: (x[SCRIPT_FILE_KEY]!=EMPTY_ROW_KEY and x[SCRIPT_FILE_KEY]), self.fileData)
+        scripts = [shot[SCRIPT_PATH_KEY] for shot in filteredFileData]
+        settings = [shot[SETTINGS_PATH_KEY] for shot in filteredFileData]
         return scripts, settings
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
