@@ -7,7 +7,7 @@ from GroupTableModel import GroupTableModel
 from ShotPrepToolModel import ShotPrepToolModel
 
 
-class ShotPrepToolModelTests(unittest.TestCase):
+class TestShotPrepToolModel(unittest.TestCase):
     #test case #1: make sure that it will import and create files (h5 files)
     #test case #2: make sure that it will copy from the original file to the test file
     #test case #3: check that discard changes works as expected
