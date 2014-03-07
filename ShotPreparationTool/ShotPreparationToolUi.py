@@ -61,8 +61,7 @@ class ShotPreparationToolUi(object):
 
     def checkHasOpenFile(self):
         if self.model is None:
-            dialog = QtGui.QMessageBox(self.mainWindow)
-            dialog.warning(self.mainWindow, 'Please load first', 'Please open an H5 file first.')
+            self.warnUser('Please load first', 'Please open an H5 file first.')
             return False
         return True
 
@@ -109,8 +108,7 @@ class ShotPreparationToolUi(object):
             try:
                 self.model = ShotPrepToolModel(self.fileName)
             except RuntimeError as e:
-                warningDialog = QtGui.QMessageBox(self.mainWindow)
-                warningDialog.warning(self.mainWindow, 'File locked', e.message)
+                self.warnUser('File locked', e.message)
                 return
             self.initTabs(self.model.returnModelsInFile())
             self.modelSaved()
@@ -161,12 +159,10 @@ class ShotPreparationToolUi(object):
                 try:
                     self.model.addDevice(str(groupName))
                 except KeyError as e:
-                    warningDialog = QtGui.QMessageBox(self.mainWindow)
-                    warningDialog.warning(self.mainWindow, 'Device name in use', e.message)
+                    self.warnUser('Device name in use', e.message)
                     return
                 except SyntaxError as e:
-                    warningDialog = QtGui.QMessageBox(self.mainWindow)
-                    warningDialog.warning(self.mainWindow, 'Invalid device name', e.message)
+                    self.warnUser('Invalid device name', e.message)
                 self.initTabs(self.model.returnModelsInFile())
                 self.modelChanged()
 
@@ -221,6 +217,10 @@ class ShotPreparationToolUi(object):
             model.dataChanged.connect(self.modelChanged)
             model.rowsInserted.connect(self.modelChanged)
             model.rowsRemoved.connect(self.modelChanged)
+
+    def warnUser(self, title, message):
+        warningDialog = QtGui.QMessageBox(self.mainWindow)
+        warningDialog.warning(self.mainWindow, title, message)
 
 
 if __name__ == '__main__':
