@@ -3,9 +3,12 @@ import os.path
 import shutil
 
 import h5py
-import GroupTableModel
 
-EMPTY_ROW_KEY = "<Click to add row>"
+import GroupTableModel
+from VariableNameValidator import VariableNameValidator
+
+
+DEVICES_GROUP_NAME = 'devices'
 
 
 class ShotPrepToolModel(object):
@@ -15,12 +18,12 @@ class ShotPrepToolModel(object):
             self.originalFile = h5py.File(self.h5pathName)
         else:
             self.originalFile = h5py.File(self.h5pathName)
-            self.originalFile.create_group('devices')
+            self.originalFile.create_group(DEVICES_GROUP_NAME)
             self.originalFile.flush()
 
         self.h5tempFileName = h5pathName + '.tmp'
         if os.path.exists(self.h5tempFileName):
-            os.remove(self.h5tempFileName)
+            raise RuntimeError('The file \"%s\" appears to be in use by another instance of the tool.' % h5pathName)
         shutil.copy2(self.h5pathName, self.h5tempFileName)
         self.workingFile = h5py.File(self.h5tempFileName)
         self.__buildModelsInFile()
@@ -32,48 +35,38 @@ class ShotPrepToolModel(object):
 
     def __buildModelsInFile(self):
         self.dict_of_devices = {}
-        for device in self.workingFile['devices']:
-            model = GroupTableModel.GroupTableModel(self.workingFile['devices'], device, parent=None,
-                                                    empty_row_string=EMPTY_ROW_KEY)
-            self.dict_of_devices[device] = model
+        for deviceName, device in self.workingFile[DEVICES_GROUP_NAME].items():
+            model = GroupTableModel.GroupTableModel(device, parent=None)
+            self.dict_of_devices[deviceName] = model
 
     def returnModelsInFile(self):
         return self.dict_of_devices
 
     def discardCharges(self):
-        del self.workingFile['devices']
-        self.originalFile.copy('devices', self.workingFile)
+        del self.workingFile[DEVICES_GROUP_NAME]
+        self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
         self.__buildModelsInFile()
 
     def saveChanges(self):
-        del self.originalFile['devices']
-        self.workingFile.copy('devices', self.originalFile)
-        for device in self.originalFile['devices'].values():
-            if EMPTY_ROW_KEY in device:
-                del device[EMPTY_ROW_KEY]
+        del self.originalFile[DEVICES_GROUP_NAME]
+        self.workingFile.copy(DEVICES_GROUP_NAME, self.originalFile)
+        for device in self.originalFile[DEVICES_GROUP_NAME].values():
+            if GroupTableModel.EMPTY_ROW_STRING in device:
+                del device[GroupTableModel.EMPTY_ROW_STRING]
         self.originalFile.flush()
 
     def removeDevice(self, deviceName):
-        del self.workingFile['devices'][deviceName]
+        del self.workingFile[DEVICES_GROUP_NAME][deviceName]
         self.__buildModelsInFile()
 
     def addDevice(self, deviceName):
-        self.workingFile['devices'].create_group(deviceName)
+        if deviceName in self.workingFile[DEVICES_GROUP_NAME]:
+            raise KeyError('Device with name \"%s\" already exists.' % deviceName)
+        if not VariableNameValidator.isValidVariableName(deviceName):
+            raise SyntaxError('Device name \"%s\" is not a valid Python variable name.' % deviceName)
+        self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
         self.__buildModelsInFile()
 
     def saveAs(self, filename):
         self.workingFile.flush()
         shutil.copy2(self.h5tempFileName, filename)
-
-
-if __name__ == '__main__':
-
-    h5pathname = 'devices.h5'
-    test = ShotPrepToolModel(h5pathname)
-    devices = test.returnModelsInFile()
-    print devices['RGA'].h5file['RGA']['test data point'][()]
-    devices['RGA'].h5file['RGA']['test data point'][()] = 'this has been changed'
-    print devices['RGA'].h5file['RGA']['test data point'][()]
-
-    test.cleanUp()
-

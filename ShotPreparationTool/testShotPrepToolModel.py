@@ -1,10 +1,13 @@
 import os
-import h5py
-from GroupTableModel import GroupTableModel
-from ShotPrepToolModel import ShotPrepToolModel
 import unittest
 
-class ShotPrepToolModelTests(unittest.TestCase):
+import h5py
+
+from GroupTableModel import GroupTableModel
+from ShotPrepToolModel import ShotPrepToolModel
+
+
+class TestShotPrepToolModel(unittest.TestCase):
     #test case #1: make sure that it will import and create files (h5 files)
     #test case #2: make sure that it will copy from the original file to the test file
     #test case #3: check that discard changes works as expected
@@ -37,37 +40,37 @@ class ShotPrepToolModelTests(unittest.TestCase):
 
     def test_ModelActuallyHasTheData(self):
         devices = self.testModel.returnModelsInFile()
-        self.assertEqual(devices['RGA'].h5file['RGA']['test data point'][()], '1')
-        self.assertEqual(devices['MOT'].h5file['MOT']['test data point 2'][()], '2')
+        self.assertEqual(devices['RGA'].group['test data point'][()], '1')
+        self.assertEqual(devices['MOT'].group['test data point 2'][()], '2')
 
     def test_DiscardChangesWillRevertChanges(self):
         devices = self.testModel.returnModelsInFile()
 
-        devices['RGA'].h5file['RGA']['test data point'][()] = '2'
-        self.assertEqual(devices['RGA'].h5file['RGA']['test data point'][()], '2')
+        devices['RGA'].group['test data point'][()] = '2'
+        self.assertEqual(devices['RGA'].group['test data point'][()], '2')
 
-        devices['MOT'].h5file['MOT']['test data point 2'][()] = '1'
-        self.assertEqual(devices['MOT'].h5file['MOT']['test data point 2'][()], '1')
+        devices['MOT'].group['test data point 2'][()] = '1'
+        self.assertEqual(devices['MOT'].group['test data point 2'][()], '1')
 
         self.testModel.discardCharges()
         devices = self.testModel.returnModelsInFile()
 
-        self.assertEqual('1', devices['RGA'].h5file['RGA']['test data point'][()])
-        self.assertEqual('2', devices['MOT'].h5file['MOT']['test data point 2'][()])
+        self.assertEqual('1', devices['RGA'].group['test data point'][()])
+        self.assertEqual('2', devices['MOT'].group['test data point 2'][()])
 
     def test_SaveChangesWillSaveChanges(self):
         devices = self.testModel.returnModelsInFile()
 
-        devices['RGA'].h5file['RGA']['test data point'][()] = '2'
-        self.assertEqual(devices['RGA'].h5file['RGA']['test data point'][()], '2')
-        devices['MOT'].h5file['MOT']['test data point 2'][()] = '1'
-        self.assertEqual(devices['MOT'].h5file['MOT']['test data point 2'][()], '1')
+        devices['RGA'].group['test data point'][()] = '2'
+        self.assertEqual(devices['RGA'].group['test data point'][()], '2')
+        devices['MOT'].group['test data point 2'][()] = '1'
+        self.assertEqual(devices['MOT'].group['test data point 2'][()], '1')
 
         self.testModel.saveChanges()
 
         saveFile = h5py.File('test_file.h5')
-        self.assertEqual('2', saveFile['devices']['RGA']['test data point'][()])
-        self.assertEqual('1', saveFile['devices']['MOT']['test data point 2'][()])
+        self.assertEqual('2', saveFile['devices/RGA/test data point'][()])
+        self.assertEqual('1', saveFile['devices/MOT/test data point 2'][()])
         saveFile.close()
 
 
