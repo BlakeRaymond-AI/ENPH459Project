@@ -54,13 +54,15 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
                 addNewRow = False
                 if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: addNewRow = True
                 value = str(self.getFilenameFromDialogBox(SCRIPT_FILE_EXTENSION))
-                self.fileData[row][SCRIPT_PATH_KEY] = value
-                self.fileData[row][SCRIPT_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
-                if addNewRow: self.addRow()
+                if value: #if the value is not None, False or an empty string
+                    self.fileData[row][SCRIPT_PATH_KEY] = value
+                    self.fileData[row][SCRIPT_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
+                    if addNewRow: self.addRow()
             elif column == 1: #editing the settings file name (should be h5 files)
                 value = str(self.getFilenameFromDialogBox(SETTINGS_FILE_EXTENSION))
-                self.fileData[row][SETTINGS_PATH_KEY] = value
-                self.fileData[row][SETTINGS_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
+                if value:
+                    self.fileData[row][SETTINGS_PATH_KEY] = value
+                    self.fileData[row][SETTINGS_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
             self.dataChanged.emit(index, index)
             return True
         return False
@@ -77,9 +79,10 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         return True
 
     def removeRowByRowNumber(self, row):
-        self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
-        self.fileData.pop(row)
-        self.endRemoveRows()
+        if self.fileData[row][SCRIPT_FILE_KEY] != EMPTY_ROW_KEY:
+            self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
+            self.fileData.pop(row)
+            self.endRemoveRows()
 
     def saveDataToFileByPath(self, fileName):
         output = list(self.fileData)
