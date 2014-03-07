@@ -74,11 +74,6 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         self.dataChanged.emit(index, index)
         return
 
-    def insertRows(self, position, rows, QModelIndex_parent=None, *args, **kwargs):
-        self.beginInsertRows(QtCore.QModelIndex(), 0, rows + self.numberOfRows)
-        self.endInsertRows()
-        return True
-
     def addRow(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
         self.fileData.append(dict(DEFAULT_ENTRY))
