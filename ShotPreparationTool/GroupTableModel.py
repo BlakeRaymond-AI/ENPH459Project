@@ -1,25 +1,25 @@
+from ShotPreparationTool.VariableNameValildator import VariableNameValidator
+
 __author__ = 'Blake & Jeff'
 
-import os
-import os.path
-
 from PyQt4 import QtGui, QtCore
-import h5py
 import numpy as np
 
+EMPTY_ROW_STRING = '<Click to add row>'
+NUMBER_OF_COLUMNS = 2
+KEY_COLUMN_INDEX = 0
+VALUE_COLUMN_INDEX = 1
+SOURCE_EXPRESSION_ATTR_KEY = 'source_expression'
+
+
 class GroupTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, h5file, group_name, parent, empty_row_string='<Click to add row>'):
+    def __init__(self, group, parent):
         QtCore.QAbstractTableModel.__init__(self, parent)
-        self.h5file = h5file
-        self.group_name = group_name
-        self.empty_row_string = empty_row_string
+        self.group = group
         self.addRow()
 
-    def __group(self):
-        return self.h5file[self.group_name]
-
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
-        return len(self.__group().keys())
+        return len(self.group.keys())
 
     def columnCount(self, QModelIndex_parent=None, *args, **kwargs):
         return 2
@@ -32,12 +32,12 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         column = index.column()
 
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
-            if column == 0:
-                return self.__group().keys()[row]
-            elif column == 1:
-                group = self.__group().values()[row]
-                if 'source_expression' in group.attrs:
-                    return group.attrs['source_expression']
+            if column == KEY_COLUMN_INDEX:
+                return self.group.keys()[row]
+            elif column == VALUE_COLUMN_INDEX:
+                group = self.group.values()[row]
+                if SOURCE_EXPRESSION_ATTR_KEY in group.attrs:
+                    return group.attrs[SOURCE_EXPRESSION_ATTR_KEY]
                 else:
                     value = group[()]
                     if isinstance(value, np.ndarray):
@@ -46,54 +46,60 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                         return str(value)
 
     def setData(self, index, value, role=None):
-        #refactor this to use f.copy instead of making a new one and then copying over.
-        if role == QtCore.Qt.EditRole:
-            name = self.__group().keys()[index.row()]
-            current_name = self.group_name + '/' + name
+        current = self.group.keys()[index.row()]
+        new = str(value.toString())
 
-            if index.column() == 0:
-                new_name = self.group_name + '/' + str(value.toString())
-                current_group = self.h5file[current_name]
+        if not role == QtCore.Qt.EditRole:
+            success = False
+        elif index.column() == 0:
+            success = self.tryChangeVariableName(current, new)
+        elif index.column() == 1:
+            success = self.tryChangeVariableValue(current, new)
+        else:
+            success = False
 
-                if not str(value.toString()) or new_name == current_name:
-                    return False
-
-                try:
-                    self.h5file[new_name] = current_group
-                    del self.h5file[current_name]
-                except RuntimeError as expt:
-                    message_box = QtGui.QMessageBox(None)
-                    message_box.warning(None, '', 'Unable to create constant with key \"%s\". Can not have duplicate keys.' %value.toString())
-
-                if self.empty_row_string in current_name:
-                    # add another new row
-                    self.addRow()
-
-            elif index.column() == 1:
-                # change value
-                new_value_string = str(value.toString())
-                if not new_value_string:
-                    return False
-                try:
-                    new_value = eval(new_value_string)
-                except Exception as expt:
-                    message_box = QtGui.QMessageBox(None)
-                    message_box.warning(None, '', 'Could not evaluate expression: \"%s\"; error: \n\n%s' % (
-                        new_value_string, expt.message))
-                    return False
-                else:
-                    del self.h5file[current_name]
-                    self.h5file[current_name] = new_value
-                    self.h5file[current_name].attrs['source_expression'] = new_value_string
-
+        if success:
             self.dataChanged.emit(index, index)
+        return success
+
+    def tryChangeVariableName(self, currentName, newName):
+        if not currentName or newName == currentName:
+            pass
+        elif newName in self.group:
+            self.warnUser('Duplicate variable name',
+                          'Variable with name \"%s\" already exists for this device.' % newName)
+        elif not VariableNameValidator.isValidVariableName(newName):
+            self.warnUser('Invalid variable name',
+                          'Variable name \"%s\" is not a valid Python variable name.' % newName)
+        else:
+            currentValue = self.group[currentName]
+            self.group[newName] = currentValue
+            del self.group[currentName]
+            if EMPTY_ROW_STRING in currentName:  # Add another new row
+                self.addRow()
             return True
         return False
 
+    def tryChangeVariableValue(self, currentValue, newValue):
+        if not newValue:
+            pass
+        else:
+            try:
+                newValueResult = eval(newValue)
+            except Exception as expt:
+                warningMessage = 'Could not evaluate expression: \"%s\"; error: \n\n%s' % (newValue, expt.message)
+                self.warnUser('Invalid expression', warningMessage)
+            else:
+                del self.group[currentValue]
+                self.group[currentValue] = newValueResult
+                self.group[currentValue].attrs[SOURCE_EXPRESSION_ATTR_KEY] = newValue
+                return True
+        return False
+
     def removeRowByName(self, name):
-        device = self.__group()
+        device = self.group
         if name in device:
-            if not self.empty_row_string in name:
+            if not EMPTY_ROW_STRING in name:
                 self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
                 del device[name]
                 self.endRemoveRows()
@@ -106,36 +112,11 @@ class GroupTableModel(QtCore.QAbstractTableModel):
 
     def addRow(self):
         self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
-        name = self.empty_row_string
-        if not name in self.__group():
-            self.__group()[name] = ''
+        name = EMPTY_ROW_STRING
+        if not name in self.group:
+            self.group[name] = ''
         self.endInsertRows()
 
-if __name__ == '__main__':
-    app = QtGui.QApplication([])
-
-    if os.path.exists('test.h5'):
-        os.remove('test.h5')
-    if os.path.exists('foobar.h5'):
-        os.remove('foobar.h5')
-
-    h5file = h5py.File('foobar.h5')
-    devices = h5file.create_group('devices')
-    RGA = devices.create_group('RGA')
-    RGA['test1'] = 1
-    RGA['test2'] = 2
-    RGA['test3'] = [14, 16, 18, 28, 32, 40, 44]
-    RGA['<Click to add row>'] = ''
-
-    testFile = h5py.File('test.h5')
-    h5file.copy('devices', testFile)
-
-    model = GroupTableModel(h5file, group_name='devices/RGA', parent=None)
-
-    #commands to create the views
-    view = QtGui.QTableView()
-    view.setModel(model)
-
-    view.show()
-    app.exec_()
-    h5file.close()
+    def warnUser(self, title, message):
+        message_box = QtGui.QMessageBox(None)
+        message_box.warning(None, title, message)

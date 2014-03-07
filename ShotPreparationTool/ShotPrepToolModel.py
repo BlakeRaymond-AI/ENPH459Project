@@ -7,9 +7,6 @@ import h5py
 import GroupTableModel
 
 
-EMPTY_ROW_KEY = "<Click to add row>"
-
-
 class ShotPrepToolModel(object):
     def __init__(self, h5pathName):
         self.h5pathName = h5pathName
@@ -34,10 +31,9 @@ class ShotPrepToolModel(object):
 
     def __buildModelsInFile(self):
         self.dict_of_devices = {}
-        for device in self.workingFile['devices']:
-            model = GroupTableModel.GroupTableModel(self.workingFile['devices'], device, parent=None,
-                                                    empty_row_string=EMPTY_ROW_KEY)
-            self.dict_of_devices[device] = model
+        for deviceName, device in self.workingFile['devices'].items():
+            model = GroupTableModel.GroupTableModel(device, parent=None)
+            self.dict_of_devices[deviceName] = model
 
     def returnModelsInFile(self):
         return self.dict_of_devices
@@ -51,8 +47,8 @@ class ShotPrepToolModel(object):
         del self.originalFile['devices']
         self.workingFile.copy('devices', self.originalFile)
         for device in self.originalFile['devices'].values():
-            if EMPTY_ROW_KEY in device:
-                del device[EMPTY_ROW_KEY]
+            if GroupTableModel.EMPTY_ROW_STRING in device:
+                del device[GroupTableModel.EMPTY_ROW_STRING]
         self.originalFile.flush()
 
     def removeDevice(self, deviceName):
