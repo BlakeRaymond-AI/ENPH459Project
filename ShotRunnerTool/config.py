@@ -7,3 +7,5 @@ class _SettingsContainer(object):
 
 
 settings = _SettingsContainer()
+settingsDict = {}
+

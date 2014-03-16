@@ -7,26 +7,29 @@ from ConfigLoader import ConfigLoader
 
 
 class testConfigLoader(unittest.TestCase):
-    class StubFileLoader(object):
-        def __init__(self, settingsToReturn):
-            self.settingsToReturn = settingsToReturn
-
-        def loadDevices(self, path):
-            return self.settingsToReturn
-
-    class StubObject(object):
-        def __init__(self):
-            pass
-
     def test_loadsDeviceConstantsIntoConfig(self):
-        FooDevice = self.StubObject()
-        FooDevice.stringConstant = 'bar'
-        FooDevice.intConstant = 1
         devices = {
-            'FooDevice': FooDevice
+            'FooDevice': {
+                'stringConstant': 'bar',
+                'intConstant': 1
+            }
         }
-        stubLoader = self.StubFileLoader(devices)
         configLoader = ConfigLoader()
-        configLoader.loadFromFile(stubLoader, None) #TODO this file interface is gross
+        configLoader.load(devices)
+
+        self.assertEqual('bar', config.settingsDict['FooDevice']['stringConstant'])
+        self.assertEqual(1, config.settingsDict['FooDevice']['intConstant'])
+
+    def test_loadsSettingsAsFluentDictionary(self):
+        devices = {
+            'FooDevice': {
+                'stringConstant': 'bar',
+                'intConstant': 1
+            }
+        }
+        configLoader = ConfigLoader()
+        configLoader.load(devices)
+
         self.assertEqual('bar', config.settings.FooDevice.stringConstant)
         self.assertEqual(1, config.settings.FooDevice.intConstant)
+

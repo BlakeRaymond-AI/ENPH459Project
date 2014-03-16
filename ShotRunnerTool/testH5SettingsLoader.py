@@ -33,18 +33,13 @@ class testH5SettingsLoader(unittest.TestCase):
     def test_loadsOneDeviceObjectPerGroupUnderDevices(self):
         loader = H5SettingsLoader()
         settings = loader.loadSettings(self.tempFileName)
-        self.assertTrue(hasattr(settings, 'testDevice1'))
-        self.assertTrue(hasattr(settings, 'testDevice2'))
+        self.assertTrue('testDevice1' in settings)
+        self.assertTrue('testDevice2' in settings)
 
     def test_loadsSettingsFromDeviceKeysAndValues(self):
         loader = H5SettingsLoader()
         settings = loader.loadSettings(self.tempFileName)
-        self.assertEqual('baz', settings.testDevice1.stringConstant)
-        self.assertEqual(2, settings.testDevice1.intConstant)
-        self.assertEqual(3.14, settings.testDevice1.floatConstant)
-        self.assertEqual([1, 2], settings.testDevice1.arrayConstant)
-
-    def test_loadDevicesReturnsDictionaryOfDevices(self):
-        loader = H5SettingsLoader()
-        devices = loader.loadDevices(self.tempFileName)
-        self.assertEqual('baz', devices['testDevice1'].stringConstant)
+        self.assertEqual('baz', settings['testDevice1']['stringConstant'])
+        self.assertEqual(2, settings['testDevice1']['intConstant'])
+        self.assertEqual(3.14, settings['testDevice1']['floatConstant'])
+        self.assertEqual([1, 2], settings['testDevice1']['arrayConstant'])

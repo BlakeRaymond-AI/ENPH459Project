@@ -5,6 +5,7 @@ __author__ = 'Blake'
 # By importing this file, the shot parameters are automatically loaded into the config module.
 
 import os.path
+
 from ConfigLoader import ConfigLoader
 from H5SettingsLoader import H5SettingsLoader
 
@@ -21,7 +22,8 @@ class ConfigError(RuntimeError):
 
 if os.path.exists(SETTINGS_FILE_NAME):
     try:
-        CONFIG_LOADER.loadFromFile(SETTINGS_LOADER, SETTINGS_FILE_NAME)
+        settings = SETTINGS_LOADER.loadSettings(SETTINGS_FILE_NAME)
+        CONFIG_LOADER.load(settings)
     except:
         raise ConfigError('Could not load device parameters from default settings file: \'%s\'' % SETTINGS_FILE_NAME)
 else:
