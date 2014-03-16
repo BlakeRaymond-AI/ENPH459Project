@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'shotpreparationtool.ui'
 #
-# Created: Thu Mar 06 20:25:01 2014
+# Created: Sun Mar 16 00:53:16 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,6 +71,8 @@ class Ui_MainWindow(object):
         self.actionRemoveDevice.setObjectName(_fromUtf8("actionRemoveDevice"))
         self.actionRemoveRow = QtGui.QAction(MainWindow)
         self.actionRemoveRow.setObjectName(_fromUtf8("actionRemoveRow"))
+        self.actionImport = QtGui.QAction(MainWindow)
+        self.actionImport.setObjectName(_fromUtf8("actionImport"))
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -81,6 +83,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionExit)
         self.menuGroup.addAction(self.actionAddDevice)
         self.menuGroup.addAction(self.actionRemoveDevice)
+        self.menuGroup.addAction(self.actionImport)
         self.menuRow.addAction(self.actionRemoveRow)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuGroup.menuAction())
@@ -104,4 +107,5 @@ class Ui_MainWindow(object):
         self.actionAddDevice.setText(_translate("MainWindow", "Add", None))
         self.actionRemoveDevice.setText(_translate("MainWindow", "Remove Current", None))
         self.actionRemoveRow.setText(_translate("MainWindow", "Remove Selected", None))
+        self.actionImport.setText(_translate("MainWindow", "Import...", None))
 

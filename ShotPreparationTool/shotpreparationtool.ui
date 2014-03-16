@@ -61,6 +61,7 @@
     </property>
     <addaction name="actionAddDevice"/>
     <addaction name="actionRemoveDevice"/>
+    <addaction name="actionImport"/>
    </widget>
    <widget class="QMenu" name="menuRow">
     <property name="title">
@@ -115,6 +116,11 @@
   <action name="actionRemoveRow">
    <property name="text">
     <string>Remove Selected</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Import...</string>
    </property>
   </action>
  </widget>

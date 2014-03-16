@@ -38,6 +38,7 @@ class ShotPreparationToolUi(object):
         form.actionAddDevice.triggered.connect(self.actionAddDevice)
         form.actionRemoveDevice.triggered.connect(self.actionRemoveDevice)
         form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+        form.actionImport.triggered.connect(self.actionImport)
 
     def setTitle(self):
         if self.fileName is not None:
@@ -186,6 +187,9 @@ class ShotPreparationToolUi(object):
                 model.removeRowByName(name)
             else:
                 self.modelChanged()
+
+    def actionImport(self):
+        print 'import'
 
     def show(self):
         self.mainWindow.show()
