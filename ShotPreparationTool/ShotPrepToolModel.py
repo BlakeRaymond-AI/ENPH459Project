@@ -4,6 +4,7 @@ import shutil
 
 import h5py
 
+from DeviceImporter import DeviceImporter
 import GroupTableModel
 from VariableNameValidator import VariableNameValidator
 
@@ -65,6 +66,19 @@ class ShotPrepToolModel(object):
         if not VariableNameValidator.isValidVariableName(deviceName):
             raise SyntaxError('Device name \"%s\" is not a valid Python variable name.' % deviceName)
         self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
+        self.__buildModelsInFile()
+
+    @staticmethod
+    def getListOfDevices(h5File):
+        if not DEVICES_GROUP_NAME in h5File:
+            return []
+        devicesGroup = h5File[DEVICES_GROUP_NAME]
+        return devicesGroup.keys()
+
+    def importDevices(self, devices, h5file):
+        devicesGroup = h5file[DEVICES_GROUP_NAME]
+        importer = DeviceImporter(self.workingFile[DEVICES_GROUP_NAME])
+        importer.importFromH5File(devicesGroup, devices)
         self.__buildModelsInFile()
 
     def saveAs(self, filename):

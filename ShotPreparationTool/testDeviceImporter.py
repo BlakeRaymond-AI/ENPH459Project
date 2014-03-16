@@ -15,7 +15,8 @@ class TestDeviceImporter(unittest.TestCase):
                 'BarConstant': 'BazValue'
             }
         }
-        targetFile = h5py.File('test.h5', driver='core', backing_store=False)  # memory-only
+        targetFile = h5py.File('test_canAddDevicesToH5FileFromDict.h5', driver='core',
+                               backing_store=False)  # memory-only
         deviceImporter = DeviceImporter(targetFile)
         deviceImporter.importFromDict(newDevices)
 
@@ -36,3 +37,41 @@ class TestDeviceImporter(unittest.TestCase):
         self.assertTrue('FooDevice' in targetFile)
         self.assertTrue('BarConstant' in targetFile['FooDevice'])
         self.assertEqual('BazValue', targetFile['FooDevice/BarConstant'][()])
+
+    def test_canSpecifyDevicesToInclude(self):
+        newDevices = {
+            'FooDevice': {
+                'BarConstant': 'BazValue'
+            },
+            'BarDevice': {
+                'QuuxConstant': 'CorgeValue'
+            }
+        }
+        targetFile = h5py.File('test_canSpecifyDevicesToInclude.h5', driver='core', backing_store=False)  # memory-only
+        deviceImporter = DeviceImporter(targetFile)
+        deviceImporter.importFromDict(newDevices, ['BarDevice'])
+
+        self.assertFalse('FooDevice' in targetFile)
+        self.assertTrue('BarDevice' in targetFile)
+
+    def test_willOverwriteExistingDevices(self):
+        existing = {
+            'Device': {
+                'Parameter': 'ExistingValue'
+            }
+        }
+        override = {
+            'Device': {
+                'Parameter': 'NewValue'
+            }
+        }
+
+        targetFile = h5py.File('test_willOverwriteExistingDevices.h5', driver='core',
+                               backing_store=False)  # memory-only
+        deviceImporter = DeviceImporter(targetFile)
+
+        deviceImporter.importFromDict(existing)
+        self.assertEqual('ExistingValue', targetFile['Device/Parameter'][()])
+
+        deviceImporter.importFromDict(override)
+        self.assertEqual('NewValue', targetFile['Device/Parameter'][()])

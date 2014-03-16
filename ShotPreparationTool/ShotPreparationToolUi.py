@@ -1,3 +1,8 @@
+import h5py
+
+from ListSelectionDialog import ListSelectionDialog
+
+
 __author__ = 'Blake'
 
 import sys
@@ -188,8 +193,33 @@ class ShotPreparationToolUi(object):
             else:
                 self.modelChanged()
 
+    def warnUserIfImportingExistingDevices(self, checkedItems):
+        if set(checkedItems).intersection(self.model.returnModelsInFile().keys()):
+            self.warnUser('Importing existing device',
+                          'One or more devices to be imported were already found.  These devices will be overwritten.')
+
     def actionImport(self):
-        print 'import'
+        if not self.checkHasOpenFile():
+            return
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Import from HDF5 file',
+                                                           directory=str(os.getcwd()), filter='*.h5')
+        fileName = str(dialogReturn[0])
+        if not fileName:
+            return
+        file = h5py.File(fileName)
+        devices = ShotPrepToolModel.getListOfDevices(file)
+        dialog = ListSelectionDialog(self.mainWindow)
+        dialog.addItems(devices)
+        response = dialog.exec_()
+        if response == QtGui.QDialog.Accepted:
+            checkedItems = dialog.getCheckedItems()
+            self.warnUserIfImportingExistingDevices(checkedItems)
+            self.model.importDevices(dialog.getCheckedItems(), file)
+            self.clearTabs()
+            self.initTabs(self.model.returnModelsInFile())
+            self.modelChanged()
+        file.close()
 
     def show(self):
         self.mainWindow.show()
@@ -232,5 +262,3 @@ if __name__ == '__main__':
     ui = ShotPreparationToolUi(app)
     ui.show()
     sys.exit(app.exec_())
-
-

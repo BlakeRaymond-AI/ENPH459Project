@@ -19,7 +19,7 @@ class ListSelectionDialog(QtGui.QDialog):
         buttonDialog = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
         buttonDialog.accepted.connect(self.accept)
         buttonDialog.rejected.connect(self.reject)
-        horizontalLayout.addWidget(self.buttonDialog)
+        horizontalLayout.addWidget(buttonDialog)
 
         layout.addLayout(horizontalLayout)
 
@@ -37,4 +37,4 @@ class ListSelectionDialog(QtGui.QDialog):
 
         items = map(lambda index: self.devicesList.item(index), range(self.devicesList.count()))
         checkedItems = filter(isChecked, items)
-        return map(lambda item: item.text(), checkedItems)
+        return map(lambda item: str(item.text()), checkedItems)
