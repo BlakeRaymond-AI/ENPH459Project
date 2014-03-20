@@ -1,9 +1,11 @@
+from FluentDictionary import FluentDictionary
+
 __author__ = 'Blake'
 
 
-class _SettingsContainer(object):
-    def __init__(self):
-        pass
+def load(newValues):
+    global settingsDict
+    global settings
 
-
-settings = _SettingsContainer()
+    settingsDict = newValues
+    settings = FluentDictionary(newValues)
