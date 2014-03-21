@@ -9,10 +9,11 @@ for deviceString in deviceNames:
     device = getattr(settingsTemplate, deviceString)
     h5device = deviceGroup.create_group(deviceString)
     for key in device.keys():
-        h5device[key] = device[key]
-        h5device[key].attrs['source_expression'] = str(device[key])
-
-        #raise Exception, "Error importing data for device %s, data %s" %(deviceString, key)
-        #print "Error importing data for device %s, data %s" %(deviceString, key)
+        try:
+            h5device[key] = device[key]
+            h5device[key].attrs['source_expression'] = str(device[key])
+        except:
+            h5file.close()
+            raise Exception, "Error importing data for device %s, data %s" %(deviceString, key)
 h5file.close()
 
