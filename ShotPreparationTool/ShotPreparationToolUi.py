@@ -1,3 +1,8 @@
+import h5py
+
+from ListSelectionDialog import ListSelectionDialog
+
+
 __author__ = 'Blake'
 
 import sys
@@ -41,6 +46,7 @@ class ShotPreparationToolUi(object):
         form.actionAddDevice.triggered.connect(self.actionAddDevice)
         form.actionRemoveDevice.triggered.connect(self.actionRemoveDevice)
         form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+        form.actionImport.triggered.connect(self.actionImport)
 
     def setTitle(self):
         if self.fileName is not None:
@@ -189,6 +195,40 @@ class ShotPreparationToolUi(object):
             else:
                 self.modelChanged()
 
+    def verifyOverwriteExistingDevices(self, checkedItems):
+        if set(checkedItems).intersection(self.model.returnModelsInFile().keys()):
+            messageBox = QtGui.QMessageBox()
+            response = messageBox.question(self.mainWindow, 'Overwriting existing device',
+                                           'One or more devices to be imported were already found.  These devices will be overwritten.',
+                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                            QtGui.QMessageBox.Cancel)
+            if response == QtGui.QMessageBox.Cancel:
+                return False
+            return True
+
+    def actionImport(self):
+        if not self.checkHasOpenFile():
+            return
+        fileDialog = QtGui.QFileDialog(self.mainWindow)
+        dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Import from HDF5 file',
+                                                           directory=str(os.getcwd()), filter='*.h5')
+        fileName = str(dialogReturn[0])
+        if not fileName:
+            return
+        file = h5py.File(fileName)
+        devices = ShotPrepToolModel.getListOfDevices(file)
+        dialog = ListSelectionDialog(self.mainWindow)
+        dialog.addItems(devices)
+        response = dialog.exec_()
+        if response == QtGui.QDialog.Accepted:
+            checkedItems = dialog.getCheckedItems()
+            if (self.verifyOverwriteExistingDevices(checkedItems)):
+                self.model.importDevices(dialog.getCheckedItems(), file)
+                self.clearTabs()
+                self.initTabs(self.model.returnModelsInFile())
+                self.modelChanged()
+        file.close()
+
     def show(self):
         self.mainWindow.show()
 
@@ -230,5 +270,3 @@ if __name__ == '__main__':
     ui = ShotPreparationToolUi(app)
     ui.show()
     sys.exit(app.exec_())
-
-
