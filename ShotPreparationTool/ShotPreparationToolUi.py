@@ -9,6 +9,9 @@ from shotpreparationtool_ui import Ui_MainWindow
 from ShotPrepToolModel import ShotPrepToolModel
 
 
+H5_FILE_EXTENSION = '*.h5'
+
+
 class ShotPreparationToolUi(object):
     def __init__(self, app):
         self.fileName = None
@@ -88,7 +91,7 @@ class ShotPreparationToolUi(object):
         if self.checkShouldDiscardAnyUnsavedChanges():
             fileDialog = QtGui.QFileDialog(self.mainWindow)
             dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
-                                                               directory=str(os.getcwd()), filter='*.h5')
+                                                               directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
             if dialogReturn[0]:
                 self.close()
                 self.fileName = str(dialogReturn[0])
@@ -99,7 +102,7 @@ class ShotPreparationToolUi(object):
     def actionOpen(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Open existing HDF5 file',
-                                                           directory=str(os.getcwd()), filter='*.h5')
+                                                           directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
         fileName = str(dialogReturn[0])
 
         if fileName:
@@ -121,7 +124,7 @@ class ShotPreparationToolUi(object):
     def actionSave_As(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='Save As HDF5 file',
-                                                           directory=str(os.getcwd()), filter='*.h5')
+                                                           directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
         fileName = str(dialogReturn[0])
         if fileName:
             self.model.saveAs(fileName)
