@@ -2,7 +2,7 @@ import settingsTemplate
 import h5py
 
 
-h5file = h5py.File('default_name.h5','w')
+h5file = h5py.File('default_settings.h5','w')
 deviceNames = filter(lambda x: type(getattr(settingsTemplate,x)) == dict and x != '__builtins__', dir(settingsTemplate))
 deviceGroup = h5file.create_group('devices')
 for deviceString in deviceNames:
