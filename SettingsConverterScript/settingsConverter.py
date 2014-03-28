@@ -1,8 +1,12 @@
-import settingsTemplate
+import imp
 import h5py
 
+SETTINGS_TEMPLATE = 'settingsTemplate.py'
+PATH_DIRECTORY = 'C:\Users\School\GIT\ENPH459Project\TestFolder\settingsTemplate.py'
+OUTPUT_FILE_NAME = 'default_settings.h5'
 
-h5file = h5py.File('default_settings.h5','w')
+settingsTemplate = imp.load_source(SETTINGS_TEMPLATE, PATH_DIRECTORY)
+h5file = h5py.File(OUTPUT_FILE_NAME,'w')
 deviceNames = filter(lambda x: type(getattr(settingsTemplate,x)) == dict and x != '__builtins__', dir(settingsTemplate))
 deviceGroup = h5file.create_group('devices')
 for deviceString in deviceNames:
@@ -15,5 +19,6 @@ for deviceString in deviceNames:
         except:
             h5file.close()
             raise Exception, "Error importing data for device %s, data %s" %(deviceString, key)
+
 h5file.close()
 
