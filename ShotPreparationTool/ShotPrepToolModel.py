@@ -25,6 +25,7 @@ class ShotPrepToolModel(object):
         self.h5tempFileName = h5pathName + '.tmp'
         self.workingFile = h5py.File(self.h5tempFileName, driver='core', backing_store=False)  # memory-only
         self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
+        self.importFromDefaults()
         self.__buildModelsInFile()
 
     def cleanUp(self):
@@ -78,14 +79,14 @@ class ShotPrepToolModel(object):
         importer.importFromH5File(devicesGroup, devices)
         self.__buildModelsInFile()
 
-    def importFromDefaults(self):
-        SETTINGS_TEMPLATE = 'settingsTemplate.py'
-        PATH_DIRECTORY = 'C:\PAT\PATFramework\Client\Settings\settingsTemplate.py'
+    def importFromDefaults(self, fileName=None, filePath=None):
+        if not fileName: fileName = 'settingsTemplate.py'
+        if not filePath: filePath = 'C:\PAT\PATFramework\Client\Settings\settingsTemplate.py'
 
-        settingsTemplate = imp.load_source(SETTINGS_TEMPLATE, PATH_DIRECTORY)
+        settingsTemplate = imp.load_source(fileName, filePath)
         updatePackage = settingsTemplate.updatePackage
         for device in settingsTemplate.updatePackage:
-            newDevice = self.workingFile.create_group(device)
+            newDevice = self.workingFile[DEVICES_GROUP_NAME].create_group(device)
             for setting in updatePackage[device]:
                 newDevice[setting] = updatePackage[device][setting]
                 newDevice[setting].attrs['source_expression'] = str(updatePackage[device][setting])
