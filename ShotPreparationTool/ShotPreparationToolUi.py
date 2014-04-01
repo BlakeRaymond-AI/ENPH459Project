@@ -97,6 +97,10 @@ class ShotPreparationToolUi(object):
                 self._close()
                 self.fileName = str(dialogReturn[0])
                 self.model = ShotPrepToolModel(self.fileName)
+                try:
+                    self.model.importFromDefaults()
+                except Exception as e:
+                    self._warnUser('Error importing defaults', e.message)
                 self._initTabs(self.model.returnModelsInFile())
                 self._modelSaved()
 

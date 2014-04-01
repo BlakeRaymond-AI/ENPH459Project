@@ -24,7 +24,6 @@ class ShotPrepToolModel(object):
         self.h5tempFileName = h5pathName + '.tmp'
         self.workingFile = h5py.File(self.h5tempFileName, driver='core', backing_store=False)  # memory-only
         self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
-        self.importFromDefaults()
         self.__buildModelsInFile()
 
     def cleanUp(self):
@@ -81,14 +80,18 @@ class ShotPrepToolModel(object):
     def importFromDefaults(self, fileName=None, filePath=None):
         if not fileName: fileName = 'settingsTemplate.py'
         if not filePath: filePath = 'C:\PAT\PATFramework\Client\Settings\settingsTemplate.py'
-
-        settingsTemplate = imp.load_source(fileName, filePath)
-        updatePackage = settingsTemplate.updatePackage
-        for device in settingsTemplate.updatePackage:
-            newDevice = self.workingFile[DEVICES_GROUP_NAME].create_group(device)
-            for setting in updatePackage[device]:
-                newDevice[setting] = updatePackage[device][setting]
-                newDevice[setting].attrs['source_expression'] = str(updatePackage[device][setting])
+        try:
+            settingsTemplate = imp.load_source(fileName, filePath)
+            updatePackage = settingsTemplate.updatePackage
+            for device in settingsTemplate.updatePackage:
+                newDevice = self.workingFile[DEVICES_GROUP_NAME].create_group(device)
+                for setting in updatePackage[device]:
+                    newDevice[setting] = updatePackage[device][setting]
+                    newDevice[setting].attrs['source_expression'] = str(updatePackage[device][setting])
+            self.__buildModelsInFile()
+        except:
+            raise Exception, "Couldn't read default settings at %s. Ensure that the file is located at %s" \
+                             " and that the updatePackage dict is uncommented." %(filePath,filePath)
 
     def saveAs(self, filename):
         newFile = h5py.File(filename)
