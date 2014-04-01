@@ -1,4 +1,5 @@
 import os
+import imp
 import os.path
 
 import h5py
@@ -76,6 +77,18 @@ class ShotPrepToolModel(object):
         importer = DeviceImporter(self.workingFile[DEVICES_GROUP_NAME])
         importer.importFromH5File(devicesGroup, devices)
         self.__buildModelsInFile()
+
+    def importFromDefaults(self):
+        SETTINGS_TEMPLATE = 'settingsTemplate.py'
+        PATH_DIRECTORY = 'C:\PAT\PATFramework\Client\Settings\settingsTemplate.py'
+
+        settingsTemplate = imp.load_source(SETTINGS_TEMPLATE, PATH_DIRECTORY)
+        updatePackage = settingsTemplate.updatePackage
+        for device in settingsTemplate.updatePackage:
+            newDevice = self.workingFile.create_group(device)
+            for setting in updatePackage[device]:
+                newDevice[setting] = updatePackage[device][setting]
+                newDevice[setting].attrs['source_expression'] = str(updatePackage[device][setting])
 
     def saveAs(self, filename):
         newFile = h5py.File(filename)
