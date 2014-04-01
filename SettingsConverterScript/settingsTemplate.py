@@ -133,11 +133,11 @@ Stabil_Ion_Settings['dataFolderName'] = "Stabil_Ion_Data"
 
 # ----------------------------------- 
 
-#updatePackage = { 
-#'LabJack'' :	,
-#'MKS_SRG3'' :	,
-#'Optimizer'' :	,
-#'PixeLink'' :	,
-#'PMD'' :	,
-#'Stabil_Ion'' :	,
-#}
+updatePackage = {
+'LabJack' :	LabJackSettings,
+'MKS_SRG3' : MKS_SRG3_Settings,
+'Optimizer' : OptimizerSettings,
+'PixeLink' : PixeLinkSettings,
+'PMD' :	PMDSettings,
+'Stabil_Ion' : Stabil_Ion_Settings,
+}
