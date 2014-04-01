@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Thu Mar 06 16:36:25 2014
+# Created: Thu Mar 06 21:03:35 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -69,8 +69,6 @@ class Ui_MainWindow(object):
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
-        self.menuRow = QtGui.QMenu(self.menuBar)
-        self.menuRow.setObjectName(_fromUtf8("menuRow"))
         MainWindow.setMenuBar(self.menuBar)
         self.actionNew = QtGui.QAction(MainWindow)
         self.actionNew.setObjectName(_fromUtf8("actionNew"))
@@ -96,9 +94,7 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionExit)
-        self.menuRow.addAction(self.actionRemoveRow)
         self.menuBar.addAction(self.menuFile.menuAction())
-        self.menuBar.addAction(self.menuRow.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -107,7 +103,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
         self.runButton.setText(_translate("MainWindow", "Run Scripts", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
-        self.menuRow.setTitle(_translate("MainWindow", "Row", None))
         self.actionNew.setText(_translate("MainWindow", "New...", None))
         self.actionOpen.setText(_translate("MainWindow", "Open...", None))
         self.actionSave.setText(_translate("MainWindow", "Save", None))
