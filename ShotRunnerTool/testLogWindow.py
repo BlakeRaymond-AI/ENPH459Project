@@ -7,6 +7,7 @@ from PyQt4 import QtGui, QtCore
 from LogWindow import LogWindow
 from StringSignal import StringSignal
 
+
 class testLogWindow(unittest.TestCase):
     def setUp(self):
         self.app = QtGui.QApplication([])

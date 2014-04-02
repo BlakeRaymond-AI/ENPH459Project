@@ -62,8 +62,8 @@ class ShotPreparationToolUi(object):
             messageBox = QtGui.QMessageBox()
             response = messageBox.question(self.mainWindow, 'Unsaved changes',
                                            'You have unsaved changes.  Are you sure you wish to continue?',
-                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                            QtGui.QMessageBox.Cancel)
+                                           QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                           QtGui.QMessageBox.Cancel)
             if response == QtGui.QMessageBox.Cancel:
                 return False
         return True
@@ -203,8 +203,8 @@ class ShotPreparationToolUi(object):
         messageBox = QtGui.QMessageBox()
         response = messageBox.question(self.mainWindow, 'Overwriting existing device',
                                        'One or more devices to be imported were already found.  These devices will be overwritten.',
-                                        QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                        QtGui.QMessageBox.Cancel)
+                                       QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                       QtGui.QMessageBox.Cancel)
         if response == QtGui.QMessageBox.Cancel:
             return False
         return True
@@ -254,7 +254,7 @@ class ShotPreparationToolUi(object):
             layout = QtGui.QHBoxLayout(page)
 
             tableView = QtGui.QTableView(page)
-            tableView.horizontalHeader().setResizeMode(1) #fit to width
+            tableView.horizontalHeader().setResizeMode(1)  #fit to width
             tableView.horizontalHeader().setVisible(False)
             tableView.verticalHeader().setVisible(False)
             tableView.setFont(QtGui.QFont("Courier New"))

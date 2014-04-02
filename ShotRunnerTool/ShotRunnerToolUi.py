@@ -37,7 +37,7 @@ class ShotRunnerToolUi(object):
         self.initController()
         self.hookCloseEvent()
         self.fileName = None
-        self.dataSaved() #sets it so that there is no unsaved changes on initialization
+        self.dataSaved()  #sets it so that there is no unsaved changes on initialization
 
     def init_model(self):
         self.ui_form.tableView.setModel(self.runnerTableModel)
@@ -112,14 +112,14 @@ class ShotRunnerToolUi(object):
     def moveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
-        keyIndices = list(set(keyIndices)) #removes all doubles in the list.
+        keyIndices = list(set(keyIndices))  #removes all doubles in the list.
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotUp(index.row())
 
     def moveShotDownList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
-        keyIndices = reversed(list(set(keyIndices))) #removes all doubles in the list.
+        keyIndices = reversed(list(set(keyIndices)))  #removes all doubles in the list.
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotDown(index.row())
 
@@ -131,10 +131,10 @@ class ShotRunnerToolUi(object):
 
     def actionSave(self):
         #saves the data in the tableModel to the json file that was selected with new or open.
-        if self.fileName != None: #the filename will be none if no file has been selected yet
+        if self.fileName is not None:  #the filename will be none if no file has been selected yet
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
             self.dataSaved()
-        if self.fileName == None:
+        if self.fileName is None:
             self.actionSaveAs()
             self.dataSaved()
 
@@ -144,7 +144,7 @@ class ShotRunnerToolUi(object):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
                                                            directory=str(os.getcwd()), filter='*.json')
-        if str(dialogReturn[0]) != None and str(dialogReturn[0]) != '':
+        if str(dialogReturn[0]) is not None and str(dialogReturn[0]) != '':
             self.fileName = str(dialogReturn[0])
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
             self.dataSaved()
@@ -168,7 +168,7 @@ class ShotRunnerToolUi(object):
         if self.shouldDiscardUnsavedChanges():
             fileDialog = QtGui.QFileDialog()
             dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
-            if str(dialogReturn) != None and str(dialogReturn) != '':
+            if str(dialogReturn) is not None and str(dialogReturn) != '':
                 self.fileName = str(dialogReturn)
                 try:
                     self.runnerTableModel.openDataByPath(self.fileName)
@@ -179,7 +179,7 @@ class ShotRunnerToolUi(object):
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
-            self.fileName = None    #release the file that the save command would write to.
+            self.fileName = None  #release the file that the save command would write to.
             self.runnerTableModel.close()
             self.dataSaved()
 
@@ -195,8 +195,8 @@ class ShotRunnerToolUi(object):
             messageBox = QtGui.QMessageBox()
             response = messageBox.question(self.mainWindow, 'Unsaved changes',
                                            'You have unsaved changes. Are you sure you wish to continue?',
-                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                            QtGui.QMessageBox.Cancel)
+                                           QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                           QtGui.QMessageBox.Cancel)
             if response == QtGui.QMessageBox.Cancel:
                 return False
         return True

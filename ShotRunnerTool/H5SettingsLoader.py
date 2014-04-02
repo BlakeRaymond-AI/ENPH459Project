@@ -9,7 +9,6 @@ from H5DataSetLoader import H5DataSetLoader
 
 
 class H5SettingsLoader(object):
-
     # static member
     devicesGroupName = 'devices'
 

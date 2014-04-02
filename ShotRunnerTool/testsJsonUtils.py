@@ -1,19 +1,21 @@
 __author__ = 'Jeff'
 
 import unittest
-import JsonUtils
 import os
+
+import JsonUtils
+
 
 class testJsonUtils(unittest.TestCase):
     def setUp(self):
-        data = {'test' : 'things'}
+        data = {'test': 'things'}
         JsonUtils.JsonUtils.saveJsonFileByPath('test_JsonUtils.json', data)
 
     def tearDown(self):
         os.remove('test_JsonUtils.json')
 
     def test_saveToFileByName(self):
-        data = {'test' : 'things'}
+        data = {'test': 'things'}
         JsonUtils.JsonUtils.saveJsonFileByPath('test_saveJsonFile.json', data)
         fileCreated = os.path.exists('test_saveJsonFile.json')
         self.assertTrue(fileCreated)

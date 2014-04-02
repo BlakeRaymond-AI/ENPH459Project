@@ -87,7 +87,8 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             try:
                 newValueResult = eval(newValue)
             except Exception as expt:
-                warningMessage = "The expression \"%s\" could not be evaluated as a Python expression.  String values must be escaped with quotation marks." % newValue
+                warningMessage = "The expression \"%s\" could not be evaluated as a Python expression.  " \
+                                 "String values must be escaped with quotation marks." % newValue
                 self.warnUser('Invalid expression', warningMessage)
             else:
                 del self.group[currentValue]
@@ -106,7 +107,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         else:
             raise KeyError('Cannot find key \'%s\' in device group' % name)
 
-    def removeRows(self, position, rows, parent = None, *args, **kwargs):
+    def removeRows(self, position, rows, parent=None, *args, **kwargs):
         self.beginRemoveRows(QtCore.QModelIndex(), 0, 0)
         self.endRemoveRows()
 
@@ -117,6 +118,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             self.group[name] = ''
         self.endInsertRows()
 
-    def warnUser(self, title, message):
+    @staticmethod
+    def warnUser(title, message):
         message_box = QtGui.QMessageBox(None)
         message_box.warning(None, title, message)

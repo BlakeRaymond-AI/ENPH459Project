@@ -9,7 +9,6 @@ import h5py
 from PyQt4 import QtGui
 
 import AutoConfigLoader
-
 from LogWindow import LogWindow
 from ShotRunnerController import ShotRunnerController
 

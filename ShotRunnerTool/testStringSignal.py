@@ -6,6 +6,7 @@ from PyQt4.QtCore import QString
 
 from StringSignal import StringSignal
 
+
 class testStringSignal(unittest.TestCase):
     def test_canEmitStringSignals(self):
         self.received = False

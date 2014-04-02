@@ -23,13 +23,11 @@ class ListSelectionDialog(QtGui.QDialog):
 
         layout.addLayout(horizontalLayout)
 
-
     def addItems(self, devices):
         for device in devices:
             item = QtGui.QListWidgetItem(device, self.devicesList)
             item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.Unchecked)
-
 
     def getCheckedItems(self):
         def isChecked(item):

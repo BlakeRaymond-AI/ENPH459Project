@@ -5,7 +5,8 @@ class DeviceImporter:
     def __init__(self, targetH5File):
         self.targetH5File = targetH5File
 
-    def _shouldIncludeDevice(self, deviceName, devicesToInclude):
+    @staticmethod
+    def _shouldIncludeDevice(deviceName, devicesToInclude):
         return devicesToInclude is None or deviceName in devicesToInclude
 
     def importFromDict(self, newDevices, devicesToInclude=None):
