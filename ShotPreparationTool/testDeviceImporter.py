@@ -16,8 +16,10 @@ class TestDeviceImporter(unittest.TestCase):
                 'BarConstant': 'BazValue'
             }
         }
-        targetFile = h5py.File('test_canAddDevicesToH5FileFromDict.h5', driver='core',
-                               backing_store=False)  # memory-only
+        targetFile = h5py.File(
+            'test_canAddDevicesToH5FileFromDict.h5',
+            driver='core',
+            backing_store=False)  # memory-only
         deviceImporter = DeviceImporter(targetFile)
         deviceImporter.importFromDict(newDevices)
 
@@ -76,8 +78,10 @@ class TestDeviceImporter(unittest.TestCase):
             }
         }
 
-        targetFile = h5py.File('test_willOverwriteExistingDevices.h5', driver='core',
-                               backing_store=False)  # memory-only
+        targetFile = h5py.File(
+            'test_willOverwriteExistingDevices.h5',
+            driver='core',
+            backing_store=False)  # memory-only
         deviceImporter = DeviceImporter(targetFile)
 
         deviceImporter.importFromDict(existing)

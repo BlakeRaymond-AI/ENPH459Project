@@ -12,4 +12,5 @@ class VariableNameValidator(object):
     @staticmethod
     def isValidVariableName(candidate):
         return re.match(
-            "[_A-Za-z][_a-zA-Z0-9]*$", candidate) and not keyword.iskeyword(candidate)
+            "[_A-Za-z][_a-zA-Z0-9]*$",
+            candidate) and not keyword.iskeyword(candidate)

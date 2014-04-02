@@ -154,8 +154,12 @@ class ShotRunnerToolUi(object):
         # opens a new file and then saves the data to the new file immediately. Stores that file so the next save command
         # will also save to that file
         fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
-                                                           directory=str(os.getcwd()), filter='*.json')
+        dialogReturn = fileDialog.getSaveFileNameAndFilter(
+            parent=self.mainWindow,
+            caption='New Json File',
+            directory=str(
+                os.getcwd()),
+            filter='*.json')
         if str(dialogReturn[0]) is not None and str(dialogReturn[0]) != '':
             self.fileName = str(dialogReturn[0])
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
@@ -212,10 +216,12 @@ class ShotRunnerToolUi(object):
     def shouldDiscardUnsavedChanges(self):
         if self.unsavedChanges:
             messageBox = QtGui.QMessageBox()
-            response = messageBox.question(self.mainWindow, 'Unsaved changes',
-                                           'You have unsaved changes. Are you sure you wish to continue?',
-                                           QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                           QtGui.QMessageBox.Cancel)
+            response = messageBox.question(
+                self.mainWindow,
+                'Unsaved changes',
+                'You have unsaved changes. Are you sure you wish to continue?',
+                QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                QtGui.QMessageBox.Cancel)
             if response == QtGui.QMessageBox.Cancel:
                 return False
         return True

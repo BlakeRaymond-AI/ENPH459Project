@@ -17,9 +17,11 @@ SETTINGS_PATH_KEY = 'settingsFilePath'
 SCRIPT_FILE_EXTENSION = '*.py'
 SETTINGS_FILE_EXTENSION = '*.h5'
 
-DEFAULT_ENTRY = {SCRIPT_FILE_KEY: EMPTY_ROW_KEY, SCRIPT_PATH_KEY: '',
-                 SETTINGS_FILE_KEY: '',
-                 SETTINGS_PATH_KEY: ''}  # store an empty list for the data until it is loaded from the json file
+DEFAULT_ENTRY = {
+    SCRIPT_FILE_KEY: EMPTY_ROW_KEY,
+    SCRIPT_PATH_KEY: '',
+    SETTINGS_FILE_KEY: '',
+    SETTINGS_PATH_KEY: ''}  # store an empty list for the data until it is loaded from the json file
 
 
 class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
@@ -43,8 +45,9 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.EditRole:
             if self.workAroundQtBugFlag:
                 self.getShotFilesFromUser(index)
-            self.workAroundQtBugFlag = not (
-                self.workAroundQtBugFlag)  # Qt has a weird bug were it will call data with the edit role twice. This is a work around for that bug
+            # Qt has a weird bug were it will call data with the edit role
+            # twice. This is a work around for that bug
+            self.workAroundQtBugFlag = not (self.workAroundQtBugFlag)
             if column == 0:
                 return self.fileData[row][SCRIPT_FILE_KEY]
             if column == 1:

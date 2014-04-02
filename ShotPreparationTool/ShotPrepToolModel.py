@@ -103,8 +103,10 @@ class ShotPrepToolModel(object):
                         updatePackage[device][setting])
             self.__buildModelsInFile()
         except:
-            raise Exception("Couldn't read default settings at %s. Ensure that the file is located at %s"
-                            " and that the updatePackage dict is uncommented." % (filePath, filePath))
+            raise Exception(
+                "Couldn't read default settings at %s. Ensure that the file is located at %s"
+                " and that the updatePackage dict is uncommented." %
+                (filePath, filePath))
 
     def saveAs(self, filename):
         newFile = h5py.File(filename)

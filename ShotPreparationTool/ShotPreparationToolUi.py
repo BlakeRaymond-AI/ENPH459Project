@@ -63,10 +63,12 @@ class ShotPreparationToolUi(object):
     def checkShouldDiscardAnyUnsavedChanges(self):
         if self.unsavedChanges:
             messageBox = QtGui.QMessageBox()
-            response = messageBox.question(self.mainWindow, 'Unsaved changes',
-                                           'You have unsaved changes.  Are you sure you wish to continue?',
-                                           QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                           QtGui.QMessageBox.Cancel)
+            response = messageBox.question(
+                self.mainWindow,
+                'Unsaved changes',
+                'You have unsaved changes.  Are you sure you wish to continue?',
+                QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                QtGui.QMessageBox.Cancel)
             if response == QtGui.QMessageBox.Cancel:
                 return False
         return True
@@ -99,8 +101,12 @@ class ShotPreparationToolUi(object):
     def actionNew(self):
         if self.checkShouldDiscardAnyUnsavedChanges():
             fileDialog = QtGui.QFileDialog(self.mainWindow)
-            dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
-                                                               directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
+            dialogReturn = fileDialog.getSaveFileNameAndFilter(
+                parent=self.mainWindow,
+                caption='New HDF5 file',
+                directory=str(
+                    os.getcwd()),
+                filter=H5_FILE_EXTENSION)
             if dialogReturn[0]:
                 self.close()
                 self.fileName = str(dialogReturn[0])
@@ -114,8 +120,12 @@ class ShotPreparationToolUi(object):
 
     def actionOpen(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Open existing HDF5 file',
-                                                           directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
+        dialogReturn = fileDialog.getOpenFileNameAndFilter(
+            parent=self.mainWindow,
+            caption='Open existing HDF5 file',
+            directory=str(
+                os.getcwd()),
+            filter=H5_FILE_EXTENSION)
         fileName = str(dialogReturn[0])
 
         if fileName:
@@ -136,8 +146,12 @@ class ShotPreparationToolUi(object):
 
     def actionSave_As(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='Save As HDF5 file',
-                                                           directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
+        dialogReturn = fileDialog.getSaveFileNameAndFilter(
+            parent=self.mainWindow,
+            caption='Save As HDF5 file',
+            directory=str(
+                os.getcwd()),
+            filter=H5_FILE_EXTENSION)
         fileName = str(dialogReturn[0])
         if fileName:
             self.model.saveAs(fileName)
@@ -207,10 +221,12 @@ class ShotPreparationToolUi(object):
 
     def verifyOverwriteExistingDevices(self, checkedItems):
         messageBox = QtGui.QMessageBox()
-        response = messageBox.question(self.mainWindow, 'Overwriting existing device',
-                                       'One or more devices to be imported were already found.  These devices will be overwritten.',
-                                       QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                       QtGui.QMessageBox.Cancel)
+        response = messageBox.question(
+            self.mainWindow,
+            'Overwriting existing device',
+            'One or more devices to be imported were already found.  These devices will be overwritten.',
+            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+            QtGui.QMessageBox.Cancel)
         if response == QtGui.QMessageBox.Cancel:
             return False
         return True
@@ -219,8 +235,12 @@ class ShotPreparationToolUi(object):
         if not self.checkHasOpenFile():
             return
         fileDialog = QtGui.QFileDialog(self.mainWindow)
-        dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Import from HDF5 file',
-                                                           directory=str(os.getcwd()), filter='*.h5')
+        dialogReturn = fileDialog.getOpenFileNameAndFilter(
+            parent=self.mainWindow,
+            caption='Import from HDF5 file',
+            directory=str(
+                os.getcwd()),
+            filter='*.h5')
         fileName = str(dialogReturn[0])
         if not fileName:
             return

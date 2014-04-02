@@ -67,11 +67,15 @@ class GroupTableModel(QtCore.QAbstractTableModel):
         if not currentName or newName == currentName:
             pass
         elif newName in self.group:
-            self.warnUser('Duplicate variable name',
-                          'A variable with name \"%s\" already exists for this device.' % newName)
+            self.warnUser(
+                'Duplicate variable name',
+                'A variable with name \"%s\" already exists for this device.' %
+                newName)
         elif not VariableNameValidator.isValidVariableName(newName):
-            self.warnUser('Invalid variable name',
-                          'The name \"%s\" is not a valid Python variable name.' % newName)
+            self.warnUser(
+                'Invalid variable name',
+                'The name \"%s\" is not a valid Python variable name.' %
+                newName)
         else:
             currentValue = self.group[currentName]
             self.group[newName] = currentValue
