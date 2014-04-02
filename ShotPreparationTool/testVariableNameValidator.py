@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ShotPreparationTool.VariableNameValidator import VariableNameValidator
+from VariableNameValidator import VariableNameValidator
 
 
 __author__ = 'Blake'
