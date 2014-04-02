@@ -26,14 +26,18 @@ except AttributeError:
 
 
 class Ui_MainWindow(object):
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(748, 458)
         self.centralWidget = QtGui.QWidget(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
@@ -62,7 +66,11 @@ class Ui_MainWindow(object):
         self.removeRowButton.setText(_fromUtf8(""))
         self.removeRowButton.setObjectName(_fromUtf8("removeRowButton"))
         self.horizontalLayout_2.addWidget(self.removeRowButton)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(
+            40,
+            20,
+            QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         MainWindow.setCentralWidget(self.centralWidget)
@@ -117,5 +125,8 @@ class Ui_MainWindow(object):
         self.actionClose.setText(_translate("MainWindow", "Close", None))
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
         self.actionAddRow.setText(_translate("MainWindow", "Add Row", None))
-        self.actionRemoveRow.setText(_translate("MainWindow", "Remove Row", None))
-
+        self.actionRemoveRow.setText(
+            _translate(
+                "MainWindow",
+                "Remove Row",
+                None))

@@ -2,6 +2,7 @@ __author__ = 'Blake'
 
 
 class DeviceImporter:
+
     def __init__(self, targetH5File):
         self.targetH5File = targetH5File
 

@@ -5,7 +5,8 @@ import socket
 import config
 import AutoConfigLoader
 
-_ = AutoConfigLoader.SETTINGS_FILE_NAME  # prevent IDE from optimizing away the import
+# prevent IDE from optimizing away the import
+_ = AutoConfigLoader.SETTINGS_FILE_NAME
 
 HOST, PORT = config.settings.TCPServer.HOST, config.settings.TCPServer.PORT
 DATA = config.settings.TCPServer.DATA

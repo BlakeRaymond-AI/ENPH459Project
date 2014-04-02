@@ -9,6 +9,7 @@ import unittest
 
 
 class TestDeviceImporter(unittest.TestCase):
+
     def test_canAddDevicesToH5FileFromDict(self):
         newDevices = {
             'FooDevice': {
@@ -25,8 +26,14 @@ class TestDeviceImporter(unittest.TestCase):
         self.assertEqual('BazValue', targetFile['FooDevice/BarConstant'][()])
 
     def test_canAddDevicesToH5FileFromOtherH5File(self):
-        sourceFile = h5py.File('source.h5', driver='core', backing_store=False)  # memory-only
-        targetFile = h5py.File('target.h5', driver='core', backing_store=False)  # memory-only
+        sourceFile = h5py.File(
+            'source.h5',
+            driver='core',
+            backing_store=False)  # memory-only
+        targetFile = h5py.File(
+            'target.h5',
+            driver='core',
+            backing_store=False)  # memory-only
 
         fooDevice = sourceFile.create_group('FooDevice')
         fooDevice['BarConstant'] = 'BazValue'
@@ -47,7 +54,10 @@ class TestDeviceImporter(unittest.TestCase):
                 'QuuxConstant': 'CorgeValue'
             }
         }
-        targetFile = h5py.File('test_canSpecifyDevicesToInclude.h5', driver='core', backing_store=False)  # memory-only
+        targetFile = h5py.File(
+            'test_canSpecifyDevicesToInclude.h5',
+            driver='core',
+            backing_store=False)  # memory-only
         deviceImporter = DeviceImporter(targetFile)
         deviceImporter.importFromDict(newDevices, ['BarDevice'])
 

@@ -24,6 +24,7 @@ COLOUR_OFF_WHITE = QtGui.QColor(248, 248, 242)
 
 
 class ShotRunnerToolUi(object):
+
     def __init__(self, app):
         self.mainWindow = QtGui.QMainWindow()
         self.ui_form = Ui_MainWindow()
@@ -37,7 +38,8 @@ class ShotRunnerToolUi(object):
         self.initController()
         self.hookCloseEvent()
         self.fileName = None
-        self.dataSaved()  #sets it so that there is no unsaved changes on initialization
+        # sets it so that there is no unsaved changes on initialization
+        self.dataSaved()
 
     def init_model(self):
         self.ui_form.tableView.setModel(self.runnerTableModel)
@@ -51,7 +53,8 @@ class ShotRunnerToolUi(object):
         self.ui_form.horizontalLayout1.addWidget(self.logWindow)
         self.logWindow.setTextColor(COLOUR_OFF_WHITE)
         self.logWindow.setTextBackgroundColor(COLOUR_OFF_BLACK)
-        self.logWindow.setStyleSheet("* { background-color: rgb(39, 40, 34); }")
+        self.logWindow.setStyleSheet(
+            "* { background-color: rgb(39, 40, 34); }")
         self.logWindow.setFont(MONOSPACED_FONT)
         self.logWindow.setReadOnly(True)
 
@@ -78,7 +81,8 @@ class ShotRunnerToolUi(object):
             self.ui_form.moveShotDownButton.setIcon(downIcon)
             self.ui_form.removeRowButton.setIcon(removeIcon)
         except:
-            raise Exception, "Couldn't load images for the moveUp and moveDown buttons"
+            raise Exception(
+                "Couldn't load images for the moveUp and moveDown buttons")
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
@@ -99,8 +103,12 @@ class ShotRunnerToolUi(object):
     def runScripts(self):
         if self.controller:
             raise RuntimeError('Already running scripts')
-        scripts, settings = self.runnerTableModel.getScriptsAndSettingsFilePaths()
-        self.controller = ShotRunnerController(scripts, settings, logWindow=self.logWindow)
+        scripts, settings = self.runnerTableModel.getScriptsAndSettingsFilePaths(
+        )
+        self.controller = ShotRunnerController(
+            scripts,
+            settings,
+            logWindow=self.logWindow)
         self.controller.finished.connect(self.finishedRunningScripts)
         self.ui_form.runButton.setEnabled(False)
         self.controller.start()
@@ -112,26 +120,30 @@ class ShotRunnerToolUi(object):
     def moveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
-        keyIndices = list(set(keyIndices))  #removes all doubles in the list.
+        keyIndices = list(set(keyIndices))  # removes all doubles in the list.
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotUp(index.row())
 
     def moveShotDownList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
-        keyIndices = reversed(list(set(keyIndices)))  #removes all doubles in the list.
+        # removes all doubles in the list.
+        keyIndices = reversed(list(set(keyIndices)))
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotDown(index.row())
 
     def actionNew(self):
-        #saves the filename for the wanted new file for the runner tool's table model.
-        #the filename will be what is written to when the save command is called
+        # saves the filename for the wanted new file for the runner tool's table model.
+        # the filename will be what is written to when the save command is
+        # called
         self.actionClose()
         self.fileName = None
 
     def actionSave(self):
-        #saves the data in the tableModel to the json file that was selected with new or open.
-        if self.fileName is not None:  #the filename will be none if no file has been selected yet
+        # saves the data in the tableModel to the json file that was selected
+        # with new or open.
+        # the filename will be none if no file has been selected yet
+        if self.fileName is not None:
             self.runnerTableModel.saveDataToFileByPath(self.fileName)
             self.dataSaved()
         if self.fileName is None:
@@ -139,8 +151,8 @@ class ShotRunnerToolUi(object):
             self.dataSaved()
 
     def actionSaveAs(self):
-        #opens a new file and then saves the data to the new file immediately. Stores that file so the next save command
-        #will also save to that file
+        # opens a new file and then saves the data to the new file immediately. Stores that file so the next save command
+        # will also save to that file
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New Json File',
                                                            directory=str(os.getcwd()), filter='*.json')
@@ -164,22 +176,29 @@ class ShotRunnerToolUi(object):
         self.app.closeEvent = handleCloseEvent
 
     def actionOpen(self):
-        #loads the data into the tableModel from a json file
+        # loads the data into the tableModel from a json file
         if self.shouldDiscardUnsavedChanges():
             fileDialog = QtGui.QFileDialog()
-            dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
+            dialogReturn = fileDialog.getOpenFileName(
+                directory=str(
+                    os.getcwd()),
+                filter='*.json*')
             if str(dialogReturn) is not None and str(dialogReturn) != '':
                 self.fileName = str(dialogReturn)
                 try:
                     self.runnerTableModel.openDataByPath(self.fileName)
                 except Exception as ex:
                     dialog = QtGui.QMessageBox(self.mainWindow)
-                    dialog.warning(self.mainWindow, 'Error During Open', ex.message)
+                    dialog.warning(
+                        self.mainWindow,
+                        'Error During Open',
+                        ex.message)
         self.setTitle()
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
-            self.fileName = None  #release the file that the save command would write to.
+            # release the file that the save command would write to.
+            self.fileName = None
             self.runnerTableModel.close()
             self.dataSaved()
 
@@ -214,7 +233,9 @@ class ShotRunnerToolUi(object):
             pathLeaf = os.path.basename(self.fileName)
             if self.unsavedChanges:
                 pathLeaf += '*'
-            self.mainWindow.setWindowTitle('%s - QDG Lab Shot Runner Tool' % pathLeaf)
+            self.mainWindow.setWindowTitle(
+                '%s - QDG Lab Shot Runner Tool' %
+                pathLeaf)
         else:
             if self.unsavedChanges:
                 self.mainWindow.setWindowTitle('* - QDG Lab Shot Runner Tool')
@@ -233,4 +254,3 @@ if __name__ == '__main__':
     ui = ShotRunnerToolUi(app)
     ui.show()
     sys.exit(app.exec_())
-

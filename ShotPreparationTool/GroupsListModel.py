@@ -8,6 +8,7 @@ import h5py
 
 
 class GroupsListModel(QtCore.QAbstractListModel):
+
     def __init__(self, h5file, parent, groups_name='groups'):
         QtCore.QAbstractListModel.__init__(self, parent)
         self.h5file = h5file
@@ -27,8 +28,13 @@ class GroupsListModel(QtCore.QAbstractListModel):
 
     def setData(self, index, value, role=None):
         if role == QtCore.Qt.EditRole:
-            current_group_name = self.h5file[self.groups_name].keys()[index.row()]
-            current_group = self.h5file[self.groups_name + '/' + current_group_name]
+            current_group_name = self.h5file[
+                self.groups_name].keys()[
+                index.row()]
+            current_group = self.h5file[
+                self.groups_name +
+                '/' +
+                current_group_name]
             new_group_name = self.groups_name + '/' + str(value.toString())
 
             if current_group_name == new_group_name or not str(value.toString()):
@@ -41,8 +47,10 @@ class GroupsListModel(QtCore.QAbstractListModel):
 
         return False
 
-    def insertRows(self, position, rows, QModelIndex_parent=None, *args, **kwargs):
-        self.beginInsertRows(QtCore.QModelIndex(), 0, rows + len(self.h5file[self.groups_name].keys()) - 1)
+    def insertRows(
+            self, position, rows, QModelIndex_parent=None, *args, **kwargs):
+        self.beginInsertRows(
+            QtCore.QModelIndex(), 0, rows + len(self.h5file[self.groups_name].keys()) - 1)
 
         for i in range(rows):
             name = 'group_' + str(len(self.h5file[self.groups_name].keys()))

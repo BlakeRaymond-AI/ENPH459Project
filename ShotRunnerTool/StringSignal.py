@@ -11,4 +11,3 @@ class StringSignal(QtCore.QObject):
 
     def get(self):
         return self.signal
-

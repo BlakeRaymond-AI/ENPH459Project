@@ -1,4 +1,4 @@
-from ShotPreparationTool.VariableNameValidator import VariableNameValidator
+from .ShotPreparationTool.VariableNameValidator import VariableNameValidator
 
 __author__ = 'Blake & Jeff'
 
@@ -13,6 +13,7 @@ SOURCE_EXPRESSION_ATTR_KEY = 'source_expression'
 
 
 class GroupTableModel(QtCore.QAbstractTableModel):
+
     def __init__(self, group, parent):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self.group = group
@@ -93,7 +94,8 @@ class GroupTableModel(QtCore.QAbstractTableModel):
             else:
                 del self.group[currentValue]
                 self.group[currentValue] = newValueResult
-                self.group[currentValue].attrs[SOURCE_EXPRESSION_ATTR_KEY] = newValue
+                self.group[currentValue].attrs[
+                    SOURCE_EXPRESSION_ATTR_KEY] = newValue
                 return True
         return False
 

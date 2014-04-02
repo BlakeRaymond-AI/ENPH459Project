@@ -8,6 +8,7 @@ from ScriptRunner import ScriptRunner
 
 
 class testScriptRunner(unittest.TestCase):
+
     def setUp(self):
         self.tempFile = 'foo.tmp'
         with open(self.tempFile, 'w') as _:
@@ -64,7 +65,8 @@ class testScriptRunner(unittest.TestCase):
             f.write(script)
         runner = ScriptRunner(self.tempFile)
         runner.executeAsync()
-        self.assertTrue(any('Exception: foo' in line for line in runner.errorStream()))
+        self.assertTrue(
+            any('Exception: foo' in line for line in runner.errorStream()))
         runner.join()
 
 

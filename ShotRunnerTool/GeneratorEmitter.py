@@ -4,6 +4,7 @@ from PyQt4 import QtCore
 
 
 class GeneratorEmitter(QtCore.QThread):
+
     def __init__(self, generator, signal):
         QtCore.QThread.__init__(self)
         self.generator = generator

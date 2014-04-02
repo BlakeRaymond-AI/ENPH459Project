@@ -4,6 +4,7 @@ import numpy as np
 
 
 class H5DataSetLoader(object):
+
     @staticmethod
     def load(group):
         value = group[()]

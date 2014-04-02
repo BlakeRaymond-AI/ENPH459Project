@@ -26,15 +26,19 @@ except AttributeError:
 
 
 class Ui_MainWindow(object):
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(710, 473)
         MainWindow.setStyleSheet(_fromUtf8(""))
         self.centralWidget = QtGui.QWidget(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.centralWidget.sizePolicy().hasHeightForWidth())
         self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
@@ -94,18 +98,33 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "QDG Lab Shot Preparation Tool", None))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "QDG Lab Shot Preparation Tool",
+                None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.menuGroup.setTitle(_translate("MainWindow", "Device", None))
         self.menuRow.setTitle(_translate("MainWindow", "Row", None))
         self.actionNew.setText(_translate("MainWindow", "New...", None))
         self.actionOpen.setText(_translate("MainWindow", "Open...", None))
         self.actionSave.setText(_translate("MainWindow", "Save", None))
-        self.actionSave_As.setText(_translate("MainWindow", "Save As...", None))
+        self.actionSave_As.setText(
+            _translate(
+                "MainWindow",
+                "Save As...",
+                None))
         self.actionClose.setText(_translate("MainWindow", "Close", None))
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
         self.actionAddDevice.setText(_translate("MainWindow", "Add", None))
-        self.actionRemoveDevice.setText(_translate("MainWindow", "Remove Current", None))
-        self.actionRemoveRow.setText(_translate("MainWindow", "Remove Selected", None))
+        self.actionRemoveDevice.setText(
+            _translate(
+                "MainWindow",
+                "Remove Current",
+                None))
+        self.actionRemoveRow.setText(
+            _translate(
+                "MainWindow",
+                "Remove Selected",
+                None))
         self.actionImport.setText(_translate("MainWindow", "Import...", None))
-

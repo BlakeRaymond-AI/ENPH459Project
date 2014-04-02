@@ -9,6 +9,7 @@ from StringSignal import StringSignal
 
 
 class testLogWindow(unittest.TestCase):
+
     def setUp(self):
         self.app = QtGui.QApplication([])
 
@@ -25,6 +26,7 @@ class testLogWindow(unittest.TestCase):
         signal.get().connect(window.appendMessage)
 
         class EmitterThread(QtCore.QThread):
+
             def __init__(self, signal, args):
                 QtCore.QThread.__init__(self)
                 self.signal = signal

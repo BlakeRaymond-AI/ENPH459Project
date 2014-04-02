@@ -3,13 +3,14 @@ import os
 
 
 class JsonUtils(object):
+
     @staticmethod
     def getDataFromJsonFile(filename):
         if os.path.exists(filename):
             with open(filename, 'r') as jsonFile:
                 jsonData = json.loads(jsonFile.read())
                 return jsonData
-        raise IOError, "Couldn't import data from the file '%s'" % (filename)
+        raise IOError("Couldn't import data from the file '%s'" % (filename))
 
     @staticmethod
     def saveJsonFileByPath(jsonPathName, jsonData):

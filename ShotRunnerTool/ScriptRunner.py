@@ -6,12 +6,14 @@ import sys
 
 
 class ScriptRunner(object):
+
     def __init__(self, scriptPath):
         self.scriptPath = scriptPath
         self.running = False
 
     def _start(self):
-        self.process = subprocess.Popen([sys.executable, self.scriptPath], stdout=PIPE, stderr=PIPE)
+        self.process = subprocess.Popen(
+            [sys.executable, self.scriptPath], stdout=PIPE, stderr=PIPE)
         self.running = True
 
     def isRunning(self):

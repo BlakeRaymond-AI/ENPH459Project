@@ -8,15 +8,16 @@ from ShotPrepToolModel import ShotPrepToolModel
 
 
 class TestShotPrepToolModel(unittest.TestCase):
-    #test case #1: make sure that it will import and create files (h5 files)
-    #test case #2: make sure that it will copy from the original file to the test file
-    #test case #3: check that discard changes works as expected
-    #test case #4: check that save works as expected
-    #test case #5: check that cleanup works as expected
-    #test case #6: check that adding a row will work
-    #test case #7: check that adding in a new device will work
-    #test case #8: check that removing a group will work
-    #test case #9: check that removing a row will work
+    # test case #1: make sure that it will import and create files (h5 files)
+    # test case #2: make sure that it will copy from the original file to the test file
+    # test case #3: check that discard changes works as expected
+    # test case #4: check that save works as expected
+    # test case #5: check that cleanup works as expected
+    # test case #6: check that adding a row will work
+    # test case #7: check that adding in a new device will work
+    # test case #8: check that removing a group will work
+    # test case #9: check that removing a row will work
+
     def setUp(self):
         h5pathname = 'test_file.h5'
         self.h5file = h5py.File(h5pathname)

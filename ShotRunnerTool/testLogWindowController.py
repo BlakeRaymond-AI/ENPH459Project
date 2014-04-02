@@ -12,6 +12,7 @@ from ScriptRunner import ScriptRunner
 
 
 class testLogWindowController(unittest.TestCase):
+
     def setUp(self):
         self.app = QtGui.QApplication([])
         self.tempFile = 'foo.tmp'

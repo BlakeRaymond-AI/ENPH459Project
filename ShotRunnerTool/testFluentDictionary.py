@@ -7,6 +7,7 @@ __author__ = 'Blake'
 
 
 class TestFluentDictionary(unittest.TestCase):
+
     def test_DictionaryItemsConvertedToAttributes(self):
         fluentDict = FluentDictionary({'Foo': 'Bar'})
         self.assertEqual('Bar', fluentDict.Foo)

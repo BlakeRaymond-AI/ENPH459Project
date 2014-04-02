@@ -6,6 +6,7 @@ import config
 
 
 class testConfig(unittest.TestCase):
+
     def test_loadsDeviceConstantsIntoConfig(self):
         devices = {
             'FooDevice': {
@@ -15,7 +16,9 @@ class testConfig(unittest.TestCase):
         }
         config.load(devices)
 
-        self.assertEqual('bar', config.settingsDict['FooDevice']['stringConstant'])
+        self.assertEqual(
+            'bar',
+            config.settingsDict['FooDevice']['stringConstant'])
         self.assertEqual(1, config.settingsDict['FooDevice']['intConstant'])
 
     def test_loadsSettingsAsFluentDictionary(self):

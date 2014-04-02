@@ -5,6 +5,7 @@ from StringSignal import StringSignal
 
 
 class LogWindowController(object):
+
     def __init__(self, runner, logWindow):
         self.runner = runner
         self.logWindow = logWindow
@@ -15,8 +16,12 @@ class LogWindowController(object):
         if not self.runner.isRunning():
             self.runner.executeAsync()
 
-        self.outputEmitter = GeneratorEmitter(self.runner.outputStream(), self.signal.get())
-        self.errorEmitter = GeneratorEmitter(self.runner.errorStream(), self.signal.get())
+        self.outputEmitter = GeneratorEmitter(
+            self.runner.outputStream(),
+            self.signal.get())
+        self.errorEmitter = GeneratorEmitter(
+            self.runner.errorStream(),
+            self.signal.get())
         self.outputEmitter.start()
         self.errorEmitter.start()
 
@@ -24,8 +29,12 @@ class LogWindowController(object):
         if not self.runner.isRunning():
             self.runner.executeAsync()
 
-        self.outputEmitter = GeneratorEmitter(self.runner.outputStream(), self.signal.get())
-        self.errorEmitter = GeneratorEmitter(self.runner.errorStream(), self.signal.get())
+        self.outputEmitter = GeneratorEmitter(
+            self.runner.outputStream(),
+            self.signal.get())
+        self.errorEmitter = GeneratorEmitter(
+            self.runner.errorStream(),
+            self.signal.get())
         self.outputEmitter.run()
         self.errorEmitter.run()
 
@@ -37,4 +46,3 @@ class LogWindowController(object):
             self.signal.get().emit(error)
         self.outputEmitter.wait()
         self.errorEmitter.wait()
-

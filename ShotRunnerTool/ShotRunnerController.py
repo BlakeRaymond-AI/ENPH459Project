@@ -11,6 +11,7 @@ __author__ = 'Blake'
 
 
 class ShotRunnerController(QtCore.QThread):
+
     def __init__(self, scripts, settingsFiles, logWindow=None):
         QtCore.QThread.__init__(self)
         self.scripts = scripts

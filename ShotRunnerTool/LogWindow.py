@@ -4,6 +4,7 @@ from PyQt4 import QtGui, QtCore
 
 
 class LogWindow(QtGui.QTextEdit):
+
     def __init__(self, parent):
         QtGui.QTextEdit.__init__(self, parent)
 
@@ -12,4 +13,3 @@ class LogWindow(QtGui.QTextEdit):
         formattedMessage = str(message).strip()
         self.append(formattedMessage)
         self.verticalScrollBar().setValue(self.verticalScrollBar().maximum())
-

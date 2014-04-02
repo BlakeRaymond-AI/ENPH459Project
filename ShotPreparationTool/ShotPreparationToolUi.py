@@ -18,6 +18,7 @@ H5_FILE_EXTENSION = '*.h5'
 
 
 class ShotPreparationToolUi(object):
+
     def __init__(self, app):
         self.fileName = None
         self.model = None
@@ -53,7 +54,9 @@ class ShotPreparationToolUi(object):
             pathLeaf = os.path.basename(self.fileName)
             if self.unsavedChanges:
                 pathLeaf += '*'
-            self.mainWindow.setWindowTitle('%s - QDG Lab Shot Preparation Tool' % pathLeaf)
+            self.mainWindow.setWindowTitle(
+                '%s - QDG Lab Shot Preparation Tool' %
+                pathLeaf)
         else:
             self.mainWindow.setWindowTitle('QDG Lab Shot Preparation Tool')
 
@@ -165,7 +168,10 @@ class ShotPreparationToolUi(object):
     def actionAddDevice(self):
         if self.checkHasOpenFile():
             dialog = QtGui.QInputDialog(self.mainWindow)
-            response = dialog.getText(self.mainWindow, 'Add group', 'Enter name of device:')
+            response = dialog.getText(
+                self.mainWindow,
+                'Add group',
+                'Enter name of device:')
             groupName = response[0]
             if groupName:
                 try:
@@ -254,7 +260,7 @@ class ShotPreparationToolUi(object):
             layout = QtGui.QHBoxLayout(page)
 
             tableView = QtGui.QTableView(page)
-            tableView.horizontalHeader().setResizeMode(1)  #fit to width
+            tableView.horizontalHeader().setResizeMode(1)  # fit to width
             tableView.horizontalHeader().setVisible(False)
             tableView.verticalHeader().setVisible(False)
             tableView.setFont(QtGui.QFont("Courier New"))

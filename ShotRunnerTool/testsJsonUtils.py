@@ -7,6 +7,7 @@ import JsonUtils
 
 
 class testJsonUtils(unittest.TestCase):
+
     def setUp(self):
         data = {'test': 'things'}
         JsonUtils.JsonUtils.saveJsonFileByPath('test_JsonUtils.json', data)
@@ -27,4 +28,3 @@ class testJsonUtils(unittest.TestCase):
         value = data[key]
         self.assertEqual(key, 'test')
         self.assertEqual(value, 'things')
-

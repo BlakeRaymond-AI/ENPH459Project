@@ -21,6 +21,7 @@ TEST_SCRIPT = "ShotRunnerControllerTestScript.py"
 
 
 class TestShotRunnerController(TestCase):
+
     def setUp(self):
         self.settingsFileName = '.testShotRunnerControllerSettings.h5'
         self.removeTempFiles()
@@ -29,16 +30,21 @@ class TestShotRunnerController(TestCase):
 
         self.messages = []
 
-        self.server = SocketServer.TCPServer((HOST, PORT), self.generateHandlerClass())
+        self.server = SocketServer.TCPServer(
+            (HOST, PORT), self.generateHandlerClass())
         self.serverThread = threading.Thread(target=self.runServer)
         self.serverThread.start()
 
     def backupDefaultSettings(self):
         self.defaultSettingsFileBackup = '.shot_parameters.h5.backup'
-        shutil.copyfile(AutoConfigLoader.SETTINGS_FILE_NAME, self.defaultSettingsFileBackup)
+        shutil.copyfile(
+            AutoConfigLoader.SETTINGS_FILE_NAME,
+            self.defaultSettingsFileBackup)
 
     def restoreDefaultSettings(self):
-        shutil.copyfile(self.defaultSettingsFileBackup, AutoConfigLoader.SETTINGS_FILE_NAME)
+        shutil.copyfile(
+            self.defaultSettingsFileBackup,
+            AutoConfigLoader.SETTINGS_FILE_NAME)
         os.remove(self.defaultSettingsFileBackup)
 
     def removeTempFiles(self):
@@ -59,6 +65,7 @@ class TestShotRunnerController(TestCase):
         messages = self.messages
 
         class TCPHandler(SocketServer.BaseRequestHandler):
+
             def handle(self):
                 data = self.request.recv(1024).strip()
                 messages.append(data)
@@ -89,7 +96,10 @@ class TestShotRunnerController(TestCase):
         logWindow = LogWindow(None)
         scripts = [TEST_SCRIPT]
         settingsFiles = [self.settingsFileName]
-        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller = ShotRunnerController(
+            scripts,
+            settingsFiles,
+            logWindow=logWindow)
         controller.run()
         self.assertEqual(DATA, str(logWindow.toPlainText()).strip())
 
@@ -98,7 +108,10 @@ class TestShotRunnerController(TestCase):
         logWindow = LogWindow(None)
         scripts = [TEST_SCRIPT]
         settingsFiles = [self.settingsFileName]
-        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller = ShotRunnerController(
+            scripts,
+            settingsFiles,
+            logWindow=logWindow)
         controller.finished.connect(app.quit)
         controller.start()
         app.exec_()
@@ -118,7 +131,10 @@ class TestShotRunnerController(TestCase):
         numberOfScripts = 2
         scripts = [TEST_SCRIPT] * numberOfScripts
         settingsFiles = [self.settingsFileName] * numberOfScripts
-        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller = ShotRunnerController(
+            scripts,
+            settingsFiles,
+            logWindow=logWindow)
         controller.finished.connect(app.quit)
 
         controller.start()
