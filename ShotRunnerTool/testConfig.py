@@ -1,11 +1,8 @@
-__author__ = 'Blake'
-
 import unittest
+from ShotRunnerTool import config
 
-import config
 
-
-class testConfig(unittest.TestCase):
+class TestConfig(unittest.TestCase):
     def test_loadsDeviceConstantsIntoConfig(self):
         devices = {
             'FooDevice': {
@@ -27,5 +24,9 @@ class testConfig(unittest.TestCase):
         }
         config.load(devices)
 
-        self.assertEqual('bar', config.settings.FooDevice.stringConstant)
-        self.assertEqual(1, config.settings.FooDevice.intConstant)
+        FooDevice = getattr(config.settings, 'FooDevice')
+        stringConstant = getattr(FooDevice, 'stringConstant')
+        intConstant = getattr(FooDevice, 'intConstant')
+
+        self.assertEqual('bar', stringConstant)
+        self.assertEqual(1, intConstant)

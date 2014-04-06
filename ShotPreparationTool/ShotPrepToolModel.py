@@ -1,11 +1,9 @@
 import os
 import os.path
-
 import h5py
-
-from DeviceImporter import DeviceImporter
-import GroupTableModel
-from VariableNameValidator import VariableNameValidator
+from ShotPreparationTool.DeviceImporter import DeviceImporter
+from ShotPreparationTool import GroupTableModel
+from ShotPreparationTool.VariableNameValidator import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'
@@ -14,6 +12,7 @@ DEVICES_GROUP_NAME = 'devices'
 class ShotPrepToolModel(object):
     def __init__(self, h5pathName):
         self.h5pathName = h5pathName
+        self.dict_of_devices = {}
         if os.path.exists(self.h5pathName):
             self.originalFile = h5py.File(self.h5pathName)
         else:

@@ -1,10 +1,8 @@
 import os
 import unittest
-
 import h5py
-
-from GroupTableModel import GroupTableModel
-from ShotPrepToolModel import ShotPrepToolModel
+from ShotPreparationTool.GroupTableModel import GroupTableModel
+from ShotPreparationTool.ShotPrepToolModel import ShotPrepToolModel
 
 
 class TestShotPrepToolModel(unittest.TestCase):

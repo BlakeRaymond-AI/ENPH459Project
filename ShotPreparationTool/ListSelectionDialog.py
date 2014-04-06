@@ -1,5 +1,3 @@
-__author__ = 'Blake'
-
 from PyQt4 import QtGui, QtCore
 
 
@@ -23,18 +21,12 @@ class ListSelectionDialog(QtGui.QDialog):
 
         layout.addLayout(horizontalLayout)
 
-
     def addItems(self, devices):
         for device in devices:
             item = QtGui.QListWidgetItem(device, self.devicesList)
             item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.Unchecked)
 
-
     def getCheckedItems(self):
-        def isChecked(item):
-            return item.checkState() == QtCore.Qt.Checked
-
-        items = map(lambda index: self.devicesList.item(index), range(self.devicesList.count()))
-        checkedItems = filter(isChecked, items)
-        return map(lambda item: str(item.text()), checkedItems)
+        items = (self.devicesList.item(index) for index in range(self.devicesList.count()))
+        return (str(item.text()) for item in items if item.checkState() == QtCore.Qt.Checked)

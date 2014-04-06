@@ -1,12 +1,11 @@
-__author__ = 'Blake'
-
 import unittest
-
 from PyQt4.QtCore import QString
+from ShotRunnerTool.StringSignal import StringSignal
 
-from StringSignal import StringSignal
 
-class testStringSignal(unittest.TestCase):
+class TestStringSignal(unittest.TestCase):
+    received = False
+
     def test_canEmitStringSignals(self):
         self.received = False
         sentMessage = 'Foobar'
@@ -22,14 +21,14 @@ class testStringSignal(unittest.TestCase):
         self.assertTrue(self.received)
 
     def test_differentInstancesAreIndependent(self):
-        self.messages1 = []
-        self.messages2 = []
+        messages1 = []
+        messages2 = []
 
         def receive1(s):
-            self.messages1.append(str(s))
+            messages1.append(str(s))
 
         def receive2(s):
-            self.messages2.append(str(s))
+            messages2.append(str(s))
 
         signal1 = StringSignal()
         signal2 = StringSignal()
@@ -37,12 +36,8 @@ class testStringSignal(unittest.TestCase):
         signal2.get().connect(receive2)
 
         signal1.get().emit('')
-        self.assertEqual(1, len(self.messages1))
-        self.assertEqual(0, len(self.messages2))
+        self.assertEqual(1, len(messages1))
+        self.assertEqual(0, len(messages2))
         signal2.get().emit('')
-        self.assertEqual(1, len(self.messages1))
-        self.assertEqual(1, len(self.messages2))
-
-
-if __name__ == '__main__':
-    unittest.main()
+        self.assertEqual(1, len(messages1))
+        self.assertEqual(1, len(messages2))

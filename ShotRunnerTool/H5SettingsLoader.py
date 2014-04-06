@@ -1,23 +1,18 @@
-__author__ = 'Blake'
-
 import os
 import os.path
-
 import h5py
+from ShotRunnerTool.H5DataSetLoader import H5DataSetLoader
 
-from H5DataSetLoader import H5DataSetLoader
+
+DEVICES_GROUP_NAME = 'devices'
 
 
 class H5SettingsLoader(object):
-
-    # static member
-    devicesGroupName = 'devices'
-
     def loadSettings(self, path):
         if not os.path.exists(path):
             raise RuntimeError('Could not find settings file %s' % path)
         h5file = h5py.File(path)
-        devices = h5file[self.devicesGroupName]
+        devices = h5file[DEVICES_GROUP_NAME]
         deviceSettingsDict = {}
         for deviceName, device in devices.items():
             deviceSettings = {}

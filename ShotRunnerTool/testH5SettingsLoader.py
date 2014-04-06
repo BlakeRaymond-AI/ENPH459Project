@@ -1,15 +1,11 @@
-__author__ = 'Blake'
-
 import unittest
 import os
 import os.path
-
 import h5py
+from ShotRunnerTool.H5SettingsLoader import H5SettingsLoader
 
-from H5SettingsLoader import H5SettingsLoader
 
-
-class testH5SettingsLoader(unittest.TestCase):
+class TestH5SettingsLoader(unittest.TestCase):
     def setUp(self):
         self.tempFileName = 'temp.h5'
         tempFile = h5py.File(self.tempFileName)

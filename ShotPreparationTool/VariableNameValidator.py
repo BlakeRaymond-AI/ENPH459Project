@@ -1,8 +1,6 @@
 import keyword
 import re
 
-__author__ = 'Blake'
-
 
 class VariableNameValidator(object):
     def __init__(self):

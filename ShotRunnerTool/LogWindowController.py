@@ -1,7 +1,5 @@
-__author__ = 'Blake'
-
-from GeneratorEmitter import GeneratorEmitter
-from StringSignal import StringSignal
+from ShotRunnerTool.GeneratorEmitter import GeneratorEmitter
+from ShotRunnerTool.StringSignal import StringSignal
 
 
 class LogWindowController(object):
@@ -10,6 +8,8 @@ class LogWindowController(object):
         self.logWindow = logWindow
         self.signal = StringSignal()
         self.signal.get().connect(self.logWindow.appendMessage)
+        self.outputEmitter = None
+        self.errorEmitter = None
 
     def runAsync(self):
         if not self.runner.isRunning():
@@ -37,4 +37,3 @@ class LogWindowController(object):
             self.signal.get().emit(error)
         self.outputEmitter.wait()
         self.errorEmitter.wait()
-

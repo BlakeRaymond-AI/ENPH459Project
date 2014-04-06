@@ -1,17 +1,13 @@
-__author__ = 'Blake'
-
 import unittest
 import os
 import os.path
-
 from PyQt4 import QtGui
+from ShotRunnerTool.LogWindowController import LogWindowController
+from ShotRunnerTool.LogWindow import LogWindow
+from ShotRunnerTool.ScriptRunner import ScriptRunner
 
-from LogWindowController import LogWindowController
-from LogWindow import LogWindow
-from ScriptRunner import ScriptRunner
 
-
-class testLogWindowController(unittest.TestCase):
+class TestLogWindowController(unittest.TestCase):
     def setUp(self):
         self.app = QtGui.QApplication([])
         self.tempFile = 'foo.tmp'

@@ -1,6 +1,3 @@
-__author__ = 'Blake'
-
-
 class FluentDictionary:
     def __init__(self, source):
         for key, value in source.items():

@@ -1,6 +1,8 @@
-from FluentDictionary import FluentDictionary
+from ShotRunnerTool.FluentDictionary import FluentDictionary
 
-__author__ = 'Blake'
+
+settings = None
+settingsDict = {}
 
 
 def load(newValues):

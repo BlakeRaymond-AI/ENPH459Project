@@ -8,13 +8,11 @@ import threading
 import h5py
 from PyQt4 import QtGui
 
-import AutoConfigLoader
+from ShotRunnerTool import AutoConfigLoader
 
-from LogWindow import LogWindow
-from ShotRunnerController import ShotRunnerController
+from ShotRunnerTool.LogWindow import LogWindow
+from ShotRunnerTool.ShotRunnerController import ShotRunnerController
 
-
-__author__ = 'Blake'
 
 HOST, PORT = "localhost", 9999
 DATA = "Hello from test script"
@@ -26,6 +24,7 @@ class TestShotRunnerController(TestCase):
         self.settingsFileName = '.testShotRunnerControllerSettings.h5'
         self.removeTempFiles()
         self.createTestScriptParameters()
+        self.defaultSettingsFileBackup = None
         self.backupDefaultSettings()
 
         self.messages = []
@@ -86,7 +85,7 @@ class TestShotRunnerController(TestCase):
         self.assertEqual(DATA, self.messages[0])
 
     def test_canConnectLogWindowToController(self):
-        app = QtGui.QApplication([])
+        _ = QtGui.QApplication([])
         logWindow = LogWindow(None)
         scripts = [TEST_SCRIPT]
         settingsFiles = [self.settingsFileName]
