@@ -1,6 +1,6 @@
 import numpy
 from PyQt4 import QtGui, QtCore
-from ShotPreparationTool.VariableNameValidator import VariableNameValidator
+from ShotPreparationTool import VariableNameValidator
 
 
 EMPTY_ROW_STRING = '<Click to add row>'
@@ -95,7 +95,7 @@ class GroupTableModel(QtCore.QAbstractTableModel):
                 return True
         return False
 
-    def _removeRowByName(self, name):
+    def removeRowByName(self, name):
         device = self.group
         if name in device:
             if not EMPTY_ROW_STRING in name:

@@ -4,11 +4,11 @@
 
 import os.path
 from ShotRunnerTool import config
-from ShotRunnerTool.H5SettingsLoader import H5SettingsLoader
+from ShotRunnerTool import H5SettingsLoader
 
 
 SETTINGS_FILE_NAME = '.shot_parameters.h5'
-SETTINGS_LOADER = H5SettingsLoader()
+SETTINGS_LOADER = H5SettingsLoader
 
 
 class ConfigError(RuntimeError):

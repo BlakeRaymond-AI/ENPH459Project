@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ShotPreparationTool.VariableNameValidator import VariableNameValidator
+from ShotPreparationTool.VariableNameValidator import isValidVariableName
 
 
 class TestVariableNameValidator(TestCase):
@@ -21,6 +21,6 @@ class TestVariableNameValidator(TestCase):
 
     def test_isValidVariableName(self):
         for name in self.invalidNames:
-            self.assertFalse(VariableNameValidator.isValidVariableName(name))
+            self.assertFalse(isValidVariableName(name))
         for name in self.validNames:
-            self.assertTrue(VariableNameValidator.isValidVariableName(name))
+            self.assertTrue(isValidVariableName(name))

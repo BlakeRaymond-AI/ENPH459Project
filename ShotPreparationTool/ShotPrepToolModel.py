@@ -3,7 +3,7 @@ import os.path
 import h5py
 from ShotPreparationTool.DeviceImporter import DeviceImporter
 from ShotPreparationTool import GroupTableModel
-from ShotPreparationTool.VariableNameValidator import VariableNameValidator
+from ShotPreparationTool import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'

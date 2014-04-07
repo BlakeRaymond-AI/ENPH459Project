@@ -41,7 +41,7 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.EditRole:
             if self.workAroundQtBugFlag:
                 self.getShotFilesFromUser(index)
-            self.workAroundQtBugFlag = not(self.workAroundQtBugFlag) #Qt has a weird bug were it will call data with the edit role twice. This is a work around for that bug
+            self.workAroundQtBugFlag = not self.workAroundQtBugFlag  # Qt has a weird bug were it will call data with the edit role twice. This is a work around for that bug
             if column == 0:
                 return self.fileData[row][SCRIPT_FILE_KEY]
             if column == 1:
@@ -60,12 +60,14 @@ class ShotRunnerToolTableModel(QtCore.QAbstractTableModel):
         column = index.column()
         if column == 0:  # editing the script file name
             addNewRow = False
-            if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY: addNewRow = True
+            if self.fileData[row][SCRIPT_FILE_KEY] == EMPTY_ROW_KEY:
+                addNewRow = True
             value = str(self.getFilenameFromDialogBox(SCRIPT_FILE_EXTENSION))
             if value:  # if the value is not None, False or an empty string
                 self.fileData[row][SCRIPT_PATH_KEY] = value
                 self.fileData[row][SCRIPT_FILE_KEY] = self.__parseFilenameFromDialogBox(value)
-                if addNewRow: self.addRow()
+                if addNewRow:
+                    self.addRow()
         elif column == 1:  # editing the settings file name (should be h5 files)
             value = str(self.getFilenameFromDialogBox(SETTINGS_FILE_EXTENSION))
             if value:

@@ -30,16 +30,16 @@ class ShotPreparationToolUi(object):
     def _connectButtons(self):
         form = self.uiForm
 
-        form.actionNew.triggered.connect(self._actionNew)
-        form.actionOpen.triggered.connect(self._actionOpen)
-        form.actionSave.triggered.connect(self._actionSave)
-        form.actionSave_As.triggered.connect(self._actionSave_As)
-        form.actionClose.triggered.connect(self._actionClose)
-        form.actionExit.triggered.connect(self._actionExit)
-        form.actionAddDevice.triggered.connect(self._actionAddDevice)
-        form.actionRemoveDevice.triggered.connect(self._actionRemoveDevice)
-        form.actionRemoveRow.triggered.connect(self._actionRemoveRow)
-        form.actionImport.triggered.connect(self._actionImport)
+        form.actionNew.triggered.connect(self.actionNew)
+        form.actionOpen.triggered.connect(self.actionOpen)
+        form.actionSave.triggered.connect(self.actionSave)
+        form.actionSave_As.triggered.connect(self.actionSave_As)
+        form.actionClose.triggered.connect(self.actionClose)
+        form.actionExit.triggered.connect(self.actionExit)
+        form.actionAddDevice.triggered.connect(self.actionAddDevice)
+        form.actionRemoveDevice.triggered.connect(self.actionRemoveDevice)
+        form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
+        form.actionImport.triggered.connect(self.actionImport)
 
     def _setTitle(self):
         if self.fileName is not None:
@@ -86,7 +86,7 @@ class ShotPreparationToolUi(object):
         self.unsavedChanges = False
         self._setTitle()
 
-    def _actionNew(self):
+    def actionNew(self):
         if self._checkShouldDiscardAnyUnsavedChanges():
             fileDialog = QtGui.QFileDialog(self.mainWindow)
             dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
@@ -98,14 +98,14 @@ class ShotPreparationToolUi(object):
                 self._initTabs(self.model.returnModelsInFile())
                 self._modelSaved()
 
-    def _actionOpen(self):
+    def actionOpen(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Open existing HDF5 file',
                                                            directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
         fileName = str(dialogReturn[0])
 
         if fileName:
-            self._actionClose()
+            self.actionClose()
             self.fileName = fileName
             try:
                 self.model = ShotPrepToolModel(self.fileName)
@@ -115,12 +115,12 @@ class ShotPreparationToolUi(object):
             self._initTabs(self.model.returnModelsInFile())
             self._modelSaved()
 
-    def _actionSave(self):
+    def actionSave(self):
         if self.fileName is not None:
             self.model.saveChanges()
             self._modelSaved()
 
-    def _actionSave_As(self):
+    def actionSave_As(self):
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='Save As HDF5 file',
                                                            directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
@@ -134,7 +134,7 @@ class ShotPreparationToolUi(object):
             self.model = ShotPrepToolModel(self.fileName)
             self._initTabs(self.model.returnModelsInFile())
 
-    def _actionClose(self):
+    def actionClose(self):
         if self.model is not None and self._checkShouldDiscardAnyUnsavedChanges():
             self._close()
 
@@ -146,12 +146,12 @@ class ShotPreparationToolUi(object):
             self.fileName = None
             self._modelSaved()
 
-    def _actionExit(self):
+    def actionExit(self):
         if self.model is not None and self._checkShouldDiscardAnyUnsavedChanges():
             self._close()
             self.app.quit()
 
-    def _actionAddDevice(self):
+    def actionAddDevice(self):
         if self._checkHasOpenFile():
             dialog = QtGui.QInputDialog(self.mainWindow)
             response = dialog.getText(self.mainWindow, 'Add group', 'Enter name of device:')
@@ -167,7 +167,7 @@ class ShotPreparationToolUi(object):
                 self._initTabs(self.model.returnModelsInFile())
                 self._modelChanged()
 
-    def _actionRemoveDevice(self):
+    def actionRemoveDevice(self):
         if self._checkHasOpenFile():
             currentTab = self.uiForm.tabWidget.currentWidget()
             deviceName = str(currentTab.windowTitle())
@@ -175,7 +175,7 @@ class ShotPreparationToolUi(object):
             self._initTabs(self.model.returnModelsInFile())
             self._modelChanged()
 
-    def _actionRemoveRow(self):
+    def actionRemoveRow(self):
         if self._checkHasOpenFile():
             currentTab = self.uiForm.tabWidget.currentWidget()
             table = currentTab.findChild(QtGui.QTableView)
@@ -184,7 +184,7 @@ class ShotPreparationToolUi(object):
             model = table.model()
             for index in keyIndices:
                 name = model.data(index, role=QtCore.Qt.DisplayRole)
-                model._removeRowByName(name)
+                model.removeRowByName(name)
             if keyIndices:
                 self._modelChanged()
 
@@ -199,7 +199,7 @@ class ShotPreparationToolUi(object):
                 return False
             return True
 
-    def _actionImport(self):
+    def actionImport(self):
         if not self._checkHasOpenFile():
             return
         fileDialog = QtGui.QFileDialog(self.mainWindow)
