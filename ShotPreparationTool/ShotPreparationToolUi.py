@@ -1,7 +1,9 @@
 import sys
 import os
+
 import h5py
 from PyQt4 import QtGui, QtCore
+
 from ShotPreparationTool.shotpreparationtool_ui import Ui_MainWindow
 from ShotPreparationTool.ListSelectionDialog import ListSelectionDialog
 from ShotPreparationTool.ShotPrepToolModel import ShotPrepToolModel
@@ -180,7 +182,7 @@ class ShotPreparationToolUi(object):
             currentTab = self.uiForm.tabWidget.currentWidget()
             table = currentTab.findChild(QtGui.QTableView)
             selected = table.selectedIndexes()
-            keyIndices = (i.sibling(i.row(), 0) for i in selected)
+            keyIndices = [i.sibling(i.row(), 0) for i in selected]
             model = table.model()
             for index in keyIndices:
                 name = model.data(index, role=QtCore.Qt.DisplayRole)
