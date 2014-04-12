@@ -253,6 +253,7 @@ class ShotPreparationToolUi(object):
             tableView.horizontalHeader().setVisible(False)
             tableView.verticalHeader().setVisible(False)
             tableView.setFont(QtGui.QFont("Courier New"))
+            tableView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
 
             layout.addWidget(tableView)
             tableView.setModel(model)
