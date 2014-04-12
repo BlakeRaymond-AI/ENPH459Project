@@ -79,8 +79,8 @@ class ShotRunnerToolUi(object):
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
-        self.ui_form.moveShotUpButton.pressed.connect(self.moveShotUpList)
-        self.ui_form.moveShotDownButton.pressed.connect(self.moveShotDownList)
+        self.ui_form.moveShotUpButton.pressed.connect(self.actionMoveShotUpList)
+        self.ui_form.moveShotDownButton.pressed.connect(self.actionMoveShotDownList)
         self.ui_form.actionNew.triggered.connect(self.actionNew)
         self.ui_form.actionOpen.triggered.connect(self.actionOpen)
         self.ui_form.actionSave.triggered.connect(self.actionSave)
@@ -106,14 +106,14 @@ class ShotRunnerToolUi(object):
         self.controller = None
         self.ui_form.runButton.setEnabled(True)
 
-    def moveShotUpList(self):
+    def actionMoveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
         keyIndices = list(set(keyIndices)) #removes all doubles in the list.
         for index in keyIndices:
             self.runnerTableModel.moveCurrentShotUp(index.row())
 
-    def moveShotDownList(self):
+    def actionMoveShotDownList(self):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
         keyIndices = reversed(list(set(keyIndices))) #removes all doubles in the list.
@@ -184,8 +184,11 @@ class ShotRunnerToolUi(object):
         selected = self.ui_form.tableView.selectedIndexes()
         keyIndices = [i.sibling(i.row(), 0) for i in selected]
         setOfIndices = set(keyIndices)
+        offsetFromRemovingRows = 0
         for index in setOfIndices:
-            self.runnerTableModel.removeRowByRowNumber(index.row())
+            self.runnerTableModel.removeRowByRowNumber(index.row() + offsetFromRemovingRows)
+            offsetFromRemovingRows -= 1
+        self.dataChanged()
 
     def shouldDiscardUnsavedChanges(self):
         if self.unsavedChanges:
