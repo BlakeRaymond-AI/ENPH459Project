@@ -174,7 +174,8 @@ class ShotRunnerToolUi(object):
                     self.fileName = oldFileName #if the file is unopenable, reset the filename to before the opening
                     dialog = QtGui.QMessageBox(self.mainWindow)
                     dialog.warning(self.mainWindow, 'Error During Open', str(ex))
-        self.setTitle()
+                self.unsavedChanges = False
+                self.setTitle()
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
