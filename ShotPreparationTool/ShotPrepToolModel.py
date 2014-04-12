@@ -3,6 +3,7 @@ import os.path
 import sys
 
 import h5py
+
 from ShotPreparationTool.DeviceImporter import DeviceImporter
 from ShotPreparationTool import GroupTableModel
 from ShotPreparationTool import VariableNameValidator
@@ -95,5 +96,7 @@ class ShotPrepToolModel(object):
         self.__buildModelsInFile()
 
     def saveAs(self, filename):
+        if os.path.exists(filename):
+            os.remove(filename)
         newFile = h5py.File(filename)
         self.workingFile.copy(DEVICES_GROUP_NAME, newFile)
