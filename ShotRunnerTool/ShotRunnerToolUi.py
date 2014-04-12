@@ -166,10 +166,12 @@ class ShotRunnerToolUi(object):
             fileDialog = QtGui.QFileDialog()
             dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
             if str(dialogReturn) not in (None, ''):
+                oldFileName = self.fileName
                 self.fileName = str(dialogReturn)
                 try:
                     self.runnerTableModel.openDataByPath(self.fileName)
                 except Exception as ex:
+                    self.fileName = oldFileName #if the file is unopenable, reset the filename to before the opening
                     dialog = QtGui.QMessageBox(self.mainWindow)
                     dialog.warning(self.mainWindow, 'Error During Open', str(ex))
         self.setTitle()
