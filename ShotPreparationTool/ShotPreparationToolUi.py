@@ -119,7 +119,7 @@ class ShotPreparationToolUi(object):
             try:
                 self.model = ShotPrepToolModel(self.fileName)
             except RuntimeError as e:
-                self._warnUser('File locked', e.message)
+                self._warnUser('Error opening H5 file', e.message)
                 return
             self._initTabs(self.model.returnModelsInFile())
             self._modelSaved()

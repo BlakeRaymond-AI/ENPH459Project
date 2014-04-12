@@ -21,6 +21,7 @@ class ShotPrepToolModel(object):
         self.h5pathName = h5pathName
         self.dict_of_devices = {}
         if os.path.exists(self.h5pathName):
+            self.validateExistingFile(self.h5pathName)
             self.originalFile = h5py.File(self.h5pathName)
         else:
             self.originalFile = h5py.File(self.h5pathName)
@@ -31,6 +32,18 @@ class ShotPrepToolModel(object):
         self.workingFile = h5py.File(self.h5tempFileName, driver='core', backing_store=False)  # memory-only
         self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
         self.__buildModelsInFile()
+
+    def validateExistingFile(self, filename):
+        if not filename.endswith('.h5'):
+            raise RuntimeError('Shot parameters file \'%s\' has an invalid extension.' % filename)
+        try:
+            f = h5py.File(filename)
+        except:
+            raise RuntimeError('Shot parameters file \'%s\' is not a valid H5 file.' % filename)
+        if not DEVICES_GROUP_NAME in f:
+            f.close()
+            raise RuntimeError('Shot parameters file \'%s\' is corrupt or invalid.' % filename)
+        f.close()
 
     def cleanUp(self):
         self.originalFile.close()
