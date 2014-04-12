@@ -1,14 +1,13 @@
-__author__ = 'Blake'
-
 import socket
+from ShotRunnerTool import config
+from ShotRunnerTool import AutoConfigLoader
 
-import config
-import AutoConfigLoader
 
 _ = AutoConfigLoader.SETTINGS_FILE_NAME  # prevent IDE from optimizing away the import
 
-HOST, PORT = config.settings.TCPServer.HOST, config.settings.TCPServer.PORT
-DATA = config.settings.TCPServer.DATA
+HOST, PORT = config.settingsDict['TCPServer']['HOST'], config.settingsDict['TCPServer']['PORT']
+DATA = config.settingsDict['TCPServer']['DATA']
+
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

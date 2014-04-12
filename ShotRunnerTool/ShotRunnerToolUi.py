@@ -1,15 +1,11 @@
-from LogWindow import LogWindow
-from ShotRunnerController import ShotRunnerController
-
-__author__ = 'Jeff'
-
 import sys
 import os
-
 from PyQt4 import QtGui
+from ShotRunnerTool.LogWindow import LogWindow
+from ShotRunnerTool.ShotRunnerController import ShotRunnerController
+from ShotRunnerTool.runnertool_ui import Ui_MainWindow
+from ShotRunnerTool.ShotRunnerToolTableModel import ShotRunnerToolTableModel
 
-from runnertool_ui import Ui_MainWindow
-from ShotRunnerToolTableModel import ShotRunnerToolTableModel
 
 JSON_FILE_EXTENSION = '*.json'
 UP_ARROW_ICON = "resources/upArrow.png"
@@ -24,20 +20,21 @@ COLOUR_OFF_WHITE = QtGui.QColor(248, 248, 242)
 
 
 class ShotRunnerToolUi(object):
-    def __init__(self, app):
+    def __init__(self, application):
         self.mainWindow = QtGui.QMainWindow()
         self.ui_form = Ui_MainWindow()
         self.ui_form.setupUi(self.mainWindow)
-        self.app = app
+        self.app = application
         self.setAppStyle()
         self.init_ui()
         self.runnerTableModel = ShotRunnerToolTableModel(self.mainWindow)
         self.init_model()
         self.connectSignalsAndSlots()
-        self.initController()
+        self.controller = None
         self.hookCloseEvent()
         self.fileName = None
-        self.dataSaved() #sets it so that there is no unsaved changes on initialization
+        self.unsavedChanges = False
+        self.logWindow = None
 
     def init_model(self):
         self.ui_form.tableView.setModel(self.runnerTableModel)
@@ -66,7 +63,7 @@ class ShotRunnerToolUi(object):
 
         try:
             self.__loadButtonImages()
-        except:
+        except RuntimeError:
             pass
 
     def __loadButtonImages(self):
@@ -78,7 +75,7 @@ class ShotRunnerToolUi(object):
             self.ui_form.moveShotDownButton.setIcon(downIcon)
             self.ui_form.removeRowButton.setIcon(removeIcon)
         except:
-            raise Exception, "Couldn't load images for the moveUp and moveDown buttons"
+            raise RuntimeError("Couldn't load images for the moveUp and moveDown buttons")
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
@@ -164,17 +161,17 @@ class ShotRunnerToolUi(object):
         self.app.closeEvent = handleCloseEvent
 
     def actionOpen(self):
-        #loads the data into the tableModel from a json file
+        # loads the data into the tableModel from a json file
         if self.shouldDiscardUnsavedChanges():
             fileDialog = QtGui.QFileDialog()
             dialogReturn = fileDialog.getOpenFileName(directory=str(os.getcwd()), filter='*.json*')
-            if str(dialogReturn) != None and str(dialogReturn) != '':
+            if str(dialogReturn) not in (None, ''):
                 self.fileName = str(dialogReturn)
                 try:
                     self.runnerTableModel.openDataByPath(self.fileName)
                 except Exception as ex:
                     dialog = QtGui.QMessageBox(self.mainWindow)
-                    dialog.warning(self.mainWindow, 'Error During Open', ex.message)
+                    dialog.warning(self.mainWindow, 'Error During Open', str(ex))
         self.setTitle()
 
     def actionClose(self):
@@ -220,9 +217,6 @@ class ShotRunnerToolUi(object):
                 self.mainWindow.setWindowTitle('* - QDG Lab Shot Runner Tool')
             else:
                 self.mainWindow.setWindowTitle('QDG Lab Shot Runner Tool')
-
-    def initController(self):
-        self.controller = None
 
     def setAppStyle(self):
         self.app.setStyle(APP_STYLE)

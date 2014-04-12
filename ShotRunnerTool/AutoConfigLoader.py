@@ -1,17 +1,14 @@
-__author__ = 'Blake'
-
 # This logic is here to facilitate a very simple API for writing experiment scripts.
 # The runner tool will create a settings file by this name with the shot parameters.
 # By importing this file, the shot parameters are automatically loaded into the config module.
 
 import os.path
-
-import config
-from H5SettingsLoader import H5SettingsLoader
+from ShotRunnerTool import config
+from ShotRunnerTool import H5SettingsLoader
 
 
 SETTINGS_FILE_NAME = '.shot_parameters.h5'
-SETTINGS_LOADER = H5SettingsLoader()
+SETTINGS_LOADER = H5SettingsLoader
 
 
 class ConfigError(RuntimeError):

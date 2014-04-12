@@ -1,15 +1,11 @@
-__author__ = 'Blake'
-
 import unittest
 import os
 import os.path
-
 import h5py
+from ShotRunnerTool import H5SettingsLoader
 
-from H5SettingsLoader import H5SettingsLoader
 
-
-class testH5SettingsLoader(unittest.TestCase):
+class TestH5SettingsLoader(unittest.TestCase):
     def setUp(self):
         self.tempFileName = 'temp.h5'
         tempFile = h5py.File(self.tempFileName)
@@ -31,13 +27,13 @@ class testH5SettingsLoader(unittest.TestCase):
             os.remove(self.tempFileName)
 
     def test_loadsOneDeviceObjectPerGroupUnderDevices(self):
-        loader = H5SettingsLoader()
+        loader = H5SettingsLoader
         settings = loader.loadSettings(self.tempFileName)
         self.assertTrue('testDevice1' in settings)
         self.assertTrue('testDevice2' in settings)
 
     def test_loadsSettingsFromDeviceKeysAndValues(self):
-        loader = H5SettingsLoader()
+        loader = H5SettingsLoader
         settings = loader.loadSettings(self.tempFileName)
         self.assertEqual('baz', settings['testDevice1']['stringConstant'])
         self.assertEqual(2, settings['testDevice1']['intConstant'])

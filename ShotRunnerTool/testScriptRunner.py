@@ -1,12 +1,10 @@
-__author__ = 'Blake'
-
 import os
 import os.path
 import unittest
-from ScriptRunner import ScriptRunner
+from ShotRunnerTool.ScriptRunner import ScriptRunner
 
 
-class testScriptRunner(unittest.TestCase):
+class TestScriptRunner(unittest.TestCase):
     def setUp(self):
         self.tempFile = 'foo.tmp'
         with open(self.tempFile, 'w') as _:

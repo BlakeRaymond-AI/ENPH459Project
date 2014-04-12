@@ -1,11 +1,6 @@
 import h5py
-
-from DeviceImporter import DeviceImporter
-
-
-__author__ = 'Blake'
-
 import unittest
+from ShotPreparationTool.DeviceImporter import DeviceImporter
 
 
 class TestDeviceImporter(unittest.TestCase):

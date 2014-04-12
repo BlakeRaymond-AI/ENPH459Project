@@ -1,13 +1,8 @@
 import shutil
-
 from PyQt4 import QtCore
-
-from LogWindowController import LogWindowController
-from ScriptRunner import ScriptRunner
-import AutoConfigLoader
-
-
-__author__ = 'Blake'
+from ShotRunnerTool.LogWindowController import LogWindowController
+from ShotRunnerTool.ScriptRunner import ScriptRunner
+from ShotRunnerTool import AutoConfigLoader
 
 
 class ShotRunnerController(QtCore.QThread):

@@ -1,5 +1,3 @@
-__author__ = 'Blake'
-
 from PyQt4 import QtCore
 
 

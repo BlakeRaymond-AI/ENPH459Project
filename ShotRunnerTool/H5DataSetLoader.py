@@ -1,13 +1,9 @@
-__author__ = 'Blake'
-
-import numpy as np
+import numpy
 
 
-class H5DataSetLoader(object):
-    @staticmethod
-    def load(group):
-        value = group[()]
-        if isinstance(value, np.ndarray):
-            return list(value)
-        else:
-            return value
+def load(group):
+    value = group[()]
+    if isinstance(value, getattr(numpy, 'ndarray')):  # pylint reports this as an error otherwise
+        return list(value)
+    else:
+        return value

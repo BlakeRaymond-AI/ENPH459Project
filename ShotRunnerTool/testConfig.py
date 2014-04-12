@@ -1,11 +1,8 @@
-__author__ = 'Blake'
-
 import unittest
+from ShotRunnerTool import config
 
-import config
 
-
-class testConfig(unittest.TestCase):
+class TestConfig(unittest.TestCase):
     def test_loadsDeviceConstantsIntoConfig(self):
         devices = {
             'FooDevice': {
@@ -17,15 +14,3 @@ class testConfig(unittest.TestCase):
 
         self.assertEqual('bar', config.settingsDict['FooDevice']['stringConstant'])
         self.assertEqual(1, config.settingsDict['FooDevice']['intConstant'])
-
-    def test_loadsSettingsAsFluentDictionary(self):
-        devices = {
-            'FooDevice': {
-                'stringConstant': 'bar',
-                'intConstant': 1
-            }
-        }
-        config.load(devices)
-
-        self.assertEqual('bar', config.settings.FooDevice.stringConstant)
-        self.assertEqual(1, config.settings.FooDevice.intConstant)

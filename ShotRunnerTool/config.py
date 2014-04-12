@@ -1,11 +1,6 @@
-from FluentDictionary import FluentDictionary
-
-__author__ = 'Blake'
+settingsDict = {}
 
 
 def load(newValues):
     global settingsDict
-    global settings
-
     settingsDict = newValues
-    settings = FluentDictionary(newValues)

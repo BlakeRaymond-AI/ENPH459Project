@@ -1,13 +1,10 @@
-__author__ = 'Blake'
-
 import unittest
-
 from PyQt4 import QtGui, QtCore
+from ShotRunnerTool.LogWindow import LogWindow
+from ShotRunnerTool.StringSignal import StringSignal
 
-from LogWindow import LogWindow
-from StringSignal import StringSignal
 
-class testLogWindow(unittest.TestCase):
+class TestLogWindow(unittest.TestCase):
     def setUp(self):
         self.app = QtGui.QApplication([])
 

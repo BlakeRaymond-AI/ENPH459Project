@@ -1,5 +1,3 @@
-__author__ = 'Blake'
-
 import subprocess
 from subprocess import PIPE
 import sys
@@ -9,6 +7,7 @@ class ScriptRunner(object):
     def __init__(self, scriptPath):
         self.scriptPath = scriptPath
         self.running = False
+        self.process = None
 
     def _start(self):
         self.process = subprocess.Popen([sys.executable, self.scriptPath], stdout=PIPE, stderr=PIPE)
