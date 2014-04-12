@@ -93,7 +93,10 @@ class ShotPreparationToolUi(object):
             fileDialog = QtGui.QFileDialog(self.mainWindow)
             dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
                                                                directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
-            if dialogReturn[0]:
+            filename = str(dialogReturn[0])
+            if filename:
+                if os.path.exists(filename):
+                    os.remove(filename)
                 self._close()
                 self.fileName = str(dialogReturn[0])
                 self.model = ShotPrepToolModel(self.fileName)
