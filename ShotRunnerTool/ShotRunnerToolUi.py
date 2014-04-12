@@ -1,6 +1,8 @@
 import sys
 import os
+
 from PyQt4 import QtGui
+
 from ShotRunnerTool.LogWindow import LogWindow
 from ShotRunnerTool.ShotRunnerController import ShotRunnerController
 from ShotRunnerTool.runnertool_ui import Ui_MainWindow
@@ -34,7 +36,6 @@ class ShotRunnerToolUi(object):
         self.hookCloseEvent()
         self.fileName = None
         self.unsavedChanges = False
-        self.logWindow = None
 
     def init_model(self):
         self.ui_form.tableView.setModel(self.runnerTableModel)

@@ -9,7 +9,6 @@ import h5py
 from PyQt4 import QtGui
 
 from ShotRunnerTool import AutoConfigLoader
-
 from ShotRunnerTool.LogWindow import LogWindow
 from ShotRunnerTool.ShotRunnerController import ShotRunnerController
 
@@ -77,9 +76,11 @@ class TestShotRunnerController(TestCase):
         h5File.close()
 
     def test_canRunScriptWithInjectedParameters(self):
+        app = QtGui.QApplication([])
         scripts = ['ShotRunnerControllerTestScript.py']
         settingsFiles = [self.settingsFileName]
-        controller = ShotRunnerController(scripts, settingsFiles)
+        logWindow = LogWindow(None)
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow)
         controller.run()
         self.assertEqual(1, len(self.messages))
         self.assertEqual(DATA, self.messages[0])
@@ -98,17 +99,19 @@ class TestShotRunnerController(TestCase):
         logWindow = LogWindow(None)
         scripts = [TEST_SCRIPT]
         settingsFiles = [self.settingsFileName]
-        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow)
         controller.finished.connect(app.quit)
         controller.start()
         app.exec_()
         self.assertEqual(DATA, str(logWindow.toPlainText()).strip())
 
     def test_canRunMultipleScripts(self):
+        app = QtGui.QApplication([])
         numberOfScripts = 2
         scripts = [TEST_SCRIPT] * numberOfScripts
         settingsFiles = [self.settingsFileName] * numberOfScripts
-        controller = ShotRunnerController(scripts, settingsFiles)
+        logWindow = LogWindow(None)
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow)
         controller.run()
         self.assertListEqual([DATA] * numberOfScripts, self.messages)
 
@@ -118,7 +121,7 @@ class TestShotRunnerController(TestCase):
         numberOfScripts = 2
         scripts = [TEST_SCRIPT] * numberOfScripts
         settingsFiles = [self.settingsFileName] * numberOfScripts
-        controller = ShotRunnerController(scripts, settingsFiles, logWindow=logWindow)
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow)
         controller.finished.connect(app.quit)
 
         controller.start()
@@ -126,3 +129,18 @@ class TestShotRunnerController(TestCase):
 
         messages = str(logWindow.toPlainText()).strip().splitlines()
         self.assertListEqual([DATA] * numberOfScripts, messages)
+
+    def test_canCaptureErrors(self):
+        app = QtGui.QApplication([])
+        logWindow = LogWindow(None)
+        scripts = ['ShotRunnerControllerErrorTestScript.py']
+        settingsFiles = [self.settingsFileName]
+        controller = ShotRunnerController(scripts, settingsFiles, logWindow)
+        controller.finished.connect(app.quit)
+
+        controller.start()
+        app.exec_()
+
+        messages = str(logWindow.toPlainText()).strip()
+        self.assertIn("RuntimeError", messages)
+        self.assertIn("Error from ShotRunnerControllerErrorTestScript", messages)
