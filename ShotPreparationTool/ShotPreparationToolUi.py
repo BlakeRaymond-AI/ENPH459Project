@@ -108,6 +108,9 @@ class ShotPreparationToolUi(object):
                 self._modelSaved()
 
     def actionOpen(self):
+        if not self._checkShouldDiscardAnyUnsavedChanges():
+            return
+
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Open existing HDF5 file',
                                                            directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
