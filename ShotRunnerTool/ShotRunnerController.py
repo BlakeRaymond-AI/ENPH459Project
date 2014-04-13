@@ -2,10 +2,37 @@ import shutil
 
 from PyQt4 import QtCore
 
-from GeneratorEmitter import GeneratorEmitter
 from ShotRunnerTool.ScriptRunner import ScriptRunner
 from ShotRunnerTool import AutoConfigLoader
 from StringSignal import StringSignal
+
+
+class StandardOutputReader(QtCore.QThread):
+    def __init__(self, scriptRunner, signal):
+        QtCore.QThread.__init__(self)
+        self.scriptRunner = scriptRunner
+        self.signal = signal
+
+    def run(self):
+        process = self.scriptRunner.process
+        while process.poll() is None:
+            line = process.stdout.readline()
+            if line:
+                self.signal.get().emit(line)
+
+
+class StandardErrorReader(QtCore.QThread):
+    def __init__(self, scriptRunner, signal):
+        QtCore.QThread.__init__(self)
+        self.scriptRunner = scriptRunner
+        self.signal = signal
+
+    def run(self):
+        process = self.scriptRunner.process
+        while process.poll() is None:
+            line = process.stderr.readline()
+            if line:
+                self.signal.get().emit(line)
 
 
 class ShotRunnerController(QtCore.QThread):
@@ -23,14 +50,14 @@ class ShotRunnerController(QtCore.QThread):
             signal = StringSignal()
             signal.get().connect(self.logWindow.appendMessage)
 
-            outputEmitter = GeneratorEmitter(scriptRunner.outputStream(), signal)
-            outputEmitter.start()
+            outputReader = StandardOutputReader(scriptRunner, signal)
+            errorReader = StandardErrorReader(scriptRunner, signal)
 
-            errorEmitter = GeneratorEmitter(scriptRunner.errorStream(), signal)
-            errorEmitter.start()
+            scriptRunner.executeAsync()
 
-            out, err = scriptRunner.execute()
-            if out:
-                self.logWindow.appendMessage(out)
-            if err:
-                self.logWindow.appendMessage(err)
+            outputReader.start()
+            errorReader.start()
+
+            scriptRunner.wait()
+            outputReader.wait()
+            errorReader.wait()
