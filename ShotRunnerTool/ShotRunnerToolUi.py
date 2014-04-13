@@ -159,8 +159,7 @@ class ShotRunnerToolUi(object):
     def actionExit(self):
         if self.shouldDiscardUnsavedChanges():
             if self.controller and self.controller.isRunning():
-                self.controller.terminate()
-                self.controller.wait()
+                self.abortScripts()
             sys.exit()
 
     def hookCloseEvent(self):
@@ -192,8 +191,11 @@ class ShotRunnerToolUi(object):
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
+            if self.controller and self.controller.isRunning():
+                self.abortScripts()
             self.fileName = None    #release the file that the save command would write to.
             self.runnerTableModel.close()
+            self.logWindow.clear()
             self.dataSaved()
 
     def actionRemoveRow(self):
