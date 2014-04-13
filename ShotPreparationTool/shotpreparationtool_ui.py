@@ -1,10 +1,8 @@
-#pylint: skip-file
-
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'shotpreparationtool.ui'
 #
-# Created: Sun Mar 16 00:53:16 2014
+# Created: Sat Apr 12 18:41:29 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -46,7 +44,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 710, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 710, 23))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -75,6 +73,8 @@ class Ui_MainWindow(object):
         self.actionRemoveRow.setObjectName(_fromUtf8("actionRemoveRow"))
         self.actionImport = QtGui.QAction(MainWindow)
         self.actionImport.setObjectName(_fromUtf8("actionImport"))
+        self.actionRename = QtGui.QAction(MainWindow)
+        self.actionRename.setObjectName(_fromUtf8("actionRename"))
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -85,6 +85,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionExit)
         self.menuGroup.addAction(self.actionAddDevice)
         self.menuGroup.addAction(self.actionRemoveDevice)
+        self.menuGroup.addAction(self.actionRename)
         self.menuGroup.addAction(self.actionImport)
         self.menuRow.addAction(self.actionRemoveRow)
         self.menuBar.addAction(self.menuFile.menuAction())
@@ -110,4 +111,5 @@ class Ui_MainWindow(object):
         self.actionRemoveDevice.setText(_translate("MainWindow", "Remove Current", None))
         self.actionRemoveRow.setText(_translate("MainWindow", "Remove Selected", None))
         self.actionImport.setText(_translate("MainWindow", "Import...", None))
+        self.actionRename.setText(_translate("MainWindow", "Rename", None))
 

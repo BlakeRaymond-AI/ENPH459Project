@@ -42,6 +42,7 @@ class ShotPreparationToolUi(object):
         form.actionRemoveDevice.triggered.connect(self.actionRemoveDevice)
         form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
         form.actionImport.triggered.connect(self.actionImport)
+        form.actionRename.triggered.connect(self.actionRename)
 
     def _setTitle(self):
         if self.fileName is not None:
@@ -275,6 +276,24 @@ class ShotPreparationToolUi(object):
     def _warnUser(self, title, message):
         warningDialog = QtGui.QMessageBox(self.mainWindow)
         warningDialog.warning(self.mainWindow, title, message)
+
+    def actionRename(self):
+        if self._checkHasOpenFile():
+            dialog = QtGui.QInputDialog(self.mainWindow)
+            response = dialog.getText(self.mainWindow, 'Rename device', 'Enter new name:')
+            newDeviceName = str(response[0])
+
+            currentTab = self.uiForm.tabWidget.currentWidget()
+            oldDeviceName = str(currentTab.windowTitle())
+
+            if oldDeviceName != newDeviceName:
+                try:
+                    self.model.renameDevice(oldDeviceName, newDeviceName)
+                except KeyError:
+                    self._warnUser("Error renaming device", "Device with name \'%s\' already exists." % newDeviceName)
+                else:
+                    self._initTabs(self.model.returnModelsInFile())
+                    self._modelChanged()
 
 
 if __name__ == '__main__':

@@ -78,6 +78,14 @@ class ShotPrepToolModel(object):
         del self.workingFile[DEVICES_GROUP_NAME][deviceName]
         self.__buildModelsInFile()
 
+    def renameDevice(self, oldDeviceName, newDeviceName):
+        devices = self.workingFile[DEVICES_GROUP_NAME]
+        if newDeviceName in devices:
+            raise KeyError("Device \'%s\' already exists" % newDeviceName)
+        devices.copy(oldDeviceName, newDeviceName)
+        del devices[oldDeviceName]
+        self.__buildModelsInFile()
+
     def addDevice(self, deviceName):
         if deviceName in self.workingFile[DEVICES_GROUP_NAME]:
             raise KeyError('Device with name \"%s\" already exists.' % deviceName)
