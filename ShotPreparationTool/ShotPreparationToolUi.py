@@ -189,6 +189,7 @@ class ShotPreparationToolUi(object):
                 except SyntaxError as e:
                     self._warnUser('Invalid device name', e.message)
                 self._initTabs(self.model.returnModelsInFile())
+                self._changeCurrentTab(str(groupName))
                 self._modelChanged()
 
     def actionRemoveDevice(self):
@@ -305,6 +306,16 @@ class ShotPreparationToolUi(object):
                 else:
                     self._initTabs(self.model.returnModelsInFile())
                     self._modelChanged()
+
+    def _changeCurrentTab(self, name):
+        tabWidget = self.uiForm.tabWidget
+        for index in range(tabWidget.count()):
+            tab = tabWidget.widget(index)
+            if tab.windowTitle() == name:
+                tabWidget.setCurrentIndex(index)
+                break
+        else:
+            raise RuntimeError("Could not find tab with title %s" % name)
 
 
 if __name__ == '__main__':
