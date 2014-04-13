@@ -8,6 +8,15 @@ from ShotPreparationTool import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'
+SETTINGS_FILE_DIRECTORY = 'C:\\Users\\School\\GIT\\PAT\\PATFramework\\Client\\Settings\\DefaultSettings'
+
+
+FILE_TO_DEVICE_NAMES_MAP = {'LabJackSettings': 'LabJack',
+           'MKS_SRG3_Settings': 'MKS_SRG3',
+           'Stabil_Ion_Settings': 'Stabil_Ion',
+           'PixeLinkSettings': 'PixeLink',
+           'OptimizerSettings': 'Optimizer',
+           'PMDSettings': 'PMD'}  # all default devices from currently in the lab
 
 
 class ShotPrepToolModel(object):
@@ -77,21 +86,18 @@ class ShotPrepToolModel(object):
         importer.importFromH5File(devicesGroup, devices)
         self.__buildModelsInFile()
 
-    def importFromDefaults(self, fileName=None, filePath=None):
-        if not fileName: fileName = 'settingsTemplate.py'
-        if not filePath: filePath = 'C:\PAT\PATFramework\Client\Settings\settingsTemplate.py'
-        try:
-            settingsTemplate = imp.load_source(fileName, filePath)
-            updatePackage = settingsTemplate.updatePackage
-            for device in settingsTemplate.updatePackage:
-                newDevice = self.workingFile[DEVICES_GROUP_NAME].create_group(device)
-                for setting in updatePackage[device]:
-                    newDevice[setting] = updatePackage[device][setting]
-                    newDevice[setting].attrs['source_expression'] = str(updatePackage[device][setting])
-            self.__buildModelsInFile()
-        except:
-            raise Exception, "Couldn't read default settings at %s. Ensure that the file is located at %s" \
-                             " and that the updatePackage dict is uncommented." %(filePath,filePath)
+    def importFromDefaults(self, directoryPath=SETTINGS_FILE_DIRECTORY):
+        for f in os.listdir(directoryPath):
+            if f.endswith('.py'):
+                module = imp.load_source(f, os.path.join(directoryPath, f))
+                settingsFile = [f for f in module.__dict__.keys() if f in FILE_TO_DEVICE_NAMES_MAP.keys()]
+                for device in settingsFile:
+                    newDevice = self.workingFile[DEVICES_GROUP_NAME].create_group(FILE_TO_DEVICE_NAMES_MAP[device])
+                    for name in getattr(module, device).keys():
+                        newDevice[name] = getattr(module, device)[name]
+        self.__buildModelsInFile()
+
+
 
     def saveAs(self, filename):
         newFile = h5py.File(filename)
