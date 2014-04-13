@@ -64,6 +64,17 @@ class ShotPreparationToolUi(object):
                 return False
         return True
 
+    def _checkShouldRemoveDevice(self):
+        messageBox = QtGui.QMessageBox()
+        response = messageBox.question(self.mainWindow, 'Remove device',
+                                       'Are you sure you wish to remove this device?',
+                                       QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Yes,
+                                       QtGui.QMessageBox.Cancel)
+        if response == QtGui.QMessageBox.Yes:
+            return True
+        else:
+            return False
+
     def _checkHasOpenFile(self):
         if self.model is None:
             self._warnUser('Please load first', 'Please open an H5 file first.')
@@ -181,7 +192,7 @@ class ShotPreparationToolUi(object):
                 self._modelChanged()
 
     def actionRemoveDevice(self):
-        if self._checkHasOpenFile():
+        if self._checkHasOpenFile() and self._checkShouldRemoveDevice():
             currentTab = self.uiForm.tabWidget.currentWidget()
             deviceName = str(currentTab.windowTitle())
             self.model.removeDevice(deviceName)
