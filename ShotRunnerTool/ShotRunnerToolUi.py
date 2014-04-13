@@ -149,6 +149,8 @@ class ShotRunnerToolUi(object):
 
     def actionExit(self):
         if self.shouldDiscardUnsavedChanges():
+            if self.controller and self.controller.isRunning():
+                self.controller.terminate()
             sys.exit()
 
     def hookCloseEvent(self):
