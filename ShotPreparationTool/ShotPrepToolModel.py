@@ -63,12 +63,15 @@ class ShotPrepToolModel(object):
         self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
         self.__buildModelsInFile()
 
+    def removeEmptyRows(self, h5File):
+        for device in h5File[DEVICES_GROUP_NAME].values():
+            if GroupTableModel.EMPTY_ROW_STRING in device:
+                del device[GroupTableModel.EMPTY_ROW_STRING]
+
     def saveChanges(self):
         del self.originalFile[DEVICES_GROUP_NAME]
         self.workingFile.copy(DEVICES_GROUP_NAME, self.originalFile)
-        for device in self.originalFile[DEVICES_GROUP_NAME].values():
-            if GroupTableModel.EMPTY_ROW_STRING in device:
-                del device[GroupTableModel.EMPTY_ROW_STRING]
+        self.removeEmptyRows(self.originalFile)
         self.originalFile.flush()
 
     def removeDevice(self, deviceName):
@@ -113,3 +116,7 @@ class ShotPrepToolModel(object):
             os.remove(filename)
         newFile = h5py.File(filename)
         self.workingFile.copy(DEVICES_GROUP_NAME, newFile)
+        self.removeEmptyRows(newFile)
+        newFile.flush()
+        newFile.close()
+
