@@ -4,7 +4,7 @@
 
 # Form implementation generated from reading ui file 'runnertool_ui.ui'
 #
-# Created: Thu Mar 06 21:03:35 2014
+# Created: Sat Apr 12 18:12:42 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,6 +50,9 @@ class Ui_MainWindow(object):
         self.runButton = QtGui.QPushButton(self.centralWidget)
         self.runButton.setObjectName(_fromUtf8("runButton"))
         self.horizontalLayout_2.addWidget(self.runButton)
+        self.stopButton = QtGui.QPushButton(self.centralWidget)
+        self.stopButton.setObjectName(_fromUtf8("stopButton"))
+        self.horizontalLayout_2.addWidget(self.stopButton)
         self.moveShotUpButton = QtGui.QPushButton(self.centralWidget)
         self.moveShotUpButton.setText(_fromUtf8(""))
         self.moveShotUpButton.setObjectName(_fromUtf8("moveShotUpButton"))
@@ -67,7 +70,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 748, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 748, 23))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -104,6 +107,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
         self.runButton.setText(_translate("MainWindow", "Run Scripts", None))
+        self.stopButton.setText(_translate("MainWindow", "Stop", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.actionNew.setText(_translate("MainWindow", "New...", None))
         self.actionOpen.setText(_translate("MainWindow", "Open...", None))

@@ -58,7 +58,8 @@ class ShotRunnerToolUi(object):
         self.mainWindow.setWindowTitle("QDG Lab Shot Runner Tool")
         centre_point = QtGui.QDesktopWidget().availableGeometry().center()
         self.mainWindow.frameGeometry().moveCenter(centre_point)
-        self.mainWindow.move(self.mainWindow.frameGeometry().topLeft())
+
+        self.ui_form.stopButton.setEnabled(False)
 
         self.initLogWindow()
 
@@ -80,6 +81,7 @@ class ShotRunnerToolUi(object):
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
+        self.ui_form.stopButton.pressed.connect(self.abortScripts)
         self.ui_form.moveShotUpButton.pressed.connect(self.actionMoveShotUpList)
         self.ui_form.moveShotDownButton.pressed.connect(self.actionMoveShotDownList)
         self.ui_form.actionNew.triggered.connect(self.actionNew)
@@ -97,15 +99,22 @@ class ShotRunnerToolUi(object):
     def runScripts(self):
         if self.controller:
             raise RuntimeError('Already running scripts')
+        self.ui_form.runButton.setEnabled(False)
         scripts, settings = self.runnerTableModel.getScriptsAndSettingsFilePaths()
         self.controller = ShotRunnerController(scripts, settings, logWindow=self.logWindow)
         self.controller.finished.connect(self.finishedRunningScripts)
-        self.ui_form.runButton.setEnabled(False)
         self.controller.start()
+        self.ui_form.stopButton.setEnabled(True)
+
+    def abortScripts(self):
+        if not self.controller:
+            raise RuntimeError("Not running scripts")
+        self.controller.terminate()
 
     def finishedRunningScripts(self):
         self.controller = None
         self.ui_form.runButton.setEnabled(True)
+        self.ui_form.stopButton.setEnabled(False)
 
     def actionMoveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
@@ -151,6 +160,7 @@ class ShotRunnerToolUi(object):
         if self.shouldDiscardUnsavedChanges():
             if self.controller and self.controller.isRunning():
                 self.controller.terminate()
+                self.controller.wait()
             sys.exit()
 
     def hookCloseEvent(self):

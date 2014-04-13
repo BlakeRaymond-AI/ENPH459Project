@@ -41,23 +41,29 @@ class ShotRunnerController(QtCore.QThread):
         self.scripts = scripts
         self.settingsFiles = settingsFiles
         self.logWindow = logWindow
+        self.scriptRunner = None
 
     def run(self):
         for script, settingsFile in zip(self.scripts, self.settingsFiles):
-            scriptRunner = ScriptRunner(script)
+            self.scriptRunner = ScriptRunner(script)
             shutil.copyfile(settingsFile, AutoConfigLoader.SETTINGS_FILE_NAME)
 
             signal = StringSignal()
             signal.get().connect(self.logWindow.appendMessage)
 
-            outputReader = StandardOutputReader(scriptRunner, signal)
-            errorReader = StandardErrorReader(scriptRunner, signal)
+            outputReader = StandardOutputReader(self.scriptRunner, signal)
+            errorReader = StandardErrorReader(self.scriptRunner, signal)
 
-            scriptRunner.executeAsync()
+            self.scriptRunner.executeAsync()
 
             outputReader.start()
             errorReader.start()
 
-            scriptRunner.wait()
+            self.scriptRunner.wait()
             outputReader.wait()
             errorReader.wait()
+
+    def terminate(self):
+        if self.scriptRunner:
+            self.scriptRunner.process.terminate()
+        QtCore.QThread.terminate(self)
