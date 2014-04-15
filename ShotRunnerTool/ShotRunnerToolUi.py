@@ -165,6 +165,8 @@ class ShotRunnerToolUi(object):
     def hookCloseEvent(self):
         def handleCloseEvent(event):
             if self.shouldDiscardUnsavedChanges():
+                if self.controller and self.controller.isRunning():
+                    self.abortScripts()
                 event.accept()
             else:
                 event.ignore()

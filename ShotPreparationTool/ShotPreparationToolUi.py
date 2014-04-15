@@ -303,6 +303,8 @@ class ShotPreparationToolUi(object):
                     self.model.renameDevice(oldDeviceName, newDeviceName)
                 except KeyError:
                     self._warnUser("Error renaming device", "Device with name \'%s\' already exists." % newDeviceName)
+                except SyntaxError:
+                    self._warnUser("Error renaming device", "Device name \'%s\' is not a valid Python variable name." % newDeviceName)
                 else:
                     self._initTabs(self.model.returnModelsInFile())
                     self._modelChanged()

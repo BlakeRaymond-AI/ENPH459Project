@@ -80,19 +80,21 @@ class ShotPrepToolModel(object):
 
     def renameDevice(self, oldDeviceName, newDeviceName):
         devices = self.workingFile[DEVICES_GROUP_NAME]
-        if newDeviceName in devices:
-            raise KeyError("Device \'%s\' already exists" % newDeviceName)
+        self._validateNewDeviceName(newDeviceName)
         devices.copy(oldDeviceName, newDeviceName)
         del devices[oldDeviceName]
         self.__buildModelsInFile()
 
     def addDevice(self, deviceName):
+        self._validateNewDeviceName(deviceName)
+        self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
+        self.__buildModelsInFile()
+
+    def _validateNewDeviceName(self, deviceName):
         if deviceName in self.workingFile[DEVICES_GROUP_NAME]:
             raise KeyError('Device with name \"%s\" already exists.' % deviceName)
         if not VariableNameValidator.isValidVariableName(deviceName):
             raise SyntaxError('Device name \"%s\" is not a valid Python variable name.' % deviceName)
-        self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
-        self.__buildModelsInFile()
 
     @staticmethod
     def getListOfDevices(h5File):
