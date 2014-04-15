@@ -23,6 +23,7 @@ class ShotPreparationToolUi(object):
         self.app = application
         self._initUI()
         self._connectButtons()
+        self._initShortcuts()
         self._hookCloseEvent()
         self.unsavedChanges = False
 
@@ -318,6 +319,9 @@ class ShotPreparationToolUi(object):
                 break
         else:
             raise RuntimeError("Could not find tab with title %s" % name)
+
+    def _initShortcuts(self):
+        self._saveShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.CTRL + QtCore.Qt.Key_S), self.mainWindow, self.actionSave)
 
 
 if __name__ == '__main__':
