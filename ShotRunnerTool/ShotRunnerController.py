@@ -1,3 +1,4 @@
+import os
 import shutil
 
 from PyQt4 import QtCore
@@ -46,7 +47,8 @@ class ShotRunnerController(QtCore.QThread):
     def run(self):
         for script, settingsFile in zip(self.scripts, self.settingsFiles):
             self.scriptRunner = ScriptRunner(script)
-            shutil.copyfile(settingsFile, AutoConfigLoader.SETTINGS_FILE_NAME)
+            scriptDir = os.path.dirname(script)
+            shutil.copyfile(settingsFile, os.path.join(scriptDir, AutoConfigLoader.SETTINGS_FILE_NAME))
 
             signal = StringSignal()
             signal.get().connect(self.logWindow.appendMessage)
