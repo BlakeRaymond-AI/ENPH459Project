@@ -1,5 +1,7 @@
 import os
 import os.path
+import sys
+
 import h5py
 from ShotPreparationTool.DeviceImporter import DeviceImporter
 from ShotPreparationTool import GroupTableModel
@@ -7,6 +9,10 @@ from ShotPreparationTool import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'
+SETTINGS_FILE_DIRECTORY = "C:\\git\\QDG-Lab-Framework\\Client\\Settings\\"
+
+sys.path.append(SETTINGS_FILE_DIRECTORY)
+import SettingsConsolidator
 
 
 class ShotPrepToolModel(object):
@@ -74,6 +80,18 @@ class ShotPrepToolModel(object):
         devicesGroup = h5file[DEVICES_GROUP_NAME]
         importer = DeviceImporter(self.workingFile[DEVICES_GROUP_NAME])
         importer.importFromH5File(devicesGroup, devices)
+        self.__buildModelsInFile()
+
+    def importFromDefaults(self):
+        deviceSettings = SettingsConsolidator.deviceSettings
+        devicesGroup = self.workingFile[DEVICES_GROUP_NAME]
+        for deviceName, value in deviceSettings.items():
+            device = value[1]
+            deviceGroup = devicesGroup.create_group(deviceName)
+            for key, value in device.items():
+                deviceGroup[key] = value
+                if isinstance(value, str):
+                    deviceGroup[key].attrs[GroupTableModel.SOURCE_EXPRESSION_ATTR_KEY] = "\"%s\"" % value
         self.__buildModelsInFile()
 
     def saveAs(self, filename):

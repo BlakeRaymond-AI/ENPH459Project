@@ -97,6 +97,10 @@ class ShotPreparationToolUi(object):
                 self._close()
                 self.fileName = str(dialogReturn[0])
                 self.model = ShotPrepToolModel(self.fileName)
+                try:
+                    self.model.importFromDefaults()
+                except Exception as e:
+                    self._warnUser('Error importing defaults', e.message)
                 self._initTabs(self.model.returnModelsInFile())
                 self._modelSaved()
 
@@ -191,15 +195,14 @@ class ShotPreparationToolUi(object):
                 self._modelChanged()
 
     def _verifyOverwriteExistingDevices(self, checkedItems):
-        if set(checkedItems).intersection(self.model.returnModelsInFile().keys()):
-            messageBox = QtGui.QMessageBox()
-            response = messageBox.question(self.mainWindow, 'Overwriting existing device',
-                                           'One or more devices to be imported were already found.  These devices will be overwritten.',
-                                            QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
-                                            QtGui.QMessageBox.Cancel)
-            if response == QtGui.QMessageBox.Cancel:
-                return False
-            return True
+        messageBox = QtGui.QMessageBox()
+        response = messageBox.question(self.mainWindow, 'Overwriting existing device',
+                                       'One or more devices to be imported were already found.  These devices will be overwritten.',
+                                        QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel,
+                                        QtGui.QMessageBox.Cancel)
+        if response == QtGui.QMessageBox.Cancel:
+            return False
+        return True
 
     def actionImport(self):
         if not self._checkHasOpenFile():
@@ -217,11 +220,18 @@ class ShotPreparationToolUi(object):
         response = dialog.exec_()
         if response == QtGui.QDialog.Accepted:
             checkedItems = dialog.getCheckedItems()
-            if self._verifyOverwriteExistingDevices(checkedItems):
+            if set(checkedItems).intersection(self.model.returnModelsInFile().keys()):
+                if (self._verifyOverwriteExistingDevices(checkedItems)):
+                    self.model.importDevices(dialog.getCheckedItems(), h5file)
+                    self._clearTabs()
+                    self._initTabs(self.model.returnModelsInFile())
+                    self._modelChanged()
+            else:
                 self.model.importDevices(dialog.getCheckedItems(), h5file)
                 self._clearTabs()
                 self._initTabs(self.model.returnModelsInFile())
                 self._modelChanged()
+
         h5file.close()
 
     def show(self):
