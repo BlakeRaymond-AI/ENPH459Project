@@ -2,6 +2,7 @@ import sys
 import os
 
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 
 from ShotRunnerTool.LogWindow import LogWindow
 from ShotRunnerTool.ShotRunnerController import ShotRunnerController
@@ -34,6 +35,7 @@ class ShotRunnerToolUi(object):
         self.connectSignalsAndSlots()
         self.controller = None
         self.hookCloseEvent()
+        self._initShortcuts()
         self.fileName = None
         self.unsavedChanges = False
 
@@ -243,6 +245,9 @@ class ShotRunnerToolUi(object):
 
     def setAppStyle(self):
         self.app.setStyle(APP_STYLE)
+
+    def _initShortcuts(self):
+        self._saveShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.CTRL + QtCore.Qt.Key_S), self.mainWindow, self.actionSave)
 
 
 if __name__ == '__main__':
