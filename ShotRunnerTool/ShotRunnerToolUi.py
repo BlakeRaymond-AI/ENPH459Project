@@ -250,9 +250,11 @@ class ShotRunnerToolUi(object):
         self._saveShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.CTRL + QtCore.Qt.Key_S), self.mainWindow, self.actionSave)
 
 
-if __name__ == '__main__':
+def main():
     app = QtGui.QApplication([])
     ui = ShotRunnerToolUi(app)
     ui.show()
     sys.exit(app.exec_())
 
+if __name__ == '__main__':
+    main()

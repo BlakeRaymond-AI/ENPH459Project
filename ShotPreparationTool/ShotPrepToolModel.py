@@ -10,10 +10,10 @@ from ShotPreparationTool import VariableNameValidator
 
 
 DEVICES_GROUP_NAME = 'devices'
-SETTINGS_FILE_DIRECTORY = "C:\\git\\QDG-Lab-Framework\\Client\\Settings\\"
+SETTINGS_FILE_DIRECTORY = "C:\\PAT\\PATFramework\\Client\\"
 
 sys.path.append(SETTINGS_FILE_DIRECTORY)
-import SettingsConsolidator
+from Settings import SettingsConsolidator
 
 
 class ShotPrepToolModel(object):
