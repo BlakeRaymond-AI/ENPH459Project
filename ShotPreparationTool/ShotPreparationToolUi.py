@@ -42,6 +42,7 @@ class ShotPreparationToolUi(object):
         form.actionRemoveDevice.triggered.connect(self.actionRemoveDevice)
         form.actionRemoveRow.triggered.connect(self.actionRemoveRow)
         form.actionImport.triggered.connect(self.actionImport)
+        form.actionRename.triggered.connect(self.actionRename)
 
     def _setTitle(self):
         if self.fileName is not None:
@@ -62,6 +63,17 @@ class ShotPreparationToolUi(object):
             if response == QtGui.QMessageBox.Cancel:
                 return False
         return True
+
+    def _checkShouldRemoveDevice(self):
+        messageBox = QtGui.QMessageBox()
+        response = messageBox.question(self.mainWindow, 'Remove device',
+                                       'Are you sure you wish to remove this device?',
+                                       QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Yes,
+                                       QtGui.QMessageBox.Cancel)
+        if response == QtGui.QMessageBox.Yes:
+            return True
+        else:
+            return False
 
     def _checkHasOpenFile(self):
         if self.model is None:
@@ -93,7 +105,10 @@ class ShotPreparationToolUi(object):
             fileDialog = QtGui.QFileDialog(self.mainWindow)
             dialogReturn = fileDialog.getSaveFileNameAndFilter(parent=self.mainWindow, caption='New HDF5 file',
                                                                directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
-            if dialogReturn[0]:
+            filename = str(dialogReturn[0])
+            if filename:
+                if os.path.exists(filename):
+                    os.remove(filename)
                 self._close()
                 self.fileName = str(dialogReturn[0])
                 self.model = ShotPrepToolModel(self.fileName)
@@ -105,6 +120,9 @@ class ShotPreparationToolUi(object):
                 self._modelSaved()
 
     def actionOpen(self):
+        if not self._checkShouldDiscardAnyUnsavedChanges():
+            return
+
         fileDialog = QtGui.QFileDialog(self.mainWindow)
         dialogReturn = fileDialog.getOpenFileNameAndFilter(parent=self.mainWindow, caption='Open existing HDF5 file',
                                                            directory=str(os.getcwd()), filter=H5_FILE_EXTENSION)
@@ -116,7 +134,7 @@ class ShotPreparationToolUi(object):
             try:
                 self.model = ShotPrepToolModel(self.fileName)
             except RuntimeError as e:
-                self._warnUser('File locked', e.message)
+                self._warnUser('Error opening H5 file', e.message)
                 return
             self._initTabs(self.model.returnModelsInFile())
             self._modelSaved()
@@ -171,10 +189,11 @@ class ShotPreparationToolUi(object):
                 except SyntaxError as e:
                     self._warnUser('Invalid device name', e.message)
                 self._initTabs(self.model.returnModelsInFile())
+                self._changeCurrentTab(str(groupName))
                 self._modelChanged()
 
     def actionRemoveDevice(self):
-        if self._checkHasOpenFile():
+        if self._checkHasOpenFile() and self._checkShouldRemoveDevice():
             currentTab = self.uiForm.tabWidget.currentWidget()
             deviceName = str(currentTab.windowTitle())
             self.model.removeDevice(deviceName)
@@ -253,6 +272,7 @@ class ShotPreparationToolUi(object):
             tableView.horizontalHeader().setVisible(False)
             tableView.verticalHeader().setVisible(False)
             tableView.setFont(QtGui.QFont("Courier New"))
+            tableView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
 
             layout.addWidget(tableView)
             tableView.setModel(model)
@@ -268,6 +288,36 @@ class ShotPreparationToolUi(object):
     def _warnUser(self, title, message):
         warningDialog = QtGui.QMessageBox(self.mainWindow)
         warningDialog.warning(self.mainWindow, title, message)
+
+    def actionRename(self):
+        if self._checkHasOpenFile():
+            dialog = QtGui.QInputDialog(self.mainWindow)
+            response = dialog.getText(self.mainWindow, 'Rename device', 'Enter new name:')
+            newDeviceName = str(response[0])
+
+            currentTab = self.uiForm.tabWidget.currentWidget()
+            oldDeviceName = str(currentTab.windowTitle())
+
+            if oldDeviceName != newDeviceName:
+                try:
+                    self.model.renameDevice(oldDeviceName, newDeviceName)
+                except KeyError:
+                    self._warnUser("Error renaming device", "Device with name \'%s\' already exists." % newDeviceName)
+                except SyntaxError:
+                    self._warnUser("Error renaming device", "Device name \'%s\' is not a valid Python variable name." % newDeviceName)
+                else:
+                    self._initTabs(self.model.returnModelsInFile())
+                    self._modelChanged()
+
+    def _changeCurrentTab(self, name):
+        tabWidget = self.uiForm.tabWidget
+        for index in range(tabWidget.count()):
+            tab = tabWidget.widget(index)
+            if tab.windowTitle() == name:
+                tabWidget.setCurrentIndex(index)
+                break
+        else:
+            raise RuntimeError("Could not find tab with title %s" % name)
 
 
 if __name__ == '__main__':

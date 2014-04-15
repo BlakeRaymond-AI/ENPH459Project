@@ -32,22 +32,12 @@ class ScriptRunner(object):
     def join(self):
         if not self.running:
             raise RuntimeError('Subprocess not started')
-        out, err = self.process.communicate()
+        self.process.wait()
         self.running = False
-        return out, err
+        return None, None
 
-    def outputStream(self):
+    def wait(self):
         if not self.running:
             raise RuntimeError('Subprocess not started')
-        while self.process.poll() is None:
-            line = self.process.stdout.readline()
-            if line:
-                yield line
-
-    def errorStream(self):
-        if not self.running:
-            raise RuntimeError('Subprocess not started')
-        while self.process.poll() is None:
-            line = self.process.stderr.readline()
-            if line:
-                yield line
+        self.process.wait()
+        self.running = False

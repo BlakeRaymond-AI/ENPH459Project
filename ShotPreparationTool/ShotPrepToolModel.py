@@ -3,6 +3,7 @@ import os.path
 import sys
 
 import h5py
+
 from ShotPreparationTool.DeviceImporter import DeviceImporter
 from ShotPreparationTool import GroupTableModel
 from ShotPreparationTool import VariableNameValidator
@@ -20,6 +21,7 @@ class ShotPrepToolModel(object):
         self.h5pathName = h5pathName
         self.dict_of_devices = {}
         if os.path.exists(self.h5pathName):
+            self.validateExistingFile(self.h5pathName)
             self.originalFile = h5py.File(self.h5pathName)
         else:
             self.originalFile = h5py.File(self.h5pathName)
@@ -30,6 +32,18 @@ class ShotPrepToolModel(object):
         self.workingFile = h5py.File(self.h5tempFileName, driver='core', backing_store=False)  # memory-only
         self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
         self.__buildModelsInFile()
+
+    def validateExistingFile(self, filename):
+        if not filename.endswith('.h5'):
+            raise RuntimeError('Shot parameters file \'%s\' has an invalid extension.' % filename)
+        try:
+            f = h5py.File(filename)
+        except:
+            raise RuntimeError('Shot parameters file \'%s\' is not a valid H5 file.' % filename)
+        if not DEVICES_GROUP_NAME in f:
+            f.close()
+            raise RuntimeError('Shot parameters file \'%s\' is corrupt or invalid.' % filename)
+        f.close()
 
     def cleanUp(self):
         self.originalFile.close()
@@ -49,25 +63,38 @@ class ShotPrepToolModel(object):
         self.originalFile.copy(DEVICES_GROUP_NAME, self.workingFile)
         self.__buildModelsInFile()
 
+    def removeEmptyRows(self, h5File):
+        for device in h5File[DEVICES_GROUP_NAME].values():
+            if GroupTableModel.EMPTY_ROW_STRING in device:
+                del device[GroupTableModel.EMPTY_ROW_STRING]
+
     def saveChanges(self):
         del self.originalFile[DEVICES_GROUP_NAME]
         self.workingFile.copy(DEVICES_GROUP_NAME, self.originalFile)
-        for device in self.originalFile[DEVICES_GROUP_NAME].values():
-            if GroupTableModel.EMPTY_ROW_STRING in device:
-                del device[GroupTableModel.EMPTY_ROW_STRING]
+        self.removeEmptyRows(self.originalFile)
         self.originalFile.flush()
 
     def removeDevice(self, deviceName):
         del self.workingFile[DEVICES_GROUP_NAME][deviceName]
         self.__buildModelsInFile()
 
+    def renameDevice(self, oldDeviceName, newDeviceName):
+        devices = self.workingFile[DEVICES_GROUP_NAME]
+        self._validateNewDeviceName(newDeviceName)
+        devices.copy(oldDeviceName, newDeviceName)
+        del devices[oldDeviceName]
+        self.__buildModelsInFile()
+
     def addDevice(self, deviceName):
+        self._validateNewDeviceName(deviceName)
+        self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
+        self.__buildModelsInFile()
+
+    def _validateNewDeviceName(self, deviceName):
         if deviceName in self.workingFile[DEVICES_GROUP_NAME]:
             raise KeyError('Device with name \"%s\" already exists.' % deviceName)
         if not VariableNameValidator.isValidVariableName(deviceName):
             raise SyntaxError('Device name \"%s\" is not a valid Python variable name.' % deviceName)
-        self.workingFile[DEVICES_GROUP_NAME].create_group(deviceName)
-        self.__buildModelsInFile()
 
     @staticmethod
     def getListOfDevices(h5File):
@@ -95,5 +122,11 @@ class ShotPrepToolModel(object):
         self.__buildModelsInFile()
 
     def saveAs(self, filename):
+        if os.path.exists(filename):
+            os.remove(filename)
         newFile = h5py.File(filename)
         self.workingFile.copy(DEVICES_GROUP_NAME, newFile)
+        self.removeEmptyRows(newFile)
+        newFile.flush()
+        newFile.close()
+

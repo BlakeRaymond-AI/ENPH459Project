@@ -1,6 +1,8 @@
 import sys
 import os
+
 from PyQt4 import QtGui
+
 from ShotRunnerTool.LogWindow import LogWindow
 from ShotRunnerTool.ShotRunnerController import ShotRunnerController
 from ShotRunnerTool.runnertool_ui import Ui_MainWindow
@@ -34,7 +36,6 @@ class ShotRunnerToolUi(object):
         self.hookCloseEvent()
         self.fileName = None
         self.unsavedChanges = False
-        self.logWindow = None
 
     def init_model(self):
         self.ui_form.tableView.setModel(self.runnerTableModel)
@@ -57,7 +58,8 @@ class ShotRunnerToolUi(object):
         self.mainWindow.setWindowTitle("QDG Lab Shot Runner Tool")
         centre_point = QtGui.QDesktopWidget().availableGeometry().center()
         self.mainWindow.frameGeometry().moveCenter(centre_point)
-        self.mainWindow.move(self.mainWindow.frameGeometry().topLeft())
+
+        self.ui_form.stopButton.setEnabled(False)
 
         self.initLogWindow()
 
@@ -79,6 +81,7 @@ class ShotRunnerToolUi(object):
 
     def connectSignalsAndSlots(self):
         self.ui_form.runButton.pressed.connect(self.runScripts)
+        self.ui_form.stopButton.pressed.connect(self.abortScripts)
         self.ui_form.moveShotUpButton.pressed.connect(self.actionMoveShotUpList)
         self.ui_form.moveShotDownButton.pressed.connect(self.actionMoveShotDownList)
         self.ui_form.actionNew.triggered.connect(self.actionNew)
@@ -96,15 +99,22 @@ class ShotRunnerToolUi(object):
     def runScripts(self):
         if self.controller:
             raise RuntimeError('Already running scripts')
+        self.ui_form.runButton.setEnabled(False)
         scripts, settings = self.runnerTableModel.getScriptsAndSettingsFilePaths()
         self.controller = ShotRunnerController(scripts, settings, logWindow=self.logWindow)
         self.controller.finished.connect(self.finishedRunningScripts)
-        self.ui_form.runButton.setEnabled(False)
         self.controller.start()
+        self.ui_form.stopButton.setEnabled(True)
+
+    def abortScripts(self):
+        if not self.controller:
+            raise RuntimeError("Not running scripts")
+        self.controller.terminate()
 
     def finishedRunningScripts(self):
         self.controller = None
         self.ui_form.runButton.setEnabled(True)
+        self.ui_form.stopButton.setEnabled(False)
 
     def actionMoveShotUpList(self):
         selected = self.ui_form.tableView.selectedIndexes()
@@ -148,11 +158,15 @@ class ShotRunnerToolUi(object):
 
     def actionExit(self):
         if self.shouldDiscardUnsavedChanges():
+            if self.controller and self.controller.isRunning():
+                self.abortScripts()
             sys.exit()
 
     def hookCloseEvent(self):
         def handleCloseEvent(event):
             if self.shouldDiscardUnsavedChanges():
+                if self.controller and self.controller.isRunning():
+                    self.abortScripts()
                 event.accept()
             else:
                 event.ignore()
@@ -179,8 +193,11 @@ class ShotRunnerToolUi(object):
 
     def actionClose(self):
         if self.shouldDiscardUnsavedChanges():
+            if self.controller and self.controller.isRunning():
+                self.abortScripts()
             self.fileName = None    #release the file that the save command would write to.
             self.runnerTableModel.close()
+            self.logWindow.clear()
             self.dataSaved()
 
     def actionRemoveRow(self):
